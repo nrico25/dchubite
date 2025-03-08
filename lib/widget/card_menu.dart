@@ -54,13 +54,13 @@ class CardMenu extends StatelessWidget {
                   MyText(
                     text: categories,
                     fontSize: 14,
-                    fontFamily: 'MontserratBold',
+                    fontFamily: 'MontserratSemiBold',
                     color: grey,
                   ),
                   MyText(
                     text: prices,
                     fontSize: 14,
-                    fontFamily: 'MontserratBold',
+                    fontFamily: 'MontserratRegular',
                     color: darkBlue,
                   ),
                 ],
