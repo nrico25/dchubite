@@ -18,6 +18,7 @@ class MyButton extends StatelessWidget {
   final double? borderRadius;
   final EdgeInsetsGeometry? padding;
   final MainAxisAlignment? alignment;
+  final double? fontSize;
 
   const MyButton({
     Key? key,
@@ -36,6 +37,7 @@ class MyButton extends StatelessWidget {
     this.borderRadius,
     this.padding,
     this.alignment,
+    this.fontSize,
   }) : super(key: key);
 
   @override
@@ -80,7 +82,7 @@ class MyButton extends StatelessWidget {
               text: text,
               fontFamily: 'MontserratBold',
               color: white,
-              fontSize: 20,
+              fontSize: fontSize ?? 20,
             )
           ],
         ),
