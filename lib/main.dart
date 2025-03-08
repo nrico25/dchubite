@@ -1,24 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:tadchubite/pages/login/login.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tadchubite/pages/login/auth_controller.dart';
+import 'package:tadchubite/routes/app_page.dart';
 
-void main() {
-  runApp(const MyApp());
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Pastikan binding terinisialisasi
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final AuthController authController = Get.put(AuthController());
 
-  // This widget is the root of your application.
+  Future<String> _getToken() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('token') ?? "";
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home:  Login(),
+    return FutureBuilder<String>(
+      future: _getToken(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return CircularProgressIndicator(); // Tampilkan loading saat token dimuat
+        }
+
+        final initialRoute = snapshot.data!.isNotEmpty ? '/products' : '/login';
+
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'POS DCHubite',
+          initialRoute: initialRoute,
+          getPages:AppPages.routes,
+        );
+      },
     );
   }
 }
-

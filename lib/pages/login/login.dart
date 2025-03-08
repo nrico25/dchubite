@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/textfield.dart';
 
-
 class Login extends StatelessWidget {
   Login({super.key});
+  final AuthController authController = Get.put(AuthController());
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,8 +18,7 @@ class Login extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding:
-                 EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+            padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -42,7 +43,7 @@ class Login extends StatelessWidget {
                 SizedBox(height: 8),
 
                 CustomTextField(
-                  controller: _emailController,
+                  controller: emailController,
                   hintText: 'Enter your email',
                   keyboardType: TextInputType.emailAddress,
                   borderColor: Colors.grey.shade300,
@@ -66,7 +67,7 @@ class Login extends StatelessWidget {
                 SizedBox(height: 8),
 
                 CustomTextField(
-                  controller: _passwordController,
+                  controller: passwordController,
                   hintText: 'Enter your password',
                   obscureText: true,
                   borderColor: Colors.grey.shade300,
@@ -80,7 +81,10 @@ class Login extends StatelessWidget {
 
                 MyButton(
                   text: 'Login',
-                  onPressed: () {},
+                  onPressed: () {
+                    authController.login(
+                        emailController.text, passwordController.text);
+                  },
                   color: yellow,
                   height: 56,
                   elevation: 4,
