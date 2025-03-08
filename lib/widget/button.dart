@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/text.dart';
 
 class MyButton extends StatelessWidget {
   final String text;
@@ -33,26 +35,24 @@ class MyButton extends StatelessWidget {
     this.elevation,
     this.borderRadius,
     this.padding,
-    this.alignment, 
+    this.alignment,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
     final ThemeData theme = Theme.of(context);
-    
+
     return SizedBox(
       width: width ?? double.infinity,
       height: height ?? 50,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          backgroundColor: isOutlined 
-              ? Colors.transparent 
-              : (color ?? theme.primaryColor),
+          backgroundColor:
+              isOutlined ? Colors.transparent : (color ?? theme.primaryColor),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 10),
-            side: isOutlined 
-                ? BorderSide(color: borderColor ?? theme.primaryColor) 
+            side: isOutlined
+                ? BorderSide(color: borderColor ?? theme.primaryColor)
                 : BorderSide.none,
           ),
           elevation: isOutlined ? 0 : (elevation ?? 2),
@@ -63,7 +63,9 @@ class MyButton extends StatelessWidget {
           mainAxisAlignment: alignment ?? MainAxisAlignment.center,
           children: [
             if (icon != null) ...[
-              Icon(icon, color: textColor ?? (isOutlined ? theme.primaryColor : Colors.white)),
+              Icon(icon,
+                  color: textColor ??
+                      (isOutlined ? theme.primaryColor : Colors.white)),
               const SizedBox(width: 8),
             ],
             if (imagePath != null) ...[
@@ -74,15 +76,12 @@ class MyButton extends StatelessWidget {
               ),
               const SizedBox(width: 8),
             ],
-            Text(
-              text,
-              style: style ??
-                  TextStyle(
-                    color: textColor ?? (isOutlined ? theme.primaryColor : Colors.white),
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
+            MyText(
+              text: text,
+              fontFamily: 'MontserratBold',
+              color: white,
+              fontSize: 20,
+            )
           ],
         ),
       ),
