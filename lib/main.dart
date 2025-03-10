@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
           return CircularProgressIndicator(); // Tampilkan loading saat token dimuat
         }
 
-        final initialRoute = snapshot.data!.isNotEmpty ? '/products' : '/login';
+        final initialRoute = snapshot.data!.isNotEmpty ? '/addmenu' : '/login';
 
         return GetMaterialApp(
           debugShowCheckedModeBanner: false,

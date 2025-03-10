@@ -8,12 +8,68 @@ import 'package:tadchubite/widget/textfield.dart';
 
 class AddMenu extends StatelessWidget {
   AddMenu({super.key});
+
   final TextEditingController nameController = TextEditingController();
   final TextEditingController costController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
-  final TextEditingController categoryController = TextEditingController();
 
   final AuthController authController = Get.put(AuthController());
+  final Rxn<String> selectedCategory = Rxn<String>();
+  final List<Map<String, dynamic>> categories = [
+    {"name": "Makanan"},
+    {"name": "Minuman"},
+    {"name": "Snack"},
+  ];
+
+  void _showCategoryPicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ...categories.map((category) {
+                return Obx(() => ListTile(
+                      title: Text(
+                        category["name"],
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
+                      trailing: Radio<String>(
+                        value: category["name"],
+                        groupValue: selectedCategory.value,
+                        onChanged: (value) {
+                          selectedCategory.value = value;
+                        },
+                      ),
+                      onTap: () {
+                        selectedCategory.value = category["name"];
+                      },
+                    ));
+              }).toList(),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: MyButton(
+                  text: 'Pilih kategori',
+                  onPressed: () {},
+                  color: yellow,
+                  height: 56,
+                  elevation: 0,
+                  borderRadius: 12,
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +90,8 @@ class AddMenu extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-          child: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -45,7 +100,7 @@ class AddMenu extends StatelessWidget {
                 fontFamily: "MontserratBold",
                 fontSize: 16,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               CustomTextField(
                 width: 400,
                 controller: nameController,
@@ -57,7 +112,7 @@ class AddMenu extends StatelessWidget {
                 textColor: black,
                 hintColor: grey,
               ),
-              SizedBox(height: 19),
+              const SizedBox(height: 19),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -69,12 +124,11 @@ class AddMenu extends StatelessWidget {
                         fontFamily: "MontserratBold",
                         fontSize: 16,
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       CustomTextField(
                         width: 180,
                         controller: costController,
                         hintText: 'harga modal',
-                        obscureText: true,
                         keyboardType: TextInputType.number,
                         borderColor: Colors.grey.shade300,
                         borderWidth: 1.0,
@@ -92,13 +146,12 @@ class AddMenu extends StatelessWidget {
                         fontFamily: "MontserratBold",
                         fontSize: 16,
                       ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       CustomTextField(
                         width: 180,
                         controller: priceController,
                         hintText: 'harga jual',
                         keyboardType: TextInputType.number,
-                        obscureText: true,
                         borderColor: Colors.grey.shade300,
                         borderWidth: 1.0,
                         fillColor: white,
@@ -109,40 +162,43 @@ class AddMenu extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               MyText(
                 text: "Kategori",
                 fontFamily: "MontserratBold",
                 fontSize: 16,
               ),
-              SizedBox(height: 8),
-              CustomTextField(
-                width: 400,
-                controller: categoryController,
-                hintText: 'Masukan kategori menu',
-                obscureText: true,
-                borderColor: Colors.grey.shade300,
-                borderWidth: 1.0,
-                fillColor: white,
-                textColor: black,
-                hintColor: grey,
-                suffixIcon: Icons.arrow_drop_down_outlined,
-              ),
-              SizedBox(height: 20),
-              MyButton(
-                text: 'Add menu',
-                onPressed: () {},
-                color: yellow,
-                fontSize: 18,
-                height: 50,
-                elevation: 0,
-                borderRadius: 12,
-              ),
-              SizedBox(height: 40),
+              const SizedBox(height: 8),
+              Obx(() {
+                return GestureDetector(
+                  onTap: () => _showCategoryPicker(context),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey, width: 1),
+                      color: Colors.white,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          selectedCategory.value ?? "Pilih Kategori",
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
+                        ),
+                        const Icon(Icons.arrow_drop_down, color: Colors.black),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+              const SizedBox(height: 40),
             ],
           ),
         ),
-      )),
+      ),
     );
   }
 }
