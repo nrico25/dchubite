@@ -7,7 +7,7 @@ class CardMenu extends StatelessWidget {
   final String products;
   final String categories;
   final String prices;
-  final IconData icon;
+  
 
   const CardMenu({
     super.key,
@@ -15,7 +15,6 @@ class CardMenu extends StatelessWidget {
     required this.products,
     required this.categories,
     required this.prices,
-    required this.icon,
   });
 
   @override
@@ -69,12 +68,14 @@ class CardMenu extends StatelessWidget {
             Row(
               children: [
                 IconButton(
-                  icon: Icon(icon, color: Colors.grey),
+                  icon: Icon(Icons.edit, color: Colors.grey),
                   onPressed: () {},
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {},
+                  icon:  Icon(Icons.delete, color: Colors.red),
+                  onPressed: () {
+
+                  },
                 ),
               ],
             ),

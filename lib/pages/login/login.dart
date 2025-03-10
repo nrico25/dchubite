@@ -38,7 +38,7 @@ class Login extends StatelessWidget {
                 ),
                 SizedBox(height: 8),
                 CustomTextField(
-                  width: 347,
+                  width: 400,
                   controller: emailController,
                   hintText: 'Enter your email',
                   keyboardType: TextInputType.emailAddress,
@@ -56,7 +56,7 @@ class Login extends StatelessWidget {
                 ),
                 SizedBox(height: 8),
                 CustomTextField(
-                  width: 347,
+                  width: 400,
                   controller: passwordController,
                   hintText: 'Enter your password',
                   obscureText: true,
@@ -75,7 +75,7 @@ class Login extends StatelessWidget {
                   },
                   color: yellow,
                   height: 56,
-                  elevation: 4,
+                  elevation: 0,
                   borderRadius: 12,
                 ),
                 SizedBox(height: 40),
