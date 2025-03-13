@@ -8,7 +8,7 @@ import 'package:tadchubite/widget/textfield.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 

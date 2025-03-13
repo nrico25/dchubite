@@ -21,7 +21,7 @@ class AuthController extends GetxController {
       String newToken = await LoginService.login(email, password);
       token.value = newToken;
       await _saveToken(newToken);
-      Get.offAllNamed('/addmenu');
+      Get.offAllNamed('/products');
     } catch (e) {
       Get.snackbar('Error', e.toString());
     }

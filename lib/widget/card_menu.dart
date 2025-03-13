@@ -32,7 +32,7 @@ class CardMenu extends StatelessWidget {
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child: Image.asset(
+              child: Image.network(
                 image,
                 width: 80,
                 height: 80,

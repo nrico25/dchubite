@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
+import 'package:tadchubite/pages/manage%20menu/product_model.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart';
@@ -11,9 +12,8 @@ import 'package:tadchubite/widget/textfield.dart';
 class AddMenu extends StatelessWidget {
   AddMenu({super.key});
 
-  final ProductController addMenuController = Get.put(ProductController());
-  final AuthController authController = Get.put(AuthController());
-
+  final ProductController addMenuController = Get.find();
+  final AuthController authController = Get.find();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController costController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
@@ -149,6 +149,9 @@ class AddMenu extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Obx(() {
+                final selectedCategory = addMenuController.categories
+                    .firstWhereOrNull((cat) =>
+                        cat["id"] == addMenuController.selectedCategory.value);
                 return GestureDetector(
                   onTap: () => _showCategoryPicker(context),
                   child: Container(
@@ -163,23 +166,47 @@ class AddMenu extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          addMenuController.selectedCategory.value ??
-                              "Pilih Kategori",
-                          style: const TextStyle(
-                              fontSize: 16, color: Colors.black),
+                          selectedCategory != null
+                              ? selectedCategory["name"]
+                              : "Pilih Kategori",
+                          style: TextStyle(fontSize: 16, color: Colors.black),
                         ),
-                        const Icon(Icons.arrow_drop_down, color: Colors.black),
+                        Icon(Icons.arrow_drop_down, color: Colors.black),
                       ],
                     ),
                   ),
                 );
               }),
-              const SizedBox(height: 40),
+              SizedBox(height: 40),
               SizedBox(
                 width: double.infinity,
                 child: MyButton(
                   text: 'Simpan Menu',
-                  onPressed: () {},
+                  onPressed: () {
+                    if (nameController.text.isEmpty ||
+                        costController.text.isEmpty ||
+                        priceController.text.isEmpty ||
+                        addMenuController.selectedCategory.value == null ||
+                        addMenuController.selectedImage.value == null) {
+                      Get.snackbar('Error', 'Semua field harus diisi');
+                      return;
+                    }
+
+                    final product = Product(
+                      id: 0, 
+                      categoryId: addMenuController.selectedCategory.value!,
+                      category: addMenuController.categories.firstWhere((cat) =>
+                          cat["id"] ==
+                          addMenuController.selectedCategory.value)["name"],
+                      name: nameController.text,
+                      price: double.tryParse(priceController.text) ?? 0.0,
+                      costPrice: double.tryParse(costController.text) ?? 0.0,
+                      image: '', 
+                    );
+
+                    addMenuController.addProduct(
+                        product, addMenuController.selectedImage.value);
+                  },
                   color: yellow,
                   height: 48,
                   elevation: 0,
@@ -194,7 +221,7 @@ class AddMenu extends StatelessWidget {
   }
 
   void _showCategoryPicker(BuildContext context) {
-    String? tempSelectedCategory =
+    int? tempSelectedCategory =
         addMenuController.selectedCategory.value; // Variabel sementara
 
     showModalBottomSheet(
@@ -217,8 +244,8 @@ class AddMenu extends StatelessWidget {
                         style: const TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w500),
                       ),
-                      trailing: Radio<String>(
-                        value: category["name"],
+                      trailing: Radio<int>(
+                        value: category["id"],
                         groupValue: tempSelectedCategory,
                         onChanged: (value) {
                           setState(() {

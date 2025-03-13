@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
+import 'package:tadchubite/pages/manage%20menu/add_menu.dart';
+import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_menu.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -9,8 +11,9 @@ import 'package:tadchubite/widget/textfield.dart';
 
 class ProductPage extends StatelessWidget {
   ProductPage({super.key});
+  final ProductController addMenuController = Get.find();
   final TextEditingController searchController = TextEditingController();
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +42,7 @@ class ProductPage extends StatelessWidget {
                 Row(
                   children: [
                     CustomTextField(
-                      width: 240,
+                      width: 200,
                       controller: searchController,
                       hintText: 'Search here',
                       keyboardType: TextInputType.text,
@@ -50,10 +53,12 @@ class ProductPage extends StatelessWidget {
                       hintColor: Colors.grey,
                       suffixIcon: Icons.search,
                     ),
-                    SizedBox(width: 20),
+                    SizedBox(width: 10),
                     MyButton(
                       text: 'Tambah Menu',
-                      onPressed: () {},
+                      onPressed: () {
+                        Get.to(() => AddMenu());
+                      },
                       color: yellow,
                       fontSize: 16,
                       height: 53,
@@ -64,54 +69,22 @@ class ProductPage extends StatelessWidget {
                   ],
                 ),
                 SizedBox(height: 20),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Om Yopie',
-                  categories: 'Makanan',
-                  prices: 'Rp 25.000',
-                ),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Andhika',
-                  categories: 'Minuman',
-                  prices: 'Rp 30.000',
-                ),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Rico',
-                  categories: 'Sepuh',
-                  prices: 'Rp 20.000',
-                ),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Miqdam',
-                  categories: 'jago',
-                  prices: 'Rp 20.000',
-                ),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Om Yopie',
-                  categories: 'Makanan',
-                  prices: 'Rp 25.000',
-                ),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Andhika',
-                  categories: 'Minuman',
-                  prices: 'Rp 30.000',
-                ),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Rico',
-                  categories: 'Sepuh',
-                  prices: 'Rp 20.000',
-                ),
-                CardMenu(
-                  image: 'assets/dchubitelogo.png',
-                  products: 'Miqdam',
-                  categories: 'jago',
-                  prices: 'Rp 20.000',
-                ),
+                Obx(() => ListView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: addMenuController.products.length,
+                      itemBuilder: (context, index) {
+                        final product = addMenuController.products[index];
+                        return CardMenu(
+                          image: product.image.isNotEmpty
+                              ? product.image
+                              : 'assets/default_image.png',
+                          products: product.name,
+                          categories: product.category,
+                          prices: 'Rp ${product.price.toStringAsFixed(0)}',
+                        );
+                      },
+                    )),
               ],
             ),
           ),
