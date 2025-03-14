@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:tadchubite/pages/manage%20menu/edit_menu.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart';
 
@@ -7,7 +9,8 @@ class CardMenu extends StatelessWidget {
   final String products;
   final String categories;
   final String prices;
-  
+  final VoidCallback onEdit;
+  final VoidCallback onDelete;
 
   const CardMenu({
     super.key,
@@ -15,6 +18,8 @@ class CardMenu extends StatelessWidget {
     required this.products,
     required this.categories,
     required this.prices,
+    required this.onEdit,
+    required this.onDelete,
   });
 
   @override
@@ -22,7 +27,7 @@ class CardMenu extends StatelessWidget {
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
-        side: BorderSide(color:lightGray),
+        side: BorderSide(color: lightGray),
       ),
       color: Colors.white,
       elevation: 0,
@@ -69,13 +74,11 @@ class CardMenu extends StatelessWidget {
               children: [
                 IconButton(
                   icon: Icon(Icons.edit, color: Colors.grey),
-                  onPressed: () {},
+                  onPressed: onEdit, 
                 ),
                 IconButton(
-                  icon:  Icon(Icons.delete, color: Colors.red),
-                  onPressed: () {
-
-                  },
+                  icon: Icon(Icons.delete, color: Colors.red),
+                  onPressed: onDelete,
                 ),
               ],
             ),

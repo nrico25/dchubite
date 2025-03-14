@@ -7,7 +7,8 @@ import '../manage%20menu/product_model.dart';
 import '../manage%20menu/product_service.dart';
 
 class ProductController extends GetxController {
-  final Rxn<int> selectedCategory = Rxn<int>(); // Ubah ke integer untuk ID kategori
+  final Rxn<int> selectedCategory =
+      Rxn<int>(); // Ubah ke integer untuk ID kategori
   final Rx<File?> selectedImage = Rx<File?>(null);
   var products = <Product>[].obs;
   var isLoading = false.obs;
@@ -31,17 +32,26 @@ class ProductController extends GetxController {
     }
   }
 
+  void resetSelectedImage() {
+    selectedImage.value = null;
+  }
+
   @override
   void onInit() {
-    fetchProducts();
     super.onInit();
+    fetchProducts();
+    ever(selectedCategory, (value) {
+      print("Kategori berubah: $value");
+    });
   }
 
   Future<void> fetchProducts() async {
     isLoading.value = true;
     try {
-      var fetchedProducts = await ProductService.fetchProducts(authController.token.value);
+      var fetchedProducts =
+          await ProductService.fetchProducts(authController.token.value);
       products.assignAll(fetchedProducts);
+    
     } catch (e) {
       Get.snackbar('Error', 'Gagal mengambil produk: $e');
     } finally {
@@ -52,7 +62,8 @@ class ProductController extends GetxController {
   Future<void> addProduct(Product product, File? imageFile) async {
     isLoading.value = true;
     try {
-      Product newProduct = await ProductService.createProduct(authController.token.value, product, imageFile);
+      Product newProduct = await ProductService.createProduct(
+          authController.token.value, product, imageFile);
       products.add(newProduct);
       Get.back();
     } catch (e) {
@@ -66,7 +77,8 @@ class ProductController extends GetxController {
   Future<void> updateProduct(int id, Product product, File? imageFile) async {
     isLoading.value = true;
     try {
-      Product updatedProduct = await ProductService.updateProduct(authController.token.value, id, product, imageFile);
+      Product updatedProduct = await ProductService.updateProduct(
+          authController.token.value, id, product, imageFile);
       int index = products.indexWhere((p) => p.id == id);
       if (index != -1) {
         products[index] = updatedProduct;

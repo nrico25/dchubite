@@ -18,6 +18,7 @@ class ProductService {
     if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
       if (body['status'] == true) {
+        print(body['data']);
         return (body['data'] as List).map((json) => Product.fromJson(json)).toList();
       } else {
         throw Exception(body['message'] ?? "Gagal mengambil data produk");

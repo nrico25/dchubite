@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/add_menu.dart';
+import 'package:tadchubite/pages/manage%20menu/edit_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_menu.dart';
@@ -82,6 +83,14 @@ class ProductPage extends StatelessWidget {
                           products: product.name,
                           categories: product.category,
                           prices: 'Rp ${product.price.toStringAsFixed(0)}',
+                          onEdit: () {
+                            Get.to(() => EditMenu(
+                                product: product)); // Kirim produk ke EditMenu
+                          },
+                          onDelete: () {
+                            addMenuController.deleteProduct(
+                                product.id); // Tambahkan logika hapus produk
+                          },
                         );
                       },
                     )),

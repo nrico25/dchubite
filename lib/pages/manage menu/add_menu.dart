@@ -10,7 +10,8 @@ import 'package:tadchubite/widget/text.dart';
 import 'package:tadchubite/widget/textfield.dart';
 
 class AddMenu extends StatelessWidget {
-  AddMenu({super.key});
+  AddMenu({super.key}) {
+  }
 
   final ProductController addMenuController = Get.find();
   final AuthController authController = Get.find();
@@ -20,6 +21,8 @@ class AddMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    addMenuController.selectedImage.value = null;
+    addMenuController.selectedCategory.value = null;
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
@@ -40,7 +43,7 @@ class AddMenu extends StatelessWidget {
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(14.0),
+          padding:  EdgeInsets.all(14.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -206,6 +209,7 @@ class AddMenu extends StatelessWidget {
 
                     addMenuController.addProduct(
                         product, addMenuController.selectedImage.value);
+                    addMenuController.selectedImage.value = null;
                   },
                   color: yellow,
                   height: 48,
