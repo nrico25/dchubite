@@ -19,20 +19,6 @@ class ProductPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: white,
-      appBar: AppBar(
-        title: MyText(
-          text: "Add New Menu",
-          fontFamily: "MontserratBold",
-          fontSize: 20,
-          color: white,
-        ),
-        centerTitle: true,
-        backgroundColor: yellow,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {},
-        ),
-      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
