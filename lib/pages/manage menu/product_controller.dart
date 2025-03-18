@@ -10,6 +10,7 @@ class ProductController extends GetxController {
   final Rxn<int> selectedCategory =
       Rxn<int>(); // Ubah ke integer untuk ID kategori
   final Rx<File?> selectedImage = Rx<File?>(null);
+  final RxBool isProductsLoaded = false.obs;
   var products = <Product>[].obs;
   var isLoading = false.obs;
   final RxBool isImageLoading = false.obs;
@@ -56,8 +57,10 @@ class ProductController extends GetxController {
       var fetchedProducts =
           await ProductService.fetchProducts(authController.token.value);
       products.assignAll(fetchedProducts);
+      isProductsLoaded.value = true;
        checkImageLoading();
     } catch (e) {
+      isProductsLoaded.value = false;
       Get.snackbar('Error', 'Gagal mengambil produk: $e');
     } finally {
       isLoading.value = false;
@@ -67,10 +70,10 @@ class ProductController extends GetxController {
   Future<void> addProduct(Product product, File? imageFile) async {
     isLoading.value = true;
     try {
+      Get.back();
       Product newProduct = await ProductService.createProduct(
           authController.token.value, product, imageFile);
       products.add(newProduct);
-      Get.back();
     } catch (e) {
       Get.snackbar('Error', 'Gagal menambahkan produk: $e');
       print(e);
