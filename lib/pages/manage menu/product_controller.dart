@@ -12,6 +12,7 @@ class ProductController extends GetxController {
   final Rx<File?> selectedImage = Rx<File?>(null);
   var products = <Product>[].obs;
   var isLoading = false.obs;
+  final RxBool isImageLoading = false.obs;
   final AuthController authController = Get.find<AuthController>();
 
   final List<Map<String, dynamic>> categories = [
@@ -22,6 +23,10 @@ class ProductController extends GetxController {
 
   void selectCategory(int categoryId) {
     selectedCategory.value = categoryId;
+  }
+
+  void checkImageLoading() {
+    isImageLoading.value = products.any((product) => product.image.isEmpty);
   }
 
   Future<void> pickImage() async {
@@ -51,7 +56,7 @@ class ProductController extends GetxController {
       var fetchedProducts =
           await ProductService.fetchProducts(authController.token.value);
       products.assignAll(fetchedProducts);
-    
+       checkImageLoading();
     } catch (e) {
       Get.snackbar('Error', 'Gagal mengambil produk: $e');
     } finally {

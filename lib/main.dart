@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
       future: _getToken(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator(); // Tampilkan loading saat token dimuat
+          return CircularProgressIndicator(); 
         }
 
         final initialRoute = snapshot.data!.isNotEmpty ? '/dashboard' : '/login';

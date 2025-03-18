@@ -38,6 +38,7 @@ dependencies:
   http:
   shared_preferences:
   image_picker:
+  shimmer: ^2.0.0
 
 dev_dependencies:
   flutter_test:
