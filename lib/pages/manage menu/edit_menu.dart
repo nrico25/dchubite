@@ -14,6 +14,7 @@ class EditMenu extends StatelessWidget {
   
   EditMenu({super.key, required this.product}) {
     editMenuController.selectedCategory.value = product.categoryId;
+    editMenuController.selectedImage.value = null;
   }
 
   final ProductController editMenuController = Get.find();
