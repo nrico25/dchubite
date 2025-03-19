@@ -32,6 +32,7 @@ class EditMenu extends StatelessWidget {
     return Scaffold(
       backgroundColor: white,
       appBar: AppBar(
+        surfaceTintColor: white,
         title: MyText(
           text: "Edit Menu",
           fontFamily: "MontserratBold",
@@ -47,164 +48,166 @@ class EditMenu extends StatelessWidget {
           },
         ),
       ),
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(14.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              MyText(text: "Foto Menu", fontFamily: "MontserratBold", fontSize: 16),
-              const SizedBox(height: 8),
-              Obx(() {
-                return GestureDetector(
-                  onTap: () => editMenuController.pickImage(),
-                  child: Container(
-                    height: 310,
-                    width: 390,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey, width: 1),
-                      color: Colors.grey.shade200,
-                    ),
-                    child: editMenuController.selectedImage.value != null &&
-                            File(editMenuController.selectedImage.value!.path).existsSync()
-                        ? Image.file(
-                            File(editMenuController.selectedImage.value!.path),
-                            fit: BoxFit.cover,
-                          )
-                        : (product.image.isNotEmpty
-                            ? Image.network(
-                                product.image,
-                                fit: BoxFit.cover,
-                              )
-                            : const Center(
-                                child: Icon(Icons.camera_alt, size: 50, color: Colors.black54),
-                              )),
-                  ),
-                );
-              }),
-              const SizedBox(height: 20),
-              MyText(text: "Nama Menu", fontFamily: "MontserratBold", fontSize: 16),
-              const SizedBox(height: 8),
-              CustomTextField(
-                width: 400,
-                controller: nameController,
-                hintText: 'Masukan nama menu disini',
-                keyboardType: TextInputType.text,
-                borderColor: Colors.grey.shade300,
-                borderWidth: 1.0,
-                fillColor: white,
-                textColor: black,
-                hintColor: grey,
-              ),
-              const SizedBox(height: 19),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyText(text: "Harga Modal", fontFamily: "MontserratBold", fontSize: 16),
-                      const SizedBox(height: 8),
-                      CustomTextField(
-                        width: 170,
-                        controller: costController,
-                        hintText: 'harga modal',
-                        keyboardType: TextInputType.number,
-                        borderColor: Colors.grey.shade300,
-                        borderWidth: 1.0,
-                        fillColor: white,
-                        textColor: black,
-                        hintColor: grey,
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(14.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                MyText(text: "Foto Menu", fontFamily: "MontserratBold", fontSize: 16),
+                const SizedBox(height: 8),
+                Obx(() {
+                  return GestureDetector(
+                    onTap: () => editMenuController.pickImage(),
+                    child: Container(
+                      height: 310,
+                      width: 390,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey, width: 1),
+                        color: Colors.grey.shade200,
                       ),
-                    ],
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MyText(text: "Harga Jual", fontFamily: "MontserratBold", fontSize: 16),
-                      const SizedBox(height: 8),
-                      CustomTextField(
-                        width: 170,
-                        controller: priceController,
-                        hintText: 'harga jual',
-                        keyboardType: TextInputType.number,
-                        borderColor: Colors.grey.shade300,
-                        borderWidth: 1.0,
-                        fillColor: white,
-                        textColor: black,
-                        hintColor: grey,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              MyText(text: "Kategori", fontFamily: "MontserratBold", fontSize: 16),
-              const SizedBox(height: 8),
-              Obx(() {
-                if (editMenuController.categories.isEmpty) {
-                  return const Text("Kategori tidak tersedia", style: TextStyle(fontSize: 16));
-                }
-
-                final selectedCategory = editMenuController.categories.firstWhereOrNull(
-                  (cat) => cat["id"] == editMenuController.selectedCategory.value,
-                );
-
-                return GestureDetector(
-                  onTap: () => _showCategoryPicker(context),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.grey, width: 1),
-                      color: Colors.white,
+                      child: editMenuController.selectedImage.value != null &&
+                              File(editMenuController.selectedImage.value!.path).existsSync()
+                          ? Image.file(
+                              File(editMenuController.selectedImage.value!.path),
+                              fit: BoxFit.cover,
+                            )
+                          : (product.image.isNotEmpty
+                              ? Image.network(
+                                  product.image,
+                                  fit: BoxFit.cover,
+                                )
+                              : const Center(
+                                  child: Icon(Icons.camera_alt, size: 50, color: Colors.black54),
+                                )),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  );
+                }),
+                const SizedBox(height: 20),
+                MyText(text: "Nama Menu", fontFamily: "MontserratBold", fontSize: 16),
+                const SizedBox(height: 8),
+                CustomTextField(
+                  width: 400,
+                  controller: nameController,
+                  hintText: 'Masukan nama menu disini',
+                  keyboardType: TextInputType.text,
+                  borderColor: Colors.grey.shade300,
+                  borderWidth: 1.0,
+                  fillColor: white,
+                  textColor: black,
+                  hintColor: grey,
+                ),
+                const SizedBox(height: 19),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text(
-                          selectedCategory?["name"] ?? "Pilih Kategori",
-                          style: const TextStyle(fontSize: 16, color: Colors.black),
+                        MyText(text: "Harga Modal", fontFamily: "MontserratBold", fontSize: 16),
+                        const SizedBox(height: 8),
+                        CustomTextField(
+                          width: 170,
+                          controller: costController,
+                          hintText: 'harga modal',
+                          keyboardType: TextInputType.number,
+                          borderColor: Colors.grey.shade300,
+                          borderWidth: 1.0,
+                          fillColor: white,
+                          textColor: black,
+                          hintColor: grey,
                         ),
-                        const Icon(Icons.arrow_drop_down, color: Colors.black),
                       ],
                     ),
-                  ),
-                );
-              }),
-              const SizedBox(height: 40),
-              SizedBox(
-                width: double.infinity,
-                child: MyButton(
-                  text: 'Simpan Menu',
-                  onPressed: () {
-                    if (nameController.text.isEmpty ||
-                        costController.text.isEmpty ||
-                        priceController.text.isEmpty) {
-                      Get.snackbar('Error', 'Semua field harus diisi');
-                      return;
-                    }
-                    final updatedProduct = Product(
-                      id: product.id,
-                      categoryId: editMenuController.selectedCategory.value ?? -1,
-                      category: editMenuController.categories.firstWhereOrNull(
-                              (cat) => cat["id"] == editMenuController.selectedCategory.value)?["name"] ?? "",
-                      name: nameController.text,
-                      price: double.tryParse(priceController.text) ?? 0.0,
-                      costPrice: double.tryParse(costController.text) ?? 0.0,
-                      image: '',
-                    );
-
-                    editMenuController.updateProduct(
-                        updatedProduct.id, updatedProduct, editMenuController.selectedImage.value);
-                  },
-                  color: yellow,
-                  height: 48,
-                  borderRadius: 12,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        MyText(text: "Harga Jual", fontFamily: "MontserratBold", fontSize: 16),
+                        const SizedBox(height: 8),
+                        CustomTextField(
+                          width: 170,
+                          controller: priceController,
+                          hintText: 'harga jual',
+                          keyboardType: TextInputType.number,
+                          borderColor: Colors.grey.shade300,
+                          borderWidth: 1.0,
+                          fillColor: white,
+                          textColor: black,
+                          hintColor: grey,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                const SizedBox(height: 20),
+                MyText(text: "Kategori", fontFamily: "MontserratBold", fontSize: 16),
+                const SizedBox(height: 8),
+                Obx(() {
+                  if (editMenuController.categories.isEmpty) {
+                    return const Text("Kategori tidak tersedia", style: TextStyle(fontSize: 16));
+                  }
+        
+                  final selectedCategory = editMenuController.categories.firstWhereOrNull(
+                    (cat) => cat["id"] == editMenuController.selectedCategory.value,
+                  );
+        
+                  return GestureDetector(
+                    onTap: () => _showCategoryPicker(context),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(color: Colors.grey, width: 1),
+                        color: Colors.white,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            selectedCategory?["name"] ?? "Pilih Kategori",
+                            style: const TextStyle(fontSize: 16, color: Colors.black),
+                          ),
+                          const Icon(Icons.arrow_drop_down, color: Colors.black),
+                        ],
+                      ),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 40),
+                SizedBox(
+                  width: double.infinity,
+                  child: MyButton(
+                    text: 'Simpan Menu',
+                    onPressed: () {
+                      if (nameController.text.isEmpty ||
+                          costController.text.isEmpty ||
+                          priceController.text.isEmpty) {
+                        Get.snackbar('Error', 'Semua field harus diisi');
+                        return;
+                      }
+                      final updatedProduct = Product(
+                        id: product.id,
+                        categoryId: editMenuController.selectedCategory.value ?? -1,
+                        category: editMenuController.categories.firstWhereOrNull(
+                                (cat) => cat["id"] == editMenuController.selectedCategory.value)?["name"] ?? "",
+                        name: nameController.text,
+                        price: double.tryParse(priceController.text) ?? 0.0,
+                        costPrice: double.tryParse(costController.text) ?? 0.0,
+                        image: '',
+                      );
+        
+                      editMenuController.updateProduct(
+                          updatedProduct.id, updatedProduct, editMenuController.selectedImage.value);
+                    },
+                    color: yellow,
+                    height: 48,
+                    borderRadius: 12,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

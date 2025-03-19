@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/add_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/edit_menu.dart';
+import 'package:tadchubite/pages/manage%20menu/empty_product.dart';
 import 'package:tadchubite/pages/manage%20menu/network_error.dart';
 import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
 import 'package:tadchubite/widget/button.dart';
@@ -88,13 +89,7 @@ class ProductPage extends StatelessWidget {
                               child: SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.7,
-                                child: Center(
-                                  child: Text(
-                                    'Belum ada produk',
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.grey),
-                                  ),
-                                ),
+                                child: EmptyProductPage()
                               ),
                             )
                           : ListView.builder(
