@@ -30,6 +30,7 @@ class MyApp extends StatelessWidget {
         final initialRoute = snapshot.data!.isNotEmpty ? '/dashboard' : '/login';
 
         return GetMaterialApp(
+          
           debugShowCheckedModeBanner: false,
           title: 'POS DCHubite',
           initialRoute: initialRoute,
