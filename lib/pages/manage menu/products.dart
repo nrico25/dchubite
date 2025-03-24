@@ -19,6 +19,34 @@ class ProductPage extends StatelessWidget {
   final TextEditingController searchController = TextEditingController();
   final AuthController authController = Get.find();
 
+  void DeleteConfirmation(BuildContext context, int productId) {
+      Get.defaultDialog(
+      title: "Konfirmasi Hapus",titleStyle: TextStyle(fontFamily: "MontserratSemiBold",color: darkBlue),
+      middleText: "Apakah Anda yakin ingin menghapus produk ini?",middleTextStyle: TextStyle(fontFamily: "MontserratRegular",color: black),
+      radius: 10,
+      actions: [
+        TextButton(
+          onPressed: () => Get.back(),
+          style: TextButton.styleFrom(
+            backgroundColor: green,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          ),
+          child: Text("Batal", style: TextStyle(color: white)),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            productController.deleteProduct(productId);
+            Get.back();
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor:red,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          ),
+          child: Text("Hapus", style: TextStyle(color: white)),
+        ),
+      ],
+    );
+  }
   Future<void> _refreshData() async {
     await productController.fetchProducts();
   }
@@ -77,9 +105,7 @@ class ProductPage extends StatelessWidget {
                         physics: AlwaysScrollableScrollPhysics(),
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.7,
-                          child: Center(
-                            child: NetworkErrorPage()
-                          ),
+                          child: Center(child: NetworkErrorPage()),
                         ),
                       );
                     } else {
@@ -87,10 +113,9 @@ class ProductPage extends StatelessWidget {
                           ? SingleChildScrollView(
                               physics: AlwaysScrollableScrollPhysics(),
                               child: SizedBox(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.7,
-                                child: EmptyProductPage()
-                              ),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.7,
+                                  child: EmptyProductPage()),
                             )
                           : ListView.builder(
                               itemCount: productController.products.length,
@@ -109,7 +134,7 @@ class ProductPage extends StatelessWidget {
                                     Get.to(() => EditMenu(product: product));
                                   },
                                   onDelete: () {
-                                    productController.deleteProduct(product.id);
+                                    DeleteConfirmation(context, product.id);
                                   },
                                 );
                               },
