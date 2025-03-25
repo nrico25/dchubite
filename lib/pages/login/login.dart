@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/text.dart';
 import 'package:tadchubite/widget/textfield.dart';
 
 class Login extends StatelessWidget {
   Login({super.key});
-  final AuthController authController = Get.put(AuthController());
+  final AuthController authController = Get.find();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -29,56 +30,43 @@ class Login extends StatelessWidget {
                     width: 190,
                   ),
                 ),
-
                 SizedBox(height: 40),
-
-                Text(
-                  'Email',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                MyText(
+                  text: "Username",
+                  fontFamily: "MontserratBold",
+                  fontSize: 16,
                 ),
-
                 SizedBox(height: 8),
-
                 CustomTextField(
+                  width: 400,
                   controller: emailController,
                   hintText: 'Enter your email',
                   keyboardType: TextInputType.emailAddress,
                   borderColor: Colors.grey.shade300,
                   borderWidth: 1.0,
-                  fillColor: Colors.white,
-                  textColor: Colors.black,
-                  hintColor: Colors.grey,
+                  fillColor: white,
+                  textColor: black,
+                  hintColor: grey,
                 ),
-
                 SizedBox(height: 19),
-
-                // Password Field
-                Text(
-                  'Password',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
+                MyText(
+                  text: "Password",
+                  fontFamily: "MontserratBold",
+                  fontSize: 16,
                 ),
-
                 SizedBox(height: 8),
-
                 CustomTextField(
+                  width: 400,
                   controller: passwordController,
                   hintText: 'Enter your password',
                   obscureText: true,
                   borderColor: Colors.grey.shade300,
                   borderWidth: 1.0,
-                  fillColor: Colors.white,
-                  textColor: Colors.black,
-                  hintColor: Colors.grey,
+                  fillColor: white,
+                  textColor: black,
+                  hintColor: grey,
                 ),
-
                 SizedBox(height: 20),
-
                 MyButton(
                   text: 'Login',
                   onPressed: () {
@@ -87,10 +75,9 @@ class Login extends StatelessWidget {
                   },
                   color: yellow,
                   height: 56,
-                  elevation: 4,
+                  elevation: 0,
                   borderRadius: 12,
                 ),
-
                 SizedBox(height: 40),
               ],
             ),
