@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tadchubite/widget/color.dart';
 
 class CardOrder extends StatelessWidget {
   final String imageUrl;
@@ -8,69 +9,65 @@ class CardOrder extends StatelessWidget {
   final VoidCallback onAdd;
 
   const CardOrder({
-    Key? key,
+    super.key,
     required this.imageUrl,
     required this.title,
     required this.category,
     required this.price,
     required this.onAdd,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
+      color: white,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        height: 130,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imageUrl,
-                width: 80,
-                height: 80,
-                fit: BoxFit.cover,
-              ),
-            ),
-            const SizedBox(width: 12),
+            imageUrl.startsWith('assets/')
+                ? Image.asset(imageUrl, width: 80, height: 80, fit: BoxFit.cover)
+                : Image.network(imageUrl, width: 80, height: 80, fit: BoxFit.cover),
+             SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    category,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    price,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text(title, style: const TextStyle(fontSize: 16, fontFamily: "MontserratBold")),
+                   SizedBox(height: 4),
+                  Text(category, style: const TextStyle(color: Colors.grey,fontFamily:"MontserratRegular" )),
+                   SizedBox(height: 4), 
+                  Text(price, style: const TextStyle(color: black,fontFamily: "MontserratRegular")),
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: onAdd,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.yellow,
-                foregroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: onAdd,
+                  style: ElevatedButton.styleFrom(
+                    padding:  EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    backgroundColor: yellow,
+                    foregroundColor: Colors.black,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child: const Text(
+                    "Tambah",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: white,
+                      fontFamily: "MontserratSemiBold",
+                    ),
+                  ),
                 ),
-              ),
-              child: const Text("Add"),
+              ],
             ),
           ],
         ),
