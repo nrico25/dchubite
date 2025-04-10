@@ -1,0 +1,2 @@
+D:/DCHUBITE/dchubite/android/app/.cxx/Debug/5823a6y6/x86_64/CMakeFiles/edit_cache.dir
+D:/DCHUBITE/dchubite/android/app/.cxx/Debug/5823a6y6/x86_64/CMakeFiles/rebuild_cache.dir
