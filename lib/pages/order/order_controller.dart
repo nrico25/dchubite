@@ -25,7 +25,7 @@ class OrderController extends GetxController {
     print("onInit() selesai");
   }
 
-  void fetchProducts() async {
+ Future<void>fetchProducts() async {
     try {
       String token =
           authController.token.value; // Ambil token dari AuthController
