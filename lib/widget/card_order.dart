@@ -32,6 +32,7 @@ class CardOrder extends StatelessWidget {
   final String category;
   final String price;
   final VoidCallback onAdd;
+  final VoidCallback onRemove; // ✅ tambahan
 
   CardOrder({
     super.key,
@@ -40,6 +41,7 @@ class CardOrder extends StatelessWidget {
     required this.category,
     required this.price,
     required this.onAdd,
+    required this.onRemove, // ✅ tambahan
   });
 
   final OrderCardController controller = Get.put(OrderCardController(), permanent: true);
@@ -135,7 +137,10 @@ class CardOrder extends StatelessWidget {
                       child: Row(
                         children: [
                           IconButton(
-                            onPressed: () => controller.decrement(imageUrl),
+                            onPressed: () {
+                              controller.decrement(imageUrl);
+                              onRemove(); // ✅ panggil decrease di cartController
+                            },
                             icon: Icon(Icons.remove, color: black),
                             style: IconButton.styleFrom(
                               backgroundColor: yellow,

@@ -24,23 +24,26 @@ class OrderController extends GetxController {
     fetchPendingOrders();
     print("onInit() selesai");
   }
+Future<void> fetchProducts() async {
+  try {
+    isLoading.value = true; 
 
- Future<void>fetchProducts() async {
-    try {
-      String token =
-          authController.token.value; // Ambil token dari AuthController
+    String token = authController.token.value; 
 
-      print("Fetching products...");
-      var fetchedProducts = await ProductService.fetchProducts(token);
-      print("Products fetched: ${fetchedProducts.length}");
-      products.assignAll(fetchedProducts);
-    } catch (e) {
-      print(e);
-      if (!Get.isSnackbarOpen) {
-        Get.snackbar("Error", "Gagal mengambil produk: $e");
-      }
+    print("Fetching products...");
+    var fetchedProducts = await ProductService.fetchProducts(token);
+    print("Products fetched: ${fetchedProducts.length}");
+
+    products.assignAll(fetchedProducts);
+  } catch (e) {
+    print(e);
+    if (!Get.isSnackbarOpen) {
+      Get.snackbar("Error", "Gagal mengambil produk: $e");
     }
+  } finally {
+    isLoading.value = false; // Sembunyikan shimmer setelah selesai
   }
+}
 
   void addProductToOrder(Product product) {
     var existing = selectedProducts
