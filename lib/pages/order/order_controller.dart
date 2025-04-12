@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/product_model.dart';
 import 'package:tadchubite/pages/manage%20menu/product_service.dart';
+import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_model.dart';
 import 'package:tadchubite/pages/order/order_service.dart';
 
@@ -12,9 +13,12 @@ class OrderController extends GetxController {
   var customerName = "".obs;
   var paymentMethod = "cash".obs;
   var isLoading = false.obs;
+  var paymentSucces = false.obs;
   var amountPaid = 0.obs;
 
   final AuthController authController = Get.find<AuthController>();
+  final CartController cartController = Get.find<CartController>();
+  
 
   @override
   void onInit() {
@@ -62,34 +66,49 @@ Future<void> fetchProducts() async {
   }
 
   Future<void> submitOrder() async {
-    if (customerName.value.isEmpty ||
-        selectedProducts.isEmpty ||
-        amountPaid.value <= 0) {
-      Get.snackbar("Error", "Data order belum lengkap");
-      return;
-    }
+  // Debugging untuk memeriksa nilai variabel sebelum submit
+  print("Customer Name: ${customerName.value}");
+  print("Selected Products: ${selectedProducts.length}");
+  print("Amount Paid: ${amountPaid.value}");
 
-    String token =
-        authController.token.value; // Ambil token dari AuthController
+  if (customerName.value.isEmpty ||
+      selectedProducts.isEmpty ||
+      amountPaid.value <= 0) {
+    Get.snackbar("Error", "Data order belum lengkap");
+    paymentSucces = false.obs;
+    return;
+  }
 
-    Order newOrder = Order(
-      customerName: customerName.value,
-      paymentMethod: paymentMethod.value,
-      amountPaid: amountPaid.value,
-      items: selectedProducts.toList(),
-    );
+  String token = authController.token.value; 
 
-    try {
-      var response = await OrderService.createOrder(token, newOrder);
-      Get.snackbar("Success",
-          "Order berhasil dibuat: ${response['order']['order_code']}");
-      selectedProducts.clear();
+  Order newOrder = Order(
+    customerName: customerName.value,
+    paymentMethod: paymentMethod.value,
+    amountPaid: amountPaid.value,
+    items: selectedProducts.toList(),
+  );
+
+  
+
+  try {
+  var response = await OrderService.createOrder(token, newOrder);
+  Get.snackbar("Success",
+      "Order berhasil dibuat: ${response['order']['order_code']}");
+
       customerName.value = "";
       amountPaid.value = 0;
-    } catch (e) {
-      Get.snackbar("Error", "$e");
-    }
-  }
+      paymentSucces = true.obs;
+
+  resetOrderData();
+  cartController.clearCart();
+
+  // ✅ (Opsional) Navigasi ke halaman lain
+  // Get.offAllNamed("/order-success");
+} catch (e) {
+  Get.snackbar("Error", "$e");
+  paymentSucces = false.obs;
+}
+}
 
   Future<void> fetchPendingOrders() async {
     try {
@@ -104,7 +123,12 @@ Future<void> fetchProducts() async {
     }
   }
 
-
+void resetOrderData() {
+  selectedProducts.clear();
+  customerName.value = "";
+  paymentMethod.value = "";
+  amountPaid.value = 0;
+}
 
   Future<void> completeOrder(int id) async {
     try {

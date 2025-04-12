@@ -66,9 +66,10 @@ class OrderPage extends StatelessWidget {
                                 'Rp ${order_product.price.toStringAsFixed(0)}',
                             onAdd: () {
                               cartController.addToCart(order_product);
+                              orderController.addProductToOrder(order_product);
                             },
                             onRemove: () {
-                                cartController.decreaseQuantity(order_product);
+                              cartController.decreaseQuantity(order_product);
                             },
                           );
                         },
@@ -89,6 +90,7 @@ class OrderPage extends StatelessWidget {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
+                
                 Get.toNamed('/cart');
               },
               style: ElevatedButton.styleFrom(

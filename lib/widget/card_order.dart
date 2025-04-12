@@ -7,6 +7,12 @@ import 'package:tadchubite/widget/text.dart';
 class OrderCardController extends GetxController {
   var quantities = <String, RxInt>{};
 
+  
+  void resetQuantities() {
+    quantities.forEach((key, value) {
+      value.value = 0;  
+    });
+  }
   void increment(String key) {
     if (!quantities.containsKey(key)) {
       quantities[key] = 1.obs;
