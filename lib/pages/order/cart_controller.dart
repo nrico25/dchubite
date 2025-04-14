@@ -62,6 +62,7 @@ import 'package:tadchubite/pages/order/order_model.dart';
 class CartController extends GetxController {
   var cartItems = <Product, int>{}.obs; // Simpan jumlah item per produk
   var totalPrice = 0.0.obs;
+  
   var totalItems = 0.obs;
 
   // Tambahkan produk ke keranjang

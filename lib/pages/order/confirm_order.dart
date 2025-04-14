@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
-import 'package:tadchubite/widget/card_order.dart'; // Pastikan sudah ada OrderController
+import 'package:tadchubite/widget/card_order.dart';
+import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/text.dart'; // Pastikan sudah ada OrderController
 
 class ConfirmOrderPage extends StatelessWidget {
   final OrderController orderController = Get.find<OrderController>();
@@ -26,8 +28,6 @@ class ConfirmOrderPage extends StatelessWidget {
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
             SizedBox(height: 10),
-
-            // Menampilkan daftar produk yang dipilih
             Expanded(
               child: Obx(() {
                 return ListView.builder(
@@ -36,18 +36,32 @@ class ConfirmOrderPage extends StatelessWidget {
                     final item = cartController.cartItems.keys.toList()[index];
                     final quantity = cartController.cartItems[item];
                     return ListTile(
-                      title: Text(item.name), // Nama produk
-                      subtitle: Text("Qty: $quantity"),
-                      trailing: Text(
-                          "Rp ${(item.price * quantity!).toStringAsFixed(0)}"),
+                      title: MyText(text: item.name, fontFamily: 'MontserratBold',fontSize: 20,), 
+                      subtitle:MyText(text:"Qty: $quantity",fontFamily: 'MontserratRegular', ),
+                      trailing: MyText(
+                          text: "Rp ${(item.price * quantity!).toStringAsFixed(0)}",fontFamily: 'MontserratSemiBold', fontSize: 18,color: lightBlue, ),
                     );
                   },
                 );
               }),
             ),
+            MyText(text: '---------------------------------------- +', fontSize: 30,),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end ,
+              children: [
+                Obx(() {
+                  double totalPrice = 0;
+                  for (var entry in cartController.cartItems.entries) {
+                    totalPrice += entry.key.price * entry.value;
+                  }
+                  return MyText(
+                    text: "Total Harga: Rp ${totalPrice.toStringAsFixed(0)}",fontFamily: 'MontserratRegular',
+                    
+                  );
+                }),
+              ],
+            ),
             SizedBox(height: 20),
-
-            // Form untuk memasukkan nama pelanggan
             TextField(
               controller: customerNameController,
               decoration: InputDecoration(
@@ -60,7 +74,6 @@ class ConfirmOrderPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            // Form untuk memasukkan metode pembayaran
             TextField(
               controller: paymentMethodController,
               decoration: InputDecoration(
@@ -73,7 +86,6 @@ class ConfirmOrderPage extends StatelessWidget {
             ),
             SizedBox(height: 20),
 
-            // Form untuk memasukkan jumlah uang yang dibayar
             TextField(
               controller: amountPaidController,
               keyboardType: TextInputType.number,
@@ -86,8 +98,6 @@ class ConfirmOrderPage extends StatelessWidget {
               },
             ),
             SizedBox(height: 20),
-
-            // Menampilkan total harga
             Obx(() {
               double totalPrice = 0;
               for (var entry in cartController.cartItems.entries) {
@@ -100,19 +110,15 @@ class ConfirmOrderPage extends StatelessWidget {
             }),
             SizedBox(height: 20),
 
-            // Tombol untuk mengonfirmasi pesanan
             ElevatedButton(
-              onPressed: () {
-                orderController.submitOrder();
-
-                // Reset data setelah konfirmasi
-
+              onPressed: () async{
+                bool success = await orderController.submitOrder();
                 if (orderController.paymentSucces.isTrue) {
                   customerNameController.text = "";
                   paymentMethodController.text = "";
                   amountPaidController.text = "";
                   orderController.resetOrderData();
-                  cartController.clearCart(); // Reset keranjang
+                  cartController.clearCart(); 
                   orderCardController.resetQuantities();
                 } else {
                   print("payment kurang");

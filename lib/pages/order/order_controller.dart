@@ -65,49 +65,33 @@ Future<void> fetchProducts() async {
     selectedProducts.remove(orderItem);
   }
 
-  Future<void> submitOrder() async {
-  // Debugging untuk memeriksa nilai variabel sebelum submit
-  print("Customer Name: ${customerName.value}");
-  print("Selected Products: ${selectedProducts.length}");
-  print("Amount Paid: ${amountPaid.value}");
-
+Future<bool> submitOrder() async {
   if (customerName.value.isEmpty ||
       selectedProducts.isEmpty ||
       amountPaid.value <= 0) {
     Get.snackbar("Error", "Data order belum lengkap");
-    paymentSucces = false.obs;
-    return;
+    paymentSucces.value = false;
+    return false;
   }
 
-  String token = authController.token.value; 
-
-  Order newOrder = Order(
-    customerName: customerName.value,
-    paymentMethod: paymentMethod.value,
-    amountPaid: amountPaid.value,
-    items: selectedProducts.toList(),
-  );
-
-  
-
   try {
-  var response = await OrderService.createOrder(token, newOrder);
-  Get.snackbar("Success",
-      "Order berhasil dibuat: ${response['order']['order_code']}");
+    String token = authController.token.value;
+    Order newOrder = Order(
+      customerName: customerName.value,
+      paymentMethod: paymentMethod.value,
+      amountPaid: amountPaid.value,
+      items: selectedProducts.toList(),
+    );
 
-      customerName.value = "";
-      amountPaid.value = 0;
-      paymentSucces = true.obs;
-
-  resetOrderData();
-  cartController.clearCart();
-
-  // ✅ (Opsional) Navigasi ke halaman lain
-  // Get.offAllNamed("/order-success");
-} catch (e) {
-  Get.snackbar("Error", "$e");
-  paymentSucces = false.obs;
-}
+    var response = await OrderService.createOrder(token, newOrder);
+    Get.snackbar("Success", "Order berhasil dibuat: ${response['order']['order_code']}");
+    paymentSucces.value = true;
+    return true;
+  } catch (e) {
+    Get.snackbar("Error", "$e");
+    paymentSucces.value = false;
+    return false;
+  }
 }
 
   Future<void> fetchPendingOrders() async {
@@ -144,4 +128,6 @@ void resetOrderData() {
       Get.snackbar('Error', 'Terjadi kesalahan: $e');
     }
   }
+
+  
 }

@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/confirm_order.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
+import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 
 class ReviewOrderPage extends StatelessWidget {
   final CartController cartController = Get.find<CartController>();
-
+  final OrderController orderController = Get.find<OrderController>();
   ReviewOrderPage({super.key});
 
   @override
@@ -26,13 +27,31 @@ class ReviewOrderPage extends StatelessWidget {
                 return ListView.builder(
                   itemCount: cartController.cartItems.length,
                   itemBuilder: (context, index) {
-                    final product = cartController.cartItems.keys.elementAt(index);
-                    final quantity = cartController.cartItems.values.elementAt(index);
-                    return ListTile(
-                      title: Text(product.name),
-                      subtitle: Text("Qty: $quantity"),
-                      trailing: Text("Rp ${(product.price * quantity).toStringAsFixed(0)}"),
+                    final product =
+                        cartController.cartItems.keys.elementAt(index);
+
+                    final quantity =
+                        cartController.cartItems.values.elementAt(index);
+                    return CardOrder(
+                      imageUrl: product.image.isNotEmpty
+                                ? product.image
+                                : 'assets/default_image.png',
+                      title: product.name,
+                      category: product.category,
+                      price: 'Rp ${product.price.toStringAsFixed(0)}',
+                      onAdd: () {
+                        cartController.addToCart(product);
+                        orderController.addProductToOrder(product);
+                      },
+                      onRemove: () {
+                        cartController.decreaseQuantity(product);
+                      },
                     );
+                    // ListTile(
+                    //   title: Text(product.name),
+                    //   subtitle: Text("Qty: $quantity"),
+                    //   trailing: Text("Rp ${(product.price * quantity).toStringAsFixed(0)}"),
+                    // );
                   },
                 );
               }),
@@ -43,7 +62,8 @@ class ReviewOrderPage extends StatelessWidget {
                 Get.to(() => ConfirmOrderPage());
               },
               style: ElevatedButton.styleFrom(backgroundColor: yellow),
-              child: Text("Lanjutkan ke Konfirmasi", style: TextStyle(color: Colors.black)),
+              child: Text("Lanjutkan ke Konfirmasi",
+                  style: TextStyle(color: Colors.black)),
             ),
           ],
         ),

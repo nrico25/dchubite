@@ -65,8 +65,8 @@ class OrderPage extends StatelessWidget {
                             price:
                                 'Rp ${order_product.price.toStringAsFixed(0)}',
                             onAdd: () {
-                              cartController.addToCart(order_product);
-                              orderController.addProductToOrder(order_product);
+                              cartController.addToCart(order_product); //UI
+                              orderController.addProductToOrder(order_product); //API
                             },
                             onRemove: () {
                               cartController.decreaseQuantity(order_product);
