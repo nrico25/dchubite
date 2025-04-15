@@ -6,6 +6,7 @@ import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/shimer_placeholder.dart';
+import 'package:tadchubite/widget/text.dart';
 
 class OrderPage extends StatelessWidget {
   OrderPage({super.key});
@@ -20,9 +21,26 @@ class OrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        surfaceTintColor: white,
+        title: MyText(
+          text: "Edit Menu",
+          fontFamily: "MontserratBold",
+          fontSize: 16,
+          color: black,
+        ),
+        centerTitle: true,
+        backgroundColor: white,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: black),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 30.0),
+          padding: EdgeInsets.symmetric(horizontal: 10.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -66,7 +84,8 @@ class OrderPage extends StatelessWidget {
                                 'Rp ${order_product.price.toStringAsFixed(0)}',
                             onAdd: () {
                               cartController.addToCart(order_product); //UI
-                              orderController.addProductToOrder(order_product); //API
+                              orderController
+                                  .addProductToOrder(order_product); //API
                             },
                             onRemove: () {
                               cartController.decreaseQuantity(order_product);
@@ -90,7 +109,6 @@ class OrderPage extends StatelessWidget {
             height: 60,
             child: ElevatedButton(
               onPressed: () {
-                
                 Get.toNamed('/cart');
               },
               style: ElevatedButton.styleFrom(

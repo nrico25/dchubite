@@ -4,6 +4,7 @@ import 'package:tadchubite/dashboard/dashboard.dart';
 import 'package:tadchubite/pages/login/login.dart';
 import 'package:tadchubite/pages/manage%20menu/add_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
+import 'package:tadchubite/pages/order/nota.dart';
 import 'package:tadchubite/pages/order/order.dart';
 import 'package:tadchubite/pages/order/order_cart.dart';
 
@@ -15,5 +16,6 @@ class AppPages {
     GetPage(name: '/addmenu', page: () => AddMenu(), binding: MyBindigs()),
     GetPage(name: '/cart', page: () => ReviewOrderPage(), binding: MyBindigs()),
     GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
+    GetPage(name: '/nota', page: () => NotaPage(order: Get.arguments),)
   ];
 }

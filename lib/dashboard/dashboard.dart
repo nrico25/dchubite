@@ -17,18 +17,18 @@ class DashboardPage extends StatelessWidget {
         Get.put(DashboardController());
 
     final List<Widget> menus = [
-      OrderPage(),
       ProductPage(),
+      OrderQueuePage()
     ];
 
     final List<String> titles = [
-      "Order Sek",
       "Manage Product",
+      "Order Queue"
     ];
 
     final List<IconData> icons = [
-      Icons.calendar_today,
       Icons.account_balance_wallet_rounded,
+      Icons.access_alarm,
     ];
 
     return Obx(() {
