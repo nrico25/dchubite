@@ -7,6 +7,7 @@ import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/nota.dart';
 import 'package:tadchubite/pages/order/order.dart';
 import 'package:tadchubite/pages/order/order_cart.dart';
+import 'package:tadchubite/pages/setting/printer_choice.dart';
 
 class AppPages {
   static final routes = [
@@ -16,7 +17,8 @@ class AppPages {
     GetPage(name: '/addmenu', page: () => AddMenu(), binding: MyBindigs()),
     GetPage(name: '/cart', page: () => ReviewOrderPage(), binding: MyBindigs()),
     GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
-    GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
+    GetPage(name: '/setting', page: () => PrinterChoice(), binding: MyBindigs()),
     GetPage(name: '/nota', page: () => NotaPage(order: Get.arguments),)
+    
   ];
 }

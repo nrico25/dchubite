@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tadchubite/widget/button.dart';
+import 'package:tadchubite/widget/color.dart';
 import 'printer_controller.dart';
 
 class PrinterPage extends StatelessWidget {
@@ -11,10 +13,6 @@ class PrinterPage extends StatelessWidget {
       appBar: AppBar(title: const Text("Printer Thermals")),
       body: Obx(() => Column(
             children: [
-              ElevatedButton(
-                onPressed: controller.scanDevices,
-                child: const Text("Scan Perangkat"),
-              ),
               Text(controller.message.value),
               Expanded(
                 child: ListView.builder(
@@ -25,7 +23,8 @@ class PrinterPage extends StatelessWidget {
                       title: Text(device.name ?? "Tidak diketahui"),
                       subtitle: Text(device.macAdress ?? "Tidak ada alamat"),
                       trailing: ElevatedButton(
-                        onPressed: () => controller.connectToPrinter(device.macAdress!),
+                        onPressed: () =>
+                            controller.connectToPrinter(device.macAdress!),
                         child: const Text("Connect"),
                       ),
                     );
@@ -35,12 +34,12 @@ class PrinterPage extends StatelessWidget {
               if (controller.isConnected.value)
                 ElevatedButton(
                   onPressed: controller.printReceipt,
-                  child: const Text("Print Struk"),
+                  child: Text("Print Struk"),
                 ),
               if (controller.isConnected.value)
                 TextButton(
                   onPressed: controller.disconnectPrinter,
-                  child: const Text("Disconnect"),
+                  child: Text("Disconnect"),
                 ),
             ],
           )),

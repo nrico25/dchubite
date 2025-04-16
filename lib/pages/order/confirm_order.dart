@@ -3,8 +3,9 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/manage%20menu/product_model.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
-import 'package:tadchubite/pages/order/printer_choice.dart';
+import 'package:tadchubite/pages/setting/printer_choice.dart';
 import 'package:tadchubite/pages/order/printer_controller.dart';
+import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart'; // Pastikan sudah ada OrderController
@@ -85,26 +86,34 @@ class ConfirmOrderPage extends StatelessWidget {
               controller: customerNameController,
               decoration: InputDecoration(
                 labelText: "Nama Pelanggan",
+                labelStyle: TextStyle(fontFamily: "MontserratRegular"),
                 border: OutlineInputBorder(),
-              ),
+              ), 
               onChanged: (value) {
                 orderController.customerName.value = value;
               },
             ),
             SizedBox(height: 20),
 
-            TextField(
-              controller: paymentMethodController,
-              decoration: InputDecoration(
-                labelText: "Metode Pembayaran",
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (value) {
-                orderController.paymentMethod.value = value;
-              },
-            ),
-            SizedBox(height: 20),
+            Obx(() {
+              return InkWell(
+                onTap: () => _showPaymentMethodPicker(context),
+                child: InputDecorator(
+                  decoration: InputDecoration(
+                    labelText: "Metode Pembayaran",
+                    border: OutlineInputBorder(),
+                  ),
+                  child: MyText(
+                    text: orderController.paymentMethod.value.isNotEmpty
+                        ? orderController.paymentMethod.value
+                        : "Pilih metode pembayaran",
+                    fontFamily: 'MontserratRegular',
+                  ),
+                ),
+              );
+            }),
 
+            SizedBox(height: 20),
             TextField(
               controller: amountPaidController,
               keyboardType: TextInputType.number,
@@ -128,12 +137,13 @@ class ConfirmOrderPage extends StatelessWidget {
               );
             }),
             SizedBox(height: 20),
-            ElevatedButton(
-                onPressed: () {
-                  Get.to(PrinterChoice());
-                },
-                child: Text("Milih sek")),
-            ElevatedButton(
+            // ElevatedButton(
+            //     onPressed: () {
+            //       Get.to(PrinterChoice());
+            //     },
+            //     child: Text("Milih sek")),
+            MyButton(
+              text: "Konfirmasi Pesanan",
               onPressed: () async {
                 bool success = await orderController.submitOrder();
                 if (orderController.paymentSucces.isTrue) {
@@ -151,7 +161,6 @@ class ConfirmOrderPage extends StatelessWidget {
                     Get.snackbar("Printer belum terhubung",
                         "Silakan hubungkan printer terlebih dahulu.");
                   }
-
                   customerNameController.text = "";
                   paymentMethodController.text = "";
                   amountPaidController.text = "";
@@ -162,13 +171,75 @@ class ConfirmOrderPage extends StatelessWidget {
                   print("payment kurang");
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.yellow),
-              child: Text("Konfirmasi Pesanan",
-                  style: TextStyle(color: Colors.black)),
-            ),
+              color: yellow,
+              height: 56,
+              elevation: 0,
+              borderRadius: 12,
+            )
           ],
         ),
       ),
     );
   }
+}
+
+void _showPaymentMethodPicker(BuildContext context) {
+  final OrderController orderController = Get.find<OrderController>();
+  final List<String> paymentMethods = ['cash', 'ewallet', 'bank_transfer'];
+  String? tempSelected = orderController.paymentMethod.value;
+
+  showModalBottomSheet(
+    context: context,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (BuildContext context) {
+      return StatefulBuilder(
+        builder: (context, setState) {
+          return Container(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ...paymentMethods.map((method) {
+                  return ListTile(
+                    title: Text(
+                      method,
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w500),
+                    ),
+                    trailing: Radio<String>(
+                      value: method,
+                      groupValue: tempSelected,
+                      onChanged: (value) {
+                        setState(() {
+                          tempSelected = value;
+                        });
+                      },
+                    ),
+                  );
+                }).toList(),
+                SizedBox(
+                  width: double.infinity,
+                  child: MyButton(
+                    text: 'Pilih Metode',
+                    onPressed: () {
+                      if (tempSelected != null) {
+                        orderController.paymentMethod.value = tempSelected!;
+                      }
+                      Get.back();
+                    },
+                    color: yellow,
+                    height: 56,
+                    elevation: 0,
+                    borderRadius: 12,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    },
+  );
 }
