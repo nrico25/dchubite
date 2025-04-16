@@ -4,6 +4,7 @@ import 'package:tadchubite/dashboard/controller.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/cust_queue.dart';
 import 'package:tadchubite/pages/order/order.dart';
+import 'package:tadchubite/pages/order/printer_page.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart';

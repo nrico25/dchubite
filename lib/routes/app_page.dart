@@ -16,6 +16,7 @@ class AppPages {
     GetPage(name: '/addmenu', page: () => AddMenu(), binding: MyBindigs()),
     GetPage(name: '/cart', page: () => ReviewOrderPage(), binding: MyBindigs()),
     GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
+    GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
     GetPage(name: '/nota', page: () => NotaPage(order: Get.arguments),)
   ];
 }

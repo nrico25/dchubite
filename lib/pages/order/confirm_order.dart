@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tadchubite/pages/manage%20menu/product_model.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
+import 'package:tadchubite/pages/order/printer_choice.dart';
+import 'package:tadchubite/pages/order/printer_controller.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart'; // Pastikan sudah ada OrderController
@@ -9,6 +12,7 @@ import 'package:tadchubite/widget/text.dart'; // Pastikan sudah ada OrderControl
 class ConfirmOrderPage extends StatelessWidget {
   final OrderController orderController = Get.find<OrderController>();
   final CartController cartController = Get.find<CartController>();
+  final PrinterController printerController = Get.find<PrinterController>();
   final TextEditingController customerNameController = TextEditingController();
   final TextEditingController paymentMethodController = TextEditingController();
   final TextEditingController amountPaidController = TextEditingController();
@@ -36,18 +40,33 @@ class ConfirmOrderPage extends StatelessWidget {
                     final item = cartController.cartItems.keys.toList()[index];
                     final quantity = cartController.cartItems[item];
                     return ListTile(
-                      title: MyText(text: item.name, fontFamily: 'MontserratBold',fontSize: 20,), 
-                      subtitle:MyText(text:"Qty: $quantity",fontFamily: 'MontserratRegular', ),
+                      title: MyText(
+                        text: item.name,
+                        fontFamily: 'MontserratBold',
+                        fontSize: 20,
+                      ),
+                      subtitle: MyText(
+                        text: "Qty: $quantity",
+                        fontFamily: 'MontserratRegular',
+                      ),
                       trailing: MyText(
-                          text: "Rp ${(item.price * quantity!).toStringAsFixed(0)}",fontFamily: 'MontserratSemiBold', fontSize: 18,color: lightBlue, ),
+                        text:
+                            "Rp ${(item.price * quantity!).toStringAsFixed(0)}",
+                        fontFamily: 'MontserratSemiBold',
+                        fontSize: 18,
+                        color: lightBlue,
+                      ),
                     );
                   },
                 );
               }),
             ),
-            MyText(text: '---------------------------------------- +', fontSize: 30,),
+            MyText(
+              text: '---------------------------------------- +',
+              fontSize: 30,
+            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end ,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Obx(() {
                   double totalPrice = 0;
@@ -55,8 +74,8 @@ class ConfirmOrderPage extends StatelessWidget {
                     totalPrice += entry.key.price * entry.value;
                   }
                   return MyText(
-                    text: "Total Harga: Rp ${totalPrice.toStringAsFixed(0)}",fontFamily: 'MontserratRegular',
-                    
+                    text: "Total Harga: Rp ${totalPrice.toStringAsFixed(0)}",
+                    fontFamily: 'MontserratRegular',
                   );
                 }),
               ],
@@ -109,16 +128,35 @@ class ConfirmOrderPage extends StatelessWidget {
               );
             }),
             SizedBox(height: 20),
-
             ElevatedButton(
-              onPressed: () async{
+                onPressed: () {
+                  Get.to(PrinterChoice());
+                },
+                child: Text("Milih sek")),
+            ElevatedButton(
+              onPressed: () async {
                 bool success = await orderController.submitOrder();
                 if (orderController.paymentSucces.isTrue) {
+                  final printer = Get.find<PrinterController>();
+
+                  if (printer.isConnected.isTrue) {
+                    await printer.printReceiptFromOrder(
+                      customerName: orderController.customerName.value,
+                      paymentMethod: orderController.paymentMethod.value,
+                      amountPaid: orderController.amountPaid.value,
+                      cartItems:
+                          Map<Product, int>.from(cartController.cartItems),
+                    );
+                  } else {
+                    Get.snackbar("Printer belum terhubung",
+                        "Silakan hubungkan printer terlebih dahulu.");
+                  }
+
                   customerNameController.text = "";
                   paymentMethodController.text = "";
                   amountPaidController.text = "";
                   orderController.resetOrderData();
-                  cartController.clearCart(); 
+                  cartController.clearCart();
                   orderCardController.resetQuantities();
                 } else {
                   print("payment kurang");
