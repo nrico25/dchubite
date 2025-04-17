@@ -63,7 +63,7 @@ class ReviewOrderPage extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(backgroundColor: yellow),
               child: Text("Lanjutkan ke Konfirmasi",
-                  style: TextStyle(color: Colors.black)),
+                  style: TextStyle(color: black)),
             ),
           ],
         ),

@@ -18,7 +18,7 @@ class AppPages {
     GetPage(name: '/cart', page: () => ReviewOrderPage(), binding: MyBindigs()),
     GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
     GetPage(name: '/setting', page: () => PrinterChoice(), binding: MyBindigs()),
-    GetPage(name: '/nota', page: () => ConfirmPage(order: Get.arguments),)
+    GetPage(name: '/nota', page: () => ConfirmPage(order: Get.arguments, ),)
     
   ];
 }
