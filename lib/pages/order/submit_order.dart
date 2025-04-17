@@ -10,7 +10,7 @@ import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart'; // Pastikan sudah ada OrderController
 
-class ConfirmOrderPage extends StatelessWidget {
+class SubmitOrderPage extends StatelessWidget {
   final OrderController orderController = Get.find<OrderController>();
   final CartController cartController = Get.find<CartController>();
   final PrinterController printerController = Get.find<PrinterController>();

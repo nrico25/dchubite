@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
-import 'package:tadchubite/pages/order/confirm_order.dart';
+import 'package:tadchubite/pages/order/submit_order.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -59,7 +59,7 @@ class ReviewOrderPage extends StatelessWidget {
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Get.to(() => ConfirmOrderPage());
+                Get.to(() => SubmitOrderPage());
               },
               style: ElevatedButton.styleFrom(backgroundColor: yellow),
               child: Text("Lanjutkan ke Konfirmasi",

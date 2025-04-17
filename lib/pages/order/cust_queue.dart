@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:tadchubite/pages/order/nota.dart';
+import 'package:tadchubite/pages/order/confirm.dart';
 import 'package:tadchubite/pages/order/order.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -37,7 +37,7 @@ class OrderQueuePage extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(16),
                 onTap: () {
-                  Get.to(() => NotaPage(order: order));
+                  Get.to(() => ConfirmPage(order: order));
                 },
                 child: Row(
                   children: [

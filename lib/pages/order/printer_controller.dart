@@ -92,11 +92,18 @@ class PrinterController extends GetxController {
     });
     double change = amountPaid - total;
 
-    bytes += generator.text('Dchubite Resto',
+    bytes += generator.text('Dchubite',
         styles: PosStyles(
             align: PosAlign.center, bold: true, height: PosTextSize.size2));
+    bytes += generator.text(
+        'Gg. 10, Kudus, Kaliputu, Kec. Kota Kudus, Kabupaten Kudus, Jawa Tengah 59312',
+        styles: PosStyles(align: PosAlign.center));
+    bytes += generator.text('No. Telp: 0895-4261-99199',
+        styles: PosStyles(align: PosAlign.center));
+    bytes += generator.text('--------------------------------',
+        styles: PosStyles(align: PosAlign.center));
     bytes += generator.feed(1);
-    bytes += generator.text('Nama: $customerName');
+    bytes += generator.text('Nama Customer: $customerName');
     bytes += generator.text('Pembayaran: $paymentMethod');
     bytes += generator.text('--------------------------------');
     cartItems.forEach((product, qty) {
@@ -106,10 +113,13 @@ class PrinterController extends GetxController {
     bytes += generator.text('--------------------------------');
     bytes += generator.text('Total       : Rp ${total.toStringAsFixed(0)}');
     bytes +=
-        generator.text('Dibayar     : Rp ${amountPaid.toStringAsFixed(0)}');
+        generator.text('Nominal     : Rp ${amountPaid.toStringAsFixed(0)}');
+    bytes += generator.text('------------------- -');
     bytes += generator.text('Kembalian   : Rp ${change.toStringAsFixed(0)}');
-    bytes += generator.feed(5);
+    bytes += generator.feed(2);
     bytes += generator.text('Terima kasih!',
+        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
+    bytes += generator.text('Silahkan datang kembali',
         styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
     bytes += generator.cut();
 
