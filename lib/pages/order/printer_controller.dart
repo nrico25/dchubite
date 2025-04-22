@@ -1,4 +1,9 @@
+import 'dart:typed_data';
+import 'dart:ui' as img;
+
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:image/image.dart' as img;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
@@ -91,6 +96,15 @@ class PrinterController extends GetxController {
       total += product.price * qty;
     });
     double change = amountPaid - total;
+    final ByteData data = await rootBundle.load('assets/dchubitelogo.png');
+    final Uint8List imageBytes = data.buffer.asUint8List();
+
+    // Decode gambar
+    final img.Image? image = img.decodeImage(imageBytes);
+    if (image != null) {
+      final resizedImage = img.copyResize(image, width: 250);
+      bytes += generator.image(resizedImage, align: PosAlign.center);
+    }
 
     bytes += generator.text('Dchubite',
         styles: PosStyles(
