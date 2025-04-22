@@ -88,7 +88,7 @@ class SubmitOrderPage extends StatelessWidget {
                 labelText: "Nama Pelanggan",
                 labelStyle: TextStyle(fontFamily: "MontserratRegular"),
                 border: OutlineInputBorder(),
-              ), 
+              ),
               onChanged: (value) {
                 orderController.customerName.value = value;
               },
@@ -137,30 +137,30 @@ class SubmitOrderPage extends StatelessWidget {
               );
             }),
             SizedBox(height: 20),
-            // ElevatedButton(
-            //     onPressed: () {
-            //       Get.to(PrinterChoice());
-            //     },
-            //     child: Text("Milih sek")),
+
             MyButton(
               text: "Konfirmasi Pesanan",
               onPressed: () async {
-                bool success = await orderController.submitOrder();
-                if (orderController.paymentSucces.isTrue) {
-                  final printer = Get.find<PrinterController>();
+                final printer = Get.find<PrinterController>();
 
-                  if (printer.isConnected.isTrue) {
-                    await printer.printReceiptFromOrder(
-                      customerName: orderController.customerName.value,
-                      paymentMethod: orderController.paymentMethod.value,
-                      amountPaid: orderController.amountPaid.value,
-                      cartItems:
-                          Map<Product, int>.from(cartController.cartItems),
-                    );
-                  } else {
-                    Get.snackbar("Printer belum terhubung",
-                        "Silakan hubungkan printer terlebih dahulu.");
-                  }
+                if (!printer.isConnected.value) {
+                  Get.snackbar("Printer belum terhubung",
+                      "Silakan hubungkan printer terlebih dahulu.");
+
+                   Get.toNamed('/setting');
+                  return; 
+                }
+
+                bool success = await orderController.submitOrder();
+
+                if (success && orderController.paymentSucces.isTrue) {
+                  await printer.printReceiptFromOrder(
+                    customerName: orderController.customerName.value,
+                    paymentMethod: orderController.paymentMethod.value,
+                    amountPaid: orderController.amountPaid.value,
+                    cartItems: Map<Product, int>.from(cartController.cartItems),
+                  );
+
                   customerNameController.text = "";
                   paymentMethodController.text = "";
                   amountPaidController.text = "";
@@ -175,7 +175,7 @@ class SubmitOrderPage extends StatelessWidget {
               height: 56,
               elevation: 0,
               borderRadius: 12,
-            )
+            ),
           ],
         ),
       ),
