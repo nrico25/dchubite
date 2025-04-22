@@ -114,6 +114,20 @@ void resetOrderData() {
   amountPaid.value = 0;
 }
 
+void decreaseProductQuantity(Product product) {
+  var existing = selectedProducts
+      .firstWhereOrNull((item) => item.productId == product.id);
+  if (existing != null) {
+    if (existing.quantity > 1) {
+      existing.quantity--;
+    } else {
+      selectedProducts.remove(existing);
+    }
+    selectedProducts.refresh();
+  }
+}
+
+
   Future<void> completeOrder(int id) async {
     try {
       String token = authController.token.value;

@@ -32,10 +32,11 @@ class ReviewOrderPage extends StatelessWidget {
 
                     final quantity =
                         cartController.cartItems.values.elementAt(index);
+                    final order_product = orderController.products[index];
                     return CardOrder(
                       imageUrl: product.image.isNotEmpty
-                                ? product.image
-                                : 'assets/default_image.png',
+                          ? product.image
+                          : 'assets/default_image.png',
                       title: product.name,
                       category: product.category,
                       price: 'Rp ${product.price.toStringAsFixed(0)}',
@@ -45,12 +46,10 @@ class ReviewOrderPage extends StatelessWidget {
                       },
                       onRemove: () {
                         cartController.decreaseQuantity(product);
+                        orderController.decreaseProductQuantity(product);
                       },
                     );
-                    // ListTile(
-                    //   title: Text(product.name),
-                    //   subtitle: Text("Qty: $quantity"),
-                    //   trailing: Text("Rp ${(product.price * quantity).toStringAsFixed(0)}"),
+
                     // );
                   },
                 );
