@@ -67,11 +67,11 @@ class PrinterController extends GetxController {
         styles: PosStyles(
             align: PosAlign.center, bold: true, height: PosTextSize.size2));
     bytes += generator.feed(1);
-    bytes += generator.text('Item A       Rp 10.000');
-    bytes += generator.text('Item B       Rp 5.000');
+    bytes += generator.text('Item A       Rp ${formatCurrency(10000)}');
+    bytes += generator.text('Item B       Rp ${formatCurrency(5000)}');
     bytes += generator.feed(1);
-    bytes +=
-        generator.text('TOTAL        Rp 15.000', styles: PosStyles(bold: true));
+    bytes += generator.text('TOTAL        Rp ${formatCurrency(15000)}',
+        styles: PosStyles(bold: true));
     bytes += generator.feed(2);
     bytes += generator.text('Terima kasih!',
         styles: PosStyles(align: PosAlign.center));
@@ -96,10 +96,11 @@ class PrinterController extends GetxController {
       total += product.price * qty;
     });
     double change = amountPaid - total;
+
     final ByteData data = await rootBundle.load('assets/dchubitelogo.png');
     final Uint8List imageBytes = data.buffer.asUint8List();
 
-    // Decode gambar
+    // Decode dan resize gambar
     final img.Image? image = img.decodeImage(imageBytes);
     if (image != null) {
       final resizedImage = img.copyResize(image, width: 250);
@@ -110,33 +111,40 @@ class PrinterController extends GetxController {
         styles: PosStyles(
             align: PosAlign.center, bold: true, height: PosTextSize.size2));
     bytes += generator.text(
-        'Gg. 10, Kudus, Kaliputu, Kec. Kota Kudus, Kabupaten Kudus, Jawa Tengah 59312',
+        'Gg. 10 Kaliputu, Kabupaten Kudus,',
         styles: PosStyles(align: PosAlign.center));
-    bytes += generator.text('No. Telp: 0895-4261-99199',
+    bytes += generator.text('No.Telp: 0895-4261-99199',
         styles: PosStyles(align: PosAlign.center));
     bytes += generator.text('--------------------------------',
         styles: PosStyles(align: PosAlign.center));
-    bytes += generator.feed(1);
     bytes += generator.text('Nama Customer: $customerName');
     bytes += generator.text('Pembayaran: $paymentMethod');
     bytes += generator.text('--------------------------------');
+
     cartItems.forEach((product, qty) {
-      bytes += generator.text('${product.name} x$qty'.padRight(20) +
-          'Rp ${(product.price * qty).toStringAsFixed(0)}');
+      final subtotal = product.price * qty;
+      bytes += generator.text(
+          '${'${product.name} x$qty'.padRight(20)}Rp ${formatCurrency(subtotal)}');
     });
+
     bytes += generator.text('--------------------------------');
-    bytes += generator.text('Total       : Rp ${total.toStringAsFixed(0)}');
-    bytes +=
-        generator.text('Nominal     : Rp ${amountPaid.toStringAsFixed(0)}');
-    bytes += generator.text('------------------- -');
-    bytes += generator.text('Kembalian   : Rp ${change.toStringAsFixed(0)}');
+    bytes += generator.text('Total       : Rp ${formatCurrency(total)}');
+    bytes += generator.text('Nominal     : Rp ${formatCurrency(amountPaid)}');
+    bytes += generator.text('------------------------------ -');
+    bytes += generator.text('Kembalian   : Rp ${formatCurrency(change)}');
     bytes += generator.feed(2);
     bytes += generator.text('Terima kasih!',
-        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
-    bytes += generator.text('Silahkan datang kembali',
         styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
     bytes += generator.cut();
 
     await PrintBluetoothThermal.writeBytes(bytes);
+  }
+
+  // Fungsi format angka dengan koma sebagai pemisah ribuan
+  String formatCurrency(num number) {
+    return number.toStringAsFixed(0).replaceAllMapped(
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+      (Match match) => '${match[1]},',
+    );
   }
 }
