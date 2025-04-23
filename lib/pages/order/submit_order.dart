@@ -5,6 +5,7 @@ import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/pages/setting/printer_choice.dart';
 import 'package:tadchubite/pages/order/printer_controller.dart';
+import 'package:tadchubite/utils/format_helper.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -21,17 +22,17 @@ class SubmitOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Konfirmasi Pesanan")),
+      appBar: AppBar(title: MyText( text: "Konfirmasi Pesanan", fontFamily: "MontserratSemiBold",)),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Ringkasan Pesanan
-            Text(
-              "Ringkasan Pesanan",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+            MyText(
+              text: "Ringkasan Pesanan",
+              fontFamily: 'MontserratBold',
+              fontSize: 20,),
             SizedBox(height: 10),
             Expanded(
               child: Obx(() {
@@ -47,15 +48,16 @@ class SubmitOrderPage extends StatelessWidget {
                         fontSize: 20,
                       ),
                       subtitle: MyText(
-                        text: "Qty: $quantity",
+                        text: "$quantity x",
                         fontFamily: 'MontserratRegular',
                       ),
                       trailing: MyText(
                         text:
-                            "Rp ${(item.price * quantity!).toStringAsFixed(0)}",
+                        "Rp ${(formatRupiah(item.price)* quantity!)}",
+                            // "Rp ${(item.price * quantity!).toStringAsFixed(0)}",
                         fontFamily: 'MontserratSemiBold',
                         fontSize: 18,
-                        color: lightBlue,
+                        color: darkBlue,
                       ),
                     );
                   },
@@ -63,20 +65,27 @@ class SubmitOrderPage extends StatelessWidget {
               }),
             ),
             MyText(
-              text: '---------------------------------------- +',
-              fontSize: 30,
+              text: '----------------------------------------------------------',
+              fontSize: 16,
+              fontFamily: 'MontserratRegular',
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                MyText(
+                  text: "Total:",
+                  fontFamily: 'MontserratBold',
+                  fontSize: 20,
+                ),
                 Obx(() {
                   double totalPrice = 0;
                   for (var entry in cartController.cartItems.entries) {
                     totalPrice += entry.key.price * entry.value;
                   }
                   return MyText(
-                    text: "Total Harga: Rp ${totalPrice.toStringAsFixed(0)}",
-                    fontFamily: 'MontserratRegular',
+                    text: "Rp. ${formatRupiah(totalPrice)}",
+                    fontFamily: 'MontserratBold',
+                    fontSize: 20,
                   );
                 }),
               ],
@@ -122,22 +131,19 @@ class SubmitOrderPage extends StatelessWidget {
                 border: OutlineInputBorder(),
               ),
               onChanged: (value) {
-                orderController.amountPaid.value = int.tryParse(value) ?? 0;
+                String cleanedValue = value.replaceAll(',', '');
+                int? parsedValue = int.tryParse(cleanedValue);
+                if (parsedValue != null) {
+                  String formattedValue = formatRupiah(parsedValue);
+                  amountPaidController.text = formattedValue;
+                  amountPaidController.selection = TextSelection.collapsed(
+                      offset: amountPaidController.text.length);
+                  orderController.amountPaid.value = parsedValue;
+                }
               },
             ),
-            SizedBox(height: 20),
-            Obx(() {
-              double totalPrice = 0;
-              for (var entry in cartController.cartItems.entries) {
-                totalPrice += entry.key.price * entry.value;
-              }
-              return Text(
-                "Total Harga: Rp ${totalPrice.toStringAsFixed(0)}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              );
-            }),
-            SizedBox(height: 20),
 
+            SizedBox(height: 20),
             MyButton(
               text: "Konfirmasi Pesanan",
               onPressed: () async {
@@ -147,8 +153,8 @@ class SubmitOrderPage extends StatelessWidget {
                   Get.snackbar("Printer belum terhubung",
                       "Silakan hubungkan printer terlebih dahulu.");
 
-                   Get.toNamed('/setting');
-                  return; 
+                  Get.toNamed('/setting');
+                  return;
                 }
 
                 bool success = await orderController.submitOrder();
@@ -167,6 +173,7 @@ class SubmitOrderPage extends StatelessWidget {
                   orderController.resetOrderData();
                   cartController.clearCart();
                   orderCardController.resetQuantities();
+                  Get.toNamed('/queue');
                 } else {
                   print("payment kurang");
                 }

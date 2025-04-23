@@ -5,6 +5,7 @@ import 'package:tadchubite/pages/login/login.dart';
 import 'package:tadchubite/pages/manage%20menu/add_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/confirm.dart';
+import 'package:tadchubite/pages/order/cust_queue.dart';
 import 'package:tadchubite/pages/order/order.dart';
 import 'package:tadchubite/pages/order/order_cart.dart';
 import 'package:tadchubite/pages/setting/printer_choice.dart';
@@ -18,7 +19,8 @@ class AppPages {
     GetPage(name: '/cart', page: () => ReviewOrderPage(), binding: MyBindigs()),
     GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
     GetPage(name: '/setting', page: () => PrinterChoice(), binding: MyBindigs()),
-    GetPage(name: '/nota', page: () => ConfirmPage(order: Get.arguments, ),)
+    GetPage(name: '/nota', page: () => ConfirmPage(order: Get.arguments, ),),
+    GetPage(name: '/queue', page: () => OrderQueuePage(), binding: MyBindigs())
     
   ];
 }

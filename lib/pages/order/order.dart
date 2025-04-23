@@ -3,13 +3,16 @@ import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
+import 'package:tadchubite/utils/format_helper.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/shimer_placeholder.dart';
 import 'package:tadchubite/widget/text.dart';
+import 'package:tadchubite/widget/textfield.dart';
 
 class OrderPage extends StatelessWidget {
   OrderPage({super.key});
+  final TextEditingController searchController = TextEditingController();
 
   final OrderController orderController = Get.put(OrderController());
   final CartController cartController = Get.put(CartController());
@@ -24,15 +27,14 @@ class OrderPage extends StatelessWidget {
       appBar: AppBar(
         surfaceTintColor: white,
         title: MyText(
-          text: "Edit Menu",
+          text: "List Menu",
           fontFamily: "MontserratBold",
-          fontSize: 16,
+          fontSize: 18,
           color: black,
         ),
         centerTitle: true,
-        backgroundColor: white,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: black),
+          icon: Icon(Icons.arrow_back, color: black),
           onPressed: () {
             Get.back();
           },
@@ -45,17 +47,24 @@ class OrderPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Padding(
-                padding: const EdgeInsets.all(12.0),
+                padding: EdgeInsets.all(12.0),
                 child: SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CategoryButton(label: "Makanan"),
-                      SizedBox(width: 8),
-                      CategoryButton(label: "Minuman"),
-                      SizedBox(width: 8),
-                      CategoryButton(label: "Snack"),
+                      CustomTextField(
+                        width: 363,
+                        controller: searchController,
+                        hintText: 'Cari menu disini',
+                        keyboardType: TextInputType.text,
+                        borderColor: Colors.grey.shade300,
+                        borderWidth: 1.0,
+                        fillColor: Colors.white,
+                        textColor: Colors.black,
+                        hintColor: Colors.grey,
+                        suffixIcon: Icons.search,
+                      ),
                     ],
                   ),
                 ),
@@ -80,8 +89,7 @@ class OrderPage extends StatelessWidget {
                                 : 'assets/default_image.png',
                             title: order_product.name,
                             category: order_product.category,
-                            price:
-                                'Rp ${order_product.price.toStringAsFixed(0)}',
+                            price: 'Rp ${formatRupiah(order_product.price)}',
                             onAdd: () {
                               cartController.addToCart(order_product); //UI
                               orderController
@@ -124,30 +132,27 @@ class OrderPage extends StatelessWidget {
                     children: [
                       Icon(Icons.shopping_cart, color: white),
                       SizedBox(width: 8),
-                      Text(
-                        "${cartController.totalItems.value} Item",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          fontSize: 16,
-                        ),
+                      MyText(
+                        text: "${cartController.totalItems.value} Item",
+                        fontFamily: 'MontserratSemiBold',
+                        fontSize: 16,
+                        color: white,
                       ),
                     ],
                   ),
-                  Text(
-                    "Rp ${cartController.totalPrice.value.toStringAsFixed(0)}",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                  MyText(
+                    text:
+                        "Rp. ${formatRupiah(cartController.totalPrice.value)}",
+                    fontFamily: 'MontserratSemiBold',
+                    fontSize: 16,
+                    color: white,
                   ),
                 ],
               ),
             ),
           );
         } else {
-          return SizedBox.shrink(); // Sembunyikan tombol jika tidak ada item
+          return SizedBox.shrink();
         }
       }),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/submit_order.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
+import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/text.dart';
 
 class ReviewOrderPage extends StatelessWidget {
   final CartController cartController = Get.find<CartController>();
@@ -14,7 +16,22 @@ class ReviewOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Review Order")),
+      appBar: AppBar(
+        surfaceTintColor: white,
+        title: MyText(
+          text: "Keranjang",
+          fontFamily: "MontserratBold",
+          fontSize: 18,
+          color: black,
+        ),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: black),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Column(
@@ -56,14 +73,10 @@ class ReviewOrderPage extends StatelessWidget {
               }),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Get.to(() => SubmitOrderPage());
-              },
-              style: ElevatedButton.styleFrom(backgroundColor: yellow),
-              child: Text("Lanjutkan ke Konfirmasi",
-                  style: TextStyle(color: black)),
-            ),
+            MyButton(text: "Lanjutkan Konfirmasi", onPressed: () {
+              Get.to(() => SubmitOrderPage());
+            }, color: yellow, height: 56, elevation: 0, borderRadius: 12),
+            
           ],
         ),
       ),
