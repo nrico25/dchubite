@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:tadchubite/pages/manage%20menu/edit_menu.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/shimer.dart';
 import 'package:tadchubite/widget/text.dart';

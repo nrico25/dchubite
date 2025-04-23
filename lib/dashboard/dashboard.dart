@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:tadchubite/dashboard/controller.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/cust_queue.dart';
+import 'package:tadchubite/pages/order/order.dart';
+import 'package:tadchubite/pages/order/printer_page.dart';
+import 'package:tadchubite/pages/setting/printer_choice.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart';
@@ -16,18 +19,17 @@ class DashboardPage extends StatelessWidget {
         Get.put(DashboardController());
 
     final List<Widget> menus = [
-      CustomerQueue(),
+      OrderQueuePage(),
       ProductPage(),
+      PrinterChoice(),
     ];
 
-    final List<String> titles = [
-      "Order Sek",
-      "Manage Product",
-    ];
+    final List<String> titles = ["Order Queue", "Manage Products", "Settings"];
 
     final List<IconData> icons = [
-      Icons.calendar_today,
+      Icons.access_alarm,
       Icons.account_balance_wallet_rounded,
+      Icons.settings,
     ];
 
     return Obx(() {
@@ -77,9 +79,9 @@ class DashboardPage extends StatelessWidget {
                       const CircleAvatar(
                         radius: 30,
                         backgroundImage: NetworkImage(
-                            "https://randomuser.me/api/portraits/men/1.jpg"), 
+                            "https://randomuser.me/api/portraits/men/1.jpg"),
                       ),
-                     SizedBox(height: 10),
+                      SizedBox(height: 10),
                       MyText(
                         text: "dchubite",
                         fontSize: 16,
@@ -109,21 +111,19 @@ class DashboardPage extends StatelessWidget {
                         },
                         child: Container(
                           color: isSelected ? lightBlue : Colors.transparent,
-                          padding:  EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                               vertical: 20, horizontal: 20),
                           child: Row(
                             children: [
                               Icon(
                                 icons[index],
-                                color:
-                                    isSelected ? white : lightBlue,
+                                color: isSelected ? white : lightBlue,
                               ),
                               const SizedBox(width: 10),
                               MyText(
                                 text: titles[index],
                                 fontSize: 14,
-                                color:
-                                    isSelected ? white : darkBlue,
+                                color: isSelected ? white : darkBlue,
                                 fontFamily: "MontserratSemiBold",
                               ),
                             ],
@@ -137,16 +137,14 @@ class DashboardPage extends StatelessWidget {
                 // Logout Button
                 Padding(
                   padding: const EdgeInsets.all(16.0),
-                   child: MyButton(
-                  text: 'Log Out',
-                  onPressed: () {
-                    
-                  },
-                  color: lightBlue,
-                  height: 40,
-                  elevation: 0,
-                  borderRadius: 12,
-                ),
+                  child: MyButton(
+                    text: 'Log Out',
+                    onPressed: () {},
+                    color: lightBlue,
+                    height: 40,
+                    elevation: 0,
+                    borderRadius: 12,
+                  ),
                   // ElevatedButton(
                   //   style: ElevatedButton.styleFrom(
                   //     backgroundColor: yellow,

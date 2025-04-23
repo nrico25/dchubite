@@ -39,6 +39,11 @@ dependencies:
   shared_preferences:
   image_picker:
   shimmer: ^2.0.0
+  print_bluetooth_thermal: 
+  esc_pos_utils_plus: 
+  permission_handler:
+  image:
+  intl:
 
 dev_dependencies:
   flutter_test:
