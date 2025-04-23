@@ -7,6 +7,7 @@ import 'package:image/image.dart' as img;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:tadchubite/pages/manage%20menu/product_model.dart';
 
 class PrinterController extends GetxController {
@@ -110,8 +111,7 @@ class PrinterController extends GetxController {
     bytes += generator.text('Dchubite',
         styles: PosStyles(
             align: PosAlign.center, bold: true, height: PosTextSize.size2));
-    bytes += generator.text(
-        'Gg. 10 Kaliputu, Kabupaten Kudus,',
+    bytes += generator.text('Gg. 10 Kaliputu, Kabupaten Kudus,',
         styles: PosStyles(align: PosAlign.center));
     bytes += generator.text('No.Telp: 0895-4261-99199',
         styles: PosStyles(align: PosAlign.center));
@@ -135,6 +135,13 @@ class PrinterController extends GetxController {
     bytes += generator.feed(2);
     bytes += generator.text('Terima kasih!',
         styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
+
+    // Tambahkan waktu cetak
+    final String now = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
+    bytes += generator.feed(1);
+    bytes += generator.text('$now',
+        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size1));
+
     bytes += generator.cut();
 
     await PrintBluetoothThermal.writeBytes(bytes);

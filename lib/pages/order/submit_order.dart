@@ -173,7 +173,7 @@ class SubmitOrderPage extends StatelessWidget {
                   orderController.resetOrderData();
                   cartController.clearCart();
                   orderCardController.resetQuantities();
-                  Get.toNamed('/queue');
+                  Get.toNamed('/dashboard');
                 } else {
                   print("payment kurang");
                 }
