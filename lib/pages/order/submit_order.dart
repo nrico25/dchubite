@@ -22,7 +22,11 @@ class SubmitOrderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: MyText( text: "Konfirmasi Pesanan", fontFamily: "MontserratSemiBold",)),
+      appBar: AppBar(
+          title: MyText(
+        text: "Konfirmasi Pesanan",
+        fontFamily: "MontserratSemiBold",
+      )),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -32,7 +36,8 @@ class SubmitOrderPage extends StatelessWidget {
             MyText(
               text: "Ringkasan Pesanan",
               fontFamily: 'MontserratBold',
-              fontSize: 20,),
+              fontSize: 20,
+            ),
             SizedBox(height: 10),
             Expanded(
               child: Obx(() {
@@ -52,9 +57,7 @@ class SubmitOrderPage extends StatelessWidget {
                         fontFamily: 'MontserratRegular',
                       ),
                       trailing: MyText(
-                        text:
-                        "Rp ${(formatRupiah(item.price)* quantity!)}",
-                            // "Rp ${(item.price * quantity!).toStringAsFixed(0)}",
+                        text: "Rp ${formatRupiah(item.price * quantity!)}",
                         fontFamily: 'MontserratSemiBold',
                         fontSize: 18,
                         color: darkBlue,
@@ -65,7 +68,8 @@ class SubmitOrderPage extends StatelessWidget {
               }),
             ),
             MyText(
-              text: '----------------------------------------------------------',
+              text:
+                  '----------------------------------------------------------',
               fontSize: 16,
               fontFamily: 'MontserratRegular',
             ),
