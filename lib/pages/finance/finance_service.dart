@@ -3,11 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:tadchubite/api_endpoint.dart';
 import 'package:tadchubite/pages/finance/finance_model.dart';
 
-
-
 class ReportService {
-
-
   static Future<List<FinanceGraph>> fetchMonthlyReport(String token) async {
     final response = await http.get(
       Uri.parse('${ApiEndpoint.baseUrl}/reports/monthly'),
@@ -36,7 +32,7 @@ class ReportService {
     }
   }
 
-    static Future<List<FinanceGraph>> fetchAllReport(String token) async {
+  static Future<List<FinanceGraph>> fetchAllReport(String token) async {
     final response = await http.get(
       Uri.parse('${ApiEndpoint.baseUrl}/reports/all'),
       headers: {'Authorization': 'Bearer $token'},
@@ -50,9 +46,11 @@ class ReportService {
     }
   }
 
-  static Future<CategoryReport> fetchCategoryReport(String token, int categoryId) async {
+  static Future<CategoryReport> fetchCategoryReport(
+      String token, int categoryId) async {
     final response = await http.get(
-      Uri.parse('${ApiEndpoint.baseUrl}/reports/category?category_id=$categoryId'),
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/reports/category?category_id=$categoryId'),
       headers: {'Authorization': 'Bearer $token'},
     );
 

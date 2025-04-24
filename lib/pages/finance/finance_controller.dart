@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/finance/finance_model.dart';
 import 'package:tadchubite/pages/finance/finance_service.dart';
@@ -47,4 +48,30 @@ class ReportController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  void getReportByDate(DateTime selectedDate) {
+  final reportsOnSelectedDate = allReports.where((report) =>
+      report.reportDate.year == selectedDate.year &&
+      report.reportDate.month == selectedDate.month &&
+      report.reportDate.day == selectedDate.day).toList();
+
+  if (reportsOnSelectedDate.isEmpty) {
+    Get.snackbar(
+      'Tidak Ada Penjualan',
+      'Tidak ditemukan data penjualan pada ${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
+      snackPosition: SnackPosition.BOTTOM,
+    );
+  } else {
+    Get.defaultDialog(
+      title: 'Laporan Tanggal ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: reportsOnSelectedDate.map((r) =>
+          Text('Pendapatan: ${r.totalRevenue}, Pengeluaran: ${r.totalCost}, Profit: ${r.totalProfit}')
+        ).toList(),
+      ),
+    );
+  }
+}
+
 }
