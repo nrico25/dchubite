@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/dashboard/controller.dart';
+import 'package:tadchubite/pages/finance/finance.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/cust_queue.dart';
 import 'package:tadchubite/pages/order/order.dart';
@@ -22,14 +23,16 @@ class DashboardPage extends StatelessWidget {
       OrderQueuePage(),
       ProductPage(),
       PrinterChoice(),
+      FinanceReportPage()
     ];
 
-    final List<String> titles = ["Order Queue", "Manage Products", "Settings"];
+    final List<String> titles = ["Order Queue", "Manage Products", "Settings", "Report"];
 
     final List<IconData> icons = [
       Icons.access_alarm,
       Icons.account_balance_wallet_rounded,
       Icons.settings,
+      Icons.bookmark
     ];
 
     return Obx(() {
