@@ -11,7 +11,7 @@ class FinanceGraph {
     required this.totalProfit,
   });
 
-   factory FinanceGraph.fromJson(Map<String, dynamic> json) {
+  factory FinanceGraph.fromJson(Map<String, dynamic> json) {
     return FinanceGraph(
       reportDate: DateTime.parse(json['report_date']),
       totalRevenue: json['total_revenue'],
@@ -40,6 +40,26 @@ class CategoryReport {
       totalRevenue: json['total_revenue'],
       totalCost: json['total_cost'],
       totalProfit: json['total_profit'],
+    );
+  }
+}
+
+class CategorySalesModel {
+  final int categoryId;
+  final String categoryName;
+  final int totalQuantitySold;
+
+  CategorySalesModel({
+    required this.categoryId,
+    required this.categoryName,
+    required this.totalQuantitySold,
+  });
+
+  factory CategorySalesModel.fromJson(Map<String, dynamic> json) {
+    return CategorySalesModel(
+      categoryId: json['category_id'],
+      categoryName: json['category_name'],
+      totalQuantitySold: json['total_quantity_sold'],
     );
   }
 }

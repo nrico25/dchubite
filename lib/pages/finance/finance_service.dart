@@ -60,4 +60,20 @@ class ReportService {
       throw Exception('Gagal mengambil laporan kategori');
     }
   }
+
+  Future<List<CategorySalesModel>> fetchSoldByCategory(
+      String date, String token) async {
+    final response = await http.get(
+      Uri.parse('${ApiEndpoint.baseUrl}/reports/sold-by-category'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> list = data['sold_by_category'];
+      return list.map((item) => CategorySalesModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
 }

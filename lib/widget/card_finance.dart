@@ -1,60 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:tadchubite/widget/color.dart';
 
 class CardFinance extends StatelessWidget {
   final String title;
-  final List<OmsetItem> items;
+  final double penjualanKotor;
+  final double modalAwal;
+  final double penjualanBersih;
+  final int produkTerjual;
 
-  const CardFinance({
+  final currencyFormatter =
+      NumberFormat.currency(locale: 'id_ID', symbol: 'IDR ', decimalDigits: 0);
+
+  CardFinance({
     Key? key,
     required this.title,
-    required this.items,
+    required this.penjualanKotor,
+    required this.modalAwal,
+    required this.penjualanBersih,
+    required this.produkTerjual,
+    required List items,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 20,
-              runSpacing: 20,
-              children: items.map((item) => _buildItem(item)).toList(),
-            ),
-          ],
-        ),
+    return Container(
+      
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: white,
+        borderRadius: BorderRadius.circular(12),
       ),
-    );
-  }
-
-  Widget _buildItem(OmsetItem item) {
-    return SizedBox(
-      width: 140,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            item.title,
+            "Omset $title",
             style: const TextStyle(
-              fontSize: 14,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1E293B),
+            ),
+          ),
+          SizedBox(height: 12),
+          Divider(height: 1, color: Color(0xFFE2E8F0)),
+          SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildItem(
+                  "Penjualan Kotor", currencyFormatter.format(penjualanKotor)),
+              _buildItem("Modal Awal", currencyFormatter.format(modalAwal)),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildItem("Produk Terjual", produkTerjual.toString()),
+              _buildItem("Penjualan Bersih",
+                  currencyFormatter.format(penjualanBersih)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildItem(String label, String value) {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
               color: Colors.grey,
             ),
           ),
           const SizedBox(height: 4),
           Text(
-            item.value,
+            value,
             style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.bold,
@@ -65,14 +93,4 @@ class CardFinance extends StatelessWidget {
       ),
     );
   }
-}
-
-class OmsetItem {
-  final String title;
-  final String value;
-
-  OmsetItem({
-    required this.title,
-    required this.value,
-  });
 }

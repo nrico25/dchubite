@@ -14,15 +14,19 @@ class ReportController extends GetxController {
   var snackReport = Rxn<CategoryReport>();
   var isLoading = false.obs;
 
+  final reportService = ReportService();
+  var categorySalesList = <CategorySalesModel>[].obs;
+
   final AuthController authController = Get.find<AuthController>();
 
   @override
   void onInit() {
     super.onInit();
     fetchAllReports();
+    loadSoldByCategory();
   }
 
-  void fetchAllReports() async {
+Future<void>fetchAllReports() async {
     isLoading.value = true;
     try {
       String token = authController.token.value;
@@ -44,6 +48,20 @@ class ReportController extends GetxController {
       snackReport.value = snack;
     } catch (e) {
       Get.snackbar("Error", "$e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
+  Future <void> loadSoldByCategory({String? date}) async {
+    try {
+      String token = authController.token.value;
+
+      isLoading.value = true;
+      final today = date ?? DateTime.now().toIso8601String().split('T').first;
+      final result = await reportService.fetchSoldByCategory(today, token);
+      categorySalesList.assignAll(result);
+    } catch (e) {
+      Get.snackbar('Error', 'Gagal memuat data: $e');
     } finally {
       isLoading.value = false;
     }
