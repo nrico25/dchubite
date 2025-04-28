@@ -39,7 +39,7 @@ class FinanceReportPage extends StatelessWidget {
                   fontSize: 20,
                   color: black,
                 ),
-                SizedBox(height: 16),
+                SizedBox(height: 12),
                 _buildWeeklyGraph(),
                 SizedBox(height: 16),
                 if (controller.foodReport.value != null)
@@ -59,7 +59,7 @@ class FinanceReportPage extends StatelessWidget {
                         0,
                     items: [],
                   ),
-                const SizedBox(height: 16),
+                 SizedBox(height: 12),
                 if (controller.drinkReport.value != null)
                   CardFinance(
                     title: "Minuman",
@@ -77,7 +77,7 @@ class FinanceReportPage extends StatelessWidget {
                         0,
                     items: [],
                   ),
-                const SizedBox(height: 16),
+                 SizedBox(height: 12),
                 if (controller.snackReport.value != null)
                   CardFinance(
                     title: "Snack",
@@ -104,50 +104,45 @@ class FinanceReportPage extends StatelessWidget {
   }
 
   Widget _buildWeeklyGraph() {
-    return SizedBox(
-      height: 200,
-      child: LineChart(
-        LineChartData(
-          gridData: FlGridData(show: true),
-          titlesData: FlTitlesData(
-            leftTitles: AxisTitles(
-              sideTitles: SideTitles(showTitles: false),
-            ),
-            bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                showTitles: true,
-                getTitlesWidget: (value, meta) {
-                  switch (value.toInt()) {
-                    case 0:
-                      return Text('Mon');
-                    case 1:
-                      return Text('Tue');
-                    case 2:
-                      return Text('Wed');
-                    case 3:
-                      return Text('Thu');
-                    case 4:
-                      return Text('Fri');
-                    case 5:
-                      return Text('Sat');
-                    case 6:
-                      return Text('Sun');
-                    default:
-                      return Text('');
-                  }
-                },
-              ),
+  return SizedBox(
+    height: 200,
+    child: LineChart(
+      LineChartData(
+        gridData: FlGridData(show: true),
+        titlesData: FlTitlesData(
+          leftTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          bottomTitles: AxisTitles(
+            sideTitles: SideTitles(
+              showTitles: true,
+              reservedSize: 30, 
+              getTitlesWidget: (value, meta) {
+                final date = _getDateForIndex(value.toInt());
+                return Text(
+                  DateFormat('E').format(date), 
+                  style: TextStyle(fontSize: 10),
+                );
+              },
             ),
           ),
-          borderData: FlBorderData(show: true),
-           lineTouchData: LineTouchData(
+          topTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+          rightTitles: AxisTitles(
+            sideTitles: SideTitles(showTitles: false),
+          ),
+        ),
+        borderData: FlBorderData(show: false),
+        lineTouchData: LineTouchData(
           touchTooltipData: LineTouchTooltipData(
             getTooltipItems: (List<LineBarSpot> touchedSpots) {
               return touchedSpots.map((spot) {
-                final formatted = NumberFormat.decimalPattern().format(spot.y);
+                final formatted =
+                    NumberFormat.decimalPattern().format(spot.y);
                 return LineTooltipItem(
-                  formatted,
-                   TextStyle(
+                  formatted, // Format angka dengan koma
+                  TextStyle(
                     color: yellow,
                     fontWeight: FontWeight.bold,
                   ),
@@ -156,32 +151,51 @@ class FinanceReportPage extends StatelessWidget {
             },
           ),
         ),
-          lineBarsData: [
-            LineChartBarData(
-              spots: _getWeeklyData(),
-              isCurved: true,
-              color: yellow,
-              barWidth: 4,
-              isStrokeCapRound: true,
-              belowBarData: BarAreaData(
-                show: true,
-                color: yellow.withOpacity(0.3),
-              ),
-              dotData: FlDotData(show: false),
+        lineBarsData: [
+          LineChartBarData(
+            spots: _getWeeklyData(),
+            isCurved: true,
+            color: yellow,
+            barWidth: 4,
+            isStrokeCapRound: true,
+            belowBarData: BarAreaData(
+              show: true,
+              color: yellow.withOpacity(0.3),
             ),
-          ],
-        ),
+            dotData: FlDotData(show: false),
+          ),
+        ],
       ),
-    );
-  }
-
-  List<FlSpot> _getWeeklyData() {
-    final weeklyData = controller.weeklyReports.map((report) {
-      return report.totalProfit.toDouble();
-    }).toList();
-    return List.generate(
-      weeklyData.length,
-      (index) => FlSpot(index.toDouble(), weeklyData[index].toDouble()),
-    );
-  }
+    ),
+  );
 }
+
+List<FlSpot> _getWeeklyData() {
+  // Data total profit untuk 7 hari terakhir
+  final today = DateTime.now();
+  final last7Days = List.generate(7, (index) {
+    final date = today.subtract(Duration(days: 6 - index)); // 7 hari ke belakang
+    final report = controller.weeklyReports.firstWhereOrNull(
+      (r) => isSameDate(r.reportDate, date),
+    );
+    return report?.totalProfit.toDouble() ?? 0.0; // Jika tidak ada data, gunakan 0
+  });
+
+  return List.generate(
+    last7Days.length,
+    (index) => FlSpot(index.toDouble(), last7Days[index]),
+  );
+}
+
+DateTime _getDateForIndex(int index) {
+  // Mendapatkan tanggal berdasarkan indeks (7 hari terakhir)
+  final today = DateTime.now();
+  return today.subtract(Duration(days: 6 - index));
+}
+
+bool isSameDate(DateTime date1, DateTime date2) {
+  // Membandingkan apakah dua tanggal sama (tanpa waktu)
+  return date1.year == date2.year &&
+      date1.month == date2.month &&
+      date1.day == date2.day;
+}}
