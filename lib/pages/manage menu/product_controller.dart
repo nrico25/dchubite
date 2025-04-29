@@ -7,6 +7,7 @@ import '../manage%20menu/product_model.dart';
 import '../manage%20menu/product_service.dart';
 
 class ProductController extends GetxController {
+ final TextEditingController searchController = TextEditingController();
   final Rxn<int> selectedCategory =
       Rxn<int>(); // Ubah ke integer untuk ID kategori
   final Rx<File?> selectedImage = Rx<File?>(null);
@@ -15,6 +16,7 @@ class ProductController extends GetxController {
   var isLoading = false.obs;
   final RxBool isImageLoading = false.obs;
   final AuthController authController = Get.find<AuthController>();
+  var filteredProducts = <Product>[].obs;
 
   final List<Map<String, dynamic>> categories = [
     {"id": 1, "name": "Makanan"},
@@ -57,8 +59,9 @@ class ProductController extends GetxController {
       var fetchedProducts =
           await ProductService.fetchProducts(authController.token.value);
       products.assignAll(fetchedProducts);
+      filteredProducts.assignAll(fetchedProducts);
       isProductsLoaded.value = true;
-       checkImageLoading();
+      checkImageLoading();
     } catch (e) {
       isProductsLoaded.value = false;
       Get.snackbar('Error', 'Gagal mengambil produk: $e');
@@ -99,15 +102,27 @@ class ProductController extends GetxController {
     }
   }
 
-  Future<void> deleteProduct(int id) async {
-    isLoading.value = true;
-    try {
-      await ProductService.deleteProduct(authController.token.value, id);
-      products.removeWhere((p) => p.id == id);
-    } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus produk: $e');
-    } finally {
-      isLoading.value = false;
-    }
+ Future<void> deleteProduct(int id) async {
+  isLoading.value = true;
+  try {
+
+    await ProductService.deleteProduct(authController.token.value, id);
+    products.removeWhere((p) => p.id == id);
+    searchProducts(searchController.text); 
+  } catch (e) {
+    Get.snackbar('Error', 'Gagal menghapus produk: $e');
+  } finally {
+    isLoading.value = false;
   }
+}
+
+ void searchProducts(String query) {
+  if (query.isEmpty) {
+    filteredProducts.assignAll(products);
+  } else {
+    filteredProducts.assignAll(products.where((product) {
+      return product.name.toLowerCase().contains(query.toLowerCase());
+    }).toList());
+  }
+}
 }

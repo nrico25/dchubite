@@ -13,22 +13,24 @@ class CustomTextField extends StatelessWidget {
   final Color textColor;
   final Color hintColor;
   final double width;
+  final Function(String)? onChanged;
 
-  const CustomTextField({
-    Key? key,
-    this.controller,
-    this.hintText,
-    this.obscureText = false,
-    this.keyboardType = TextInputType.text,
-    this.suffixIcon,
-    required this.borderColor,
-    required this.borderWidth,
-    this.borderRadius = 16,
-    required this.fillColor,
-    required this.textColor,
-    required this.hintColor,
-    required this.width
-  }) : super(key: key);
+  const CustomTextField(
+      {Key? key,
+      this.controller,
+      this.hintText,
+      this.obscureText = false,
+      this.keyboardType = TextInputType.text,
+      this.suffixIcon,
+      required this.borderColor,
+      required this.borderWidth,
+      this.borderRadius = 16,
+      required this.fillColor,
+      required this.textColor,
+      required this.hintColor,
+      required this.width,
+      this.onChanged})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +38,7 @@ class CustomTextField extends StatelessWidget {
       width: width,
       height: 53,
       child: TextField(
+        onChanged: onChanged,
         controller: controller,
         obscureText: obscureText,
         keyboardType: keyboardType,

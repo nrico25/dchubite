@@ -8,6 +8,8 @@ import 'package:tadchubite/pages/order/order_service.dart';
 
 class OrderController extends GetxController {
   var products = <Product>[].obs;
+  var filteredProducts = <Product>[].obs;
+  var allPendingOrders = <Order>[].obs;
   var selectedProducts = <OrderItem>[].obs;
   var pendingOrders = <Order>[].obs;
   var customerName = "".obs;
@@ -18,7 +20,6 @@ class OrderController extends GetxController {
 
   final AuthController authController = Get.find<AuthController>();
   final CartController cartController = Get.find<CartController>();
-  
 
   @override
   void onInit() {
@@ -28,26 +29,27 @@ class OrderController extends GetxController {
     fetchPendingOrders();
     print("onInit() selesai");
   }
-Future<void> fetchProducts() async {
-  try {
-    isLoading.value = true; 
 
-    String token = authController.token.value; 
+  Future<void> fetchProducts() async {
+    try {
+      isLoading.value = true;
 
-    print("Fetching products...");
-    var fetchedProducts = await ProductService.fetchProducts(token);
-    print("Products fetched: ${fetchedProducts.length}");
+      String token = authController.token.value;
 
-    products.assignAll(fetchedProducts);
-  } catch (e) {
-    print(e);
-    if (!Get.isSnackbarOpen) {
-      Get.snackbar("Error", "Gagal mengambil produk: $e");
+      print("Fetching products...");
+      var fetchedProducts = await ProductService.fetchProducts(token);
+      print("Products fetched: ${fetchedProducts.length}");
+      products.assignAll(fetchedProducts);
+      filteredProducts.assignAll(fetchedProducts);
+    } catch (e) {
+      print(e);
+      if (!Get.isSnackbarOpen) {
+        Get.snackbar("Error", "Gagal mengambil produk: $e");
+      }
+    } finally {
+      isLoading.value = false; // Sembunyikan shimmer setelah selesai
     }
-  } finally {
-    isLoading.value = false; // Sembunyikan shimmer setelah selesai
   }
-}
 
   void addProductToOrder(Product product) {
     var existing = selectedProducts
@@ -65,34 +67,35 @@ Future<void> fetchProducts() async {
     selectedProducts.remove(orderItem);
   }
 
-Future<bool> submitOrder() async {
-  if (customerName.value.isEmpty ||
-      selectedProducts.isEmpty ||
-      amountPaid.value <= 0) {
-    Get.snackbar("Error", "Data order belum lengkap");
-    paymentSucces.value = false;
-    return false;
-  }
+  Future<bool> submitOrder() async {
+    if (customerName.value.isEmpty ||
+        selectedProducts.isEmpty ||
+        amountPaid.value <= 0) {
+      Get.snackbar("Error", "Data order belum lengkap");
+      paymentSucces.value = false;
+      return false;
+    }
 
-  try {
-    String token = authController.token.value;
-    Order newOrder = Order(
-      customerName: customerName.value,
-      paymentMethod: paymentMethod.value,
-      amountPaid: amountPaid.value,
-      items: selectedProducts.toList(),
-    );
+    try {
+      String token = authController.token.value;
+      Order newOrder = Order(
+        customerName: customerName.value,
+        paymentMethod: paymentMethod.value,
+        amountPaid: amountPaid.value,
+        items: selectedProducts.toList(),
+      );
 
-    var response = await OrderService.createOrder(token, newOrder);
-    Get.snackbar("Success", "Order berhasil dibuat: ${response['order']['order_code']}");
-    paymentSucces.value = true;
-    return true;
-  } catch (e) {
-    Get.snackbar("Error", "$e");
-    paymentSucces.value = false;
-    return false;
+      var response = await OrderService.createOrder(token, newOrder);
+      Get.snackbar("Success",
+          "Order berhasil dibuat: ${response['order']['order_code']}");
+      paymentSucces.value = true;
+      return true;
+    } catch (e) {
+      Get.snackbar("Error", "$e");
+      paymentSucces.value = false;
+      return false;
+    }
   }
-}
 
   Future<void> fetchPendingOrders() async {
     try {
@@ -107,26 +110,25 @@ Future<bool> submitOrder() async {
     }
   }
 
-void resetOrderData() {
-  selectedProducts.clear();
-  customerName.value = "";
-  paymentMethod.value = "";
-  amountPaid.value = 0;
-}
-
-void decreaseProductQuantity(Product product) {
-  var existing = selectedProducts
-      .firstWhereOrNull((item) => item.productId == product.id);
-  if (existing != null) {
-    if (existing.quantity > 1) {
-      existing.quantity--;
-    } else {
-      selectedProducts.remove(existing);
-    }
-    selectedProducts.refresh();
+  void resetOrderData() {
+    selectedProducts.clear();
+    customerName.value = "";
+    paymentMethod.value = "";
+    amountPaid.value = 0;
   }
-}
 
+  void decreaseProductQuantity(Product product) {
+    var existing = selectedProducts
+        .firstWhereOrNull((item) => item.productId == product.id);
+    if (existing != null) {
+      if (existing.quantity > 1) {
+        existing.quantity--;
+      } else {
+        selectedProducts.remove(existing);
+      }
+      selectedProducts.refresh();
+    }
+  }
 
   Future<void> completeOrder(int id) async {
     try {
@@ -143,5 +145,37 @@ void decreaseProductQuantity(Product product) {
     }
   }
 
-  
+  void searchProducts(String query) {
+    if (query.isEmpty) {
+      filteredProducts.assignAll(products);
+    } else {
+      filteredProducts.assignAll(
+        products
+            .where((product) =>
+                product.name.toLowerCase().contains(query.toLowerCase()))
+            .toList(),
+      );
+    }
+  }
+
+  void resetSearch() {
+    filteredProducts.assignAll(products); 
+  }
+void searchOrders(String query) {
+  if (query.isEmpty) {
+
+    allPendingOrders.assignAll(pendingOrders);
+  } else {
+ 
+    allPendingOrders.assignAll(
+      pendingOrders.where((order) {
+        final customerNameMatch = order.customerName.toLowerCase().contains(query.toLowerCase());
+        final orderCodeMatch = order.orderCode?.toLowerCase().contains(query.toLowerCase()) ?? false;
+        return customerNameMatch || orderCodeMatch;
+      }).toList(),
+    );
+  }
+}
+
+
 }

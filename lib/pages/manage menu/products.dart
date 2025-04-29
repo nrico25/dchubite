@@ -20,9 +20,11 @@ class ProductPage extends StatelessWidget {
   final AuthController authController = Get.find();
 
   void DeleteConfirmation(BuildContext context, int productId) {
-      Get.defaultDialog(
-      title: "Konfirmasi Hapus",titleStyle: TextStyle(fontFamily: "MontserratSemiBold",color: darkBlue),
-      middleText: "Apakah Anda yakin ingin menghapus produk ini?",middleTextStyle: TextStyle(fontFamily: "MontserratRegular",color: black),
+    Get.defaultDialog(
+      title: "Konfirmasi Hapus",
+      titleStyle: TextStyle(fontFamily: "MontserratSemiBold", color: darkBlue),
+      middleText: "Apakah Anda yakin ingin menghapus produk ini?",
+      middleTextStyle: TextStyle(fontFamily: "MontserratRegular", color: black),
       radius: 10,
       actions: [
         TextButton(
@@ -39,7 +41,7 @@ class ProductPage extends StatelessWidget {
             Get.back();
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor:red,
+            backgroundColor: red,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
           ),
           child: Text("Hapus", style: TextStyle(color: white)),
@@ -47,6 +49,7 @@ class ProductPage extends StatelessWidget {
       ],
     );
   }
+
   Future<void> _refreshData() async {
     await productController.fetchProducts();
   }
@@ -74,7 +77,9 @@ class ProductPage extends StatelessWidget {
                     fillColor: Colors.white,
                     textColor: Colors.black,
                     hintColor: Colors.grey,
-                    suffixIcon: Icons.search,
+                    onChanged: (value) {
+                      productController.searchProducts(value);
+                    },
                   ),
                   MyButton(
                     text: 'Tambah Menu',
@@ -118,10 +123,11 @@ class ProductPage extends StatelessWidget {
                                   child: EmptyProductPage()),
                             )
                           : ListView.builder(
-                              itemCount: productController.products.length,
+                              itemCount:
+                                  productController.filteredProducts.length,
                               itemBuilder: (context, index) {
                                 final product =
-                                    productController.products[index];
+                                    productController.filteredProducts[index];
                                 return CardMenu(
                                   image: product.image.isNotEmpty
                                       ? product.image
