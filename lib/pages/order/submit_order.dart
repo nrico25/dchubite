@@ -9,6 +9,7 @@ import 'package:tadchubite/utils/format_helper.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/confirmation_message.dart';
 import 'package:tadchubite/widget/text.dart'; // Pastikan sudah ada OrderController
 
 class SubmitOrderPage extends StatelessWidget {
@@ -19,6 +20,52 @@ class SubmitOrderPage extends StatelessWidget {
   final TextEditingController paymentMethodController = TextEditingController();
   final TextEditingController amountPaidController = TextEditingController();
   final orderCardController = Get.find<OrderCardController>();
+
+  void SubmitConfirmation(BuildContext context) async {
+    final confirm = await ConfirmationMessage(
+      context: context,
+      title: "konfirmasi pesanan",
+      message: "Apakah anda yakin untuk konfirmasi pesanan?  ",
+      cancelText: "Tidak",
+      confirmText: "Ya",
+      cancelColor: Colors.red,
+      confirmColor: Colors.green,
+    );
+
+    if (confirm == true) {
+      final printer = Get.find<PrinterController>();
+
+      if (!printer.isConnected.value) {
+        Get.snackbar("Printer belum terhubung",
+            "Silakan hubungkan printer terlebih dahulu.");
+
+        Get.toNamed('/setting');
+        return;
+      }
+
+      bool success = await orderController.submitOrder();
+
+      if (success && orderController.paymentSucces.isTrue) {
+        await printer.printReceiptFromOrder(
+          customerName: orderController.customerName.value,
+          paymentMethod: orderController.paymentMethod.value,
+          amountPaid: orderController.amountPaid.value,
+          cartItems: Map<Product, int>.from(cartController.cartItems),
+        );
+
+        customerNameController.text = "";
+        paymentMethodController.text = "";
+        amountPaidController.text = "";
+        orderController.resetOrderData();
+        cartController.clearCart();
+        orderCardController.resetQuantities();
+        Get.toNamed('/dashboard');
+      } else {
+        print("payment kurang");
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,38 +197,7 @@ class SubmitOrderPage extends StatelessWidget {
             SizedBox(height: 20),
             MyButton(
               text: "Konfirmasi Pesanan",
-              onPressed: () async {
-                final printer = Get.find<PrinterController>();
-
-                if (!printer.isConnected.value) {
-                  Get.snackbar("Printer belum terhubung",
-                      "Silakan hubungkan printer terlebih dahulu.");
-
-                  Get.toNamed('/setting');
-                  return;
-                }
-
-                bool success = await orderController.submitOrder();
-
-                if (success && orderController.paymentSucces.isTrue) {
-                  await printer.printReceiptFromOrder(
-                    customerName: orderController.customerName.value,
-                    paymentMethod: orderController.paymentMethod.value,
-                    amountPaid: orderController.amountPaid.value,
-                    cartItems: Map<Product, int>.from(cartController.cartItems),
-                  );
-
-                  customerNameController.text = "";
-                  paymentMethodController.text = "";
-                  amountPaidController.text = "";
-                  orderController.resetOrderData();
-                  cartController.clearCart();
-                  orderCardController.resetQuantities();
-                  Get.toNamed('/dashboard');
-                } else {
-                  print("payment kurang");
-                }
-              },
+              onPressed: () async {},
               color: yellow,
               height: 56,
               elevation: 0,

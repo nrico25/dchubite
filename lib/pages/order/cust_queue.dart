@@ -22,7 +22,7 @@ class OrderQueuePage extends StatelessWidget {
               child: CustomTextField(
                 width: double.infinity,
                 controller: searchController,
-                hintText: 'Cari menu disini',
+                hintText: 'Cari antrian order disini',
                 keyboardType: TextInputType.text,
                 borderColor: Colors.grey.shade300,
                 borderWidth: 1.0,
@@ -52,10 +52,10 @@ class OrderQueuePage extends StatelessWidget {
                           )
                         : ListView.builder(
                             physics: const AlwaysScrollableScrollPhysics(),
-                            itemCount: controller.pendingOrders.length,
+                            itemCount: controller.allPendingOrders.length,
                             padding: const EdgeInsets.all(16),
                             itemBuilder: (context, index) {
-                              final order = controller.pendingOrders[index];
+                              final order = controller.allPendingOrders[index];
 
                               return Card(
                                 color: white,

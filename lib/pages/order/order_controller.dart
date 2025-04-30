@@ -103,6 +103,7 @@ class OrderController extends GetxController {
       String token = authController.token.value;
       final orders = await OrderService.getPendingOrders(token);
       pendingOrders.value = orders;
+      allPendingOrders.assignAll(orders);
     } catch (e) {
       Get.snackbar("Error", "Gagal mengambil order: $e");
     } finally {
@@ -137,6 +138,7 @@ class OrderController extends GetxController {
       if (success) {
         pendingOrders.removeWhere((order) => order.id == id);
         Get.snackbar('Success', 'Order marked as completed');
+        await fetchPendingOrders();
       } else {
         Get.snackbar('Error', 'Gagal menyelesaikan order');
       }
@@ -159,23 +161,24 @@ class OrderController extends GetxController {
   }
 
   void resetSearch() {
-    filteredProducts.assignAll(products); 
+    filteredProducts.assignAll(products);
   }
-void searchOrders(String query) {
-  if (query.isEmpty) {
 
-    allPendingOrders.assignAll(pendingOrders);
-  } else {
- 
-    allPendingOrders.assignAll(
-      pendingOrders.where((order) {
-        final customerNameMatch = order.customerName.toLowerCase().contains(query.toLowerCase());
-        final orderCodeMatch = order.orderCode?.toLowerCase().contains(query.toLowerCase()) ?? false;
-        return customerNameMatch || orderCodeMatch;
-      }).toList(),
-    );
+  void searchOrders(String query) {
+    if (query.isEmpty) {
+      allPendingOrders
+          .assignAll(pendingOrders); // <- kamu taruh hasil pencarian di sini
+    } else {
+      allPendingOrders.assignAll(
+        pendingOrders.where((order) {
+          final customerNameMatch =
+              order.customerName.toLowerCase().contains(query.toLowerCase());
+          final orderCodeMatch =
+              order.orderCode?.toLowerCase().contains(query.toLowerCase()) ??
+                  false;
+          return customerNameMatch || orderCodeMatch;
+        }).toList(),
+      );
+    }
   }
-}
-
-
 }

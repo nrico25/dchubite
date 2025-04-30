@@ -3,25 +3,45 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/pages/order/order_model.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/confirmation_message.dart';
 import 'package:tadchubite/widget/text.dart';
 
 class ConfirmPage extends StatelessWidget {
   final Order order;
   final OrderController controller = Get.find<OrderController>();
 
-  ConfirmPage({super.key, required this.order,});
+  void SubmitConfirmation(BuildContext context) async {
+    final confirm = await ConfirmationMessage(
+      context: context,
+      title: "Selesaikan order",
+      message: "Apakah Anda yakin ingin menyelesaikan order ini? ",
+      cancelText: "Tidak",
+      confirmText: "Ya",
+      cancelColor: Colors.red,
+      confirmColor: Colors.green,
+    );
+
+    if (confirm == true) {
+      controller.completeOrder(order.id!);
+      Get.back();
+    }
+  }
+
+  ConfirmPage({
+    super.key,
+    required this.order,
+  });
 
   @override
   Widget build(BuildContext context) {
     int subtotal = order.totalPrice ?? 0;
 
-
     return Scaffold(
       backgroundColor: backgorund,
       appBar: AppBar(
         leading: BackButton(),
-        title:
-            Text("Detail Pesanan", style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text("Detail Pesanan",
+            style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: white,
         foregroundColor: black,
@@ -64,7 +84,6 @@ class ConfirmPage extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-          
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -86,24 +105,27 @@ class ConfirmPage extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: yellow,
-                  padding: EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: () {
-                  controller.completeOrder(order.id!);
-                },
-                child: MyText(text: "Konfirmasi pesanan",fontFamily: 'MontserratBold', color: white, )
-              ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: yellow,
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12)),
+                  ),
+                  onPressed: () {
+                    SubmitConfirmation(context);
+                    controller.fetchPendingOrders();
+                  },
+                  child: MyText(
+                    text: "Konfirmasi pesanan",
+                    fontFamily: 'MontserratBold',
+                    color: white,
+                  )),
             ),
           ],
         ),
       ),
     );
   }
-
 
   // Widget reusable info row
   Widget _rowInfo(String label, String value, {bool isBold = false}) {

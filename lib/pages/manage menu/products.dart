@@ -9,6 +9,7 @@ import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_menu.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/confirmation_message.dart';
 import 'package:tadchubite/widget/shimer_placeholder.dart';
 import 'package:tadchubite/widget/textfield.dart';
 
@@ -19,35 +20,20 @@ class ProductPage extends StatelessWidget {
   final TextEditingController searchController = TextEditingController();
   final AuthController authController = Get.find();
 
-  void DeleteConfirmation(BuildContext context, int productId) {
-    Get.defaultDialog(
+  void DeleteConfirmation(BuildContext context, int productId) async {
+    final confirm = await ConfirmationMessage(
+      context: context,
       title: "Konfirmasi Hapus",
-      titleStyle: TextStyle(fontFamily: "MontserratSemiBold", color: darkBlue),
-      middleText: "Apakah Anda yakin ingin menghapus produk ini?",
-      middleTextStyle: TextStyle(fontFamily: "MontserratRegular", color: black),
-      radius: 10,
-      actions: [
-        TextButton(
-          onPressed: () => Get.back(),
-          style: TextButton.styleFrom(
-            backgroundColor: green,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          ),
-          child: Text("Batal", style: TextStyle(color: white)),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            productController.deleteProduct(productId);
-            Get.back();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: red,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          ),
-          child: Text("Hapus", style: TextStyle(color: white)),
-        ),
-      ],
+      message: "Apakah Anda yakin ingin menghapus produk ini?",
+      cancelText: "Tidak",
+      confirmText: "Ya",
+      cancelColor: Colors.red,
+      confirmColor: Colors.green,
     );
+
+    if (confirm == true) {
+      productController.deleteProduct(productId);
+    }
   }
 
   Future<void> _refreshData() async {
@@ -68,7 +54,7 @@ class ProductPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomTextField(
-                    width: 200,
+                    width: 250,
                     controller: searchController,
                     hintText: 'Cari menu disini',
                     keyboardType: TextInputType.text,
