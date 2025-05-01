@@ -7,7 +7,7 @@ import '../manage%20menu/product_model.dart';
 import '../manage%20menu/product_service.dart';
 
 class ProductController extends GetxController {
- final TextEditingController searchController = TextEditingController();
+  final TextEditingController searchController = TextEditingController();
   final Rxn<int> selectedCategory =
       Rxn<int>(); // Ubah ke integer untuk ID kategori
   final Rx<File?> selectedImage = Rx<File?>(null);
@@ -77,6 +77,8 @@ class ProductController extends GetxController {
       Product newProduct = await ProductService.createProduct(
           authController.token.value, product, imageFile);
       products.add(newProduct);
+
+      searchProducts(searchController.text);
     } catch (e) {
       Get.snackbar('Error', 'Gagal menambahkan produk: $e');
       print(e);
@@ -93,6 +95,9 @@ class ProductController extends GetxController {
       int index = products.indexWhere((p) => p.id == id);
       if (index != -1) {
         products[index] = updatedProduct;
+        products.refresh();
+
+        searchProducts(searchController.text);
       }
       Get.back();
     } catch (e) {
@@ -102,27 +107,26 @@ class ProductController extends GetxController {
     }
   }
 
- Future<void> deleteProduct(int id) async {
-  isLoading.value = true;
-  try {
-
-    await ProductService.deleteProduct(authController.token.value, id);
-    products.removeWhere((p) => p.id == id);
-    searchProducts(searchController.text); 
-  } catch (e) {
-    Get.snackbar('Error', 'Gagal menghapus produk: $e');
-  } finally {
-    isLoading.value = false;
+  Future<void> deleteProduct(int id) async {
+    isLoading.value = true;
+    try {
+      await ProductService.deleteProduct(authController.token.value, id);
+      products.removeWhere((p) => p.id == id);
+      searchProducts(searchController.text);
+    } catch (e) {
+      Get.snackbar('Error', 'Gagal menghapus produk: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
-}
 
- void searchProducts(String query) {
-  if (query.isEmpty) {
-    filteredProducts.assignAll(products);
-  } else {
-    filteredProducts.assignAll(products.where((product) {
-      return product.name.toLowerCase().contains(query.toLowerCase());
-    }).toList());
+  void searchProducts(String query) {
+    if (query.isEmpty) {
+      filteredProducts.assignAll(products);
+    } else {
+      filteredProducts.assignAll(products.where((product) {
+        return product.name.toLowerCase().contains(query.toLowerCase());
+      }).toList());
+    }
   }
-}
 }
