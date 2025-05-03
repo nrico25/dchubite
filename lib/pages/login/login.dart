@@ -66,7 +66,22 @@ class Login extends StatelessWidget {
                   textColor: black,
                   hintColor: grey,
                 ),
-                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                        onPressed: () {
+                          Get.offAllNamed('/otp');
+                        },
+                        child: MyText(
+                          text: "Lupa password?",
+                          fontFamily: "MontserratBold",
+                          fontSize: 16,
+                          color: black,
+                        )),
+                  ],
+                ),
+                SizedBox(height: 10),
                 MyButton(
                   text: 'Login',
                   onPressed: () {

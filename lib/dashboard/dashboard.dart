@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/dashboard/controller.dart';
 import 'package:tadchubite/pages/finance/finance.dart';
+import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/cust_queue.dart';
 import 'package:tadchubite/pages/order/order.dart';
@@ -18,6 +19,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final DashboardController dashboardController =
         Get.put(DashboardController());
+    final AuthController authController = Get.find();
 
     final List<Widget> menus = [
       OrderQueuePage(),
@@ -26,7 +28,12 @@ class DashboardPage extends StatelessWidget {
       FinanceReportPage()
     ];
 
-    final List<String> titles = ["Order Queue", "Manage Products", "Settings", "Report"];
+    final List<String> titles = [
+      "Order Queue",
+      "Manage Products",
+      "Settings",
+      "Report"
+    ];
 
     final List<IconData> icons = [
       Icons.access_alarm,
@@ -142,7 +149,9 @@ class DashboardPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: MyButton(
                     text: 'Log Out',
-                    onPressed: () {},
+                    onPressed: () async {
+                      await authController.logout(); // Panggil metode logout
+                    },
                     color: lightBlue,
                     height: 40,
                     elevation: 0,

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:tadchubite/bindings/binding.dart';
 import 'package:tadchubite/dashboard/dashboard.dart';
 import 'package:tadchubite/pages/login/login.dart';
+import 'package:tadchubite/pages/login/otp.dart' show ResetPasswordPage;
 import 'package:tadchubite/pages/manage%20menu/add_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/confirm.dart';
@@ -20,7 +21,8 @@ class AppPages {
     GetPage(name: '/order', page: () => OrderPage(), binding: MyBindigs()),
     GetPage(name: '/setting', page: () => PrinterChoice(), binding: MyBindigs()),
     GetPage(name: '/nota', page: () => ConfirmPage(order: Get.arguments, ),),
-    GetPage(name: '/queue', page: () => OrderQueuePage(), binding: MyBindigs())
+    GetPage(name: '/queue', page: () => OrderQueuePage(), binding: MyBindigs()),
+    GetPage(name: '/otp', page: () => ResetPasswordPage(), binding: MyBindigs())
     
   ];
 }

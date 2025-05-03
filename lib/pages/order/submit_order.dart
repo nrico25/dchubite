@@ -197,7 +197,9 @@ class SubmitOrderPage extends StatelessWidget {
             SizedBox(height: 20),
             MyButton(
               text: "Konfirmasi Pesanan",
-              onPressed: () async {},
+              onPressed: () {
+                SubmitConfirmation(context);
+              },
               color: yellow,
               height: 56,
               elevation: 0,
