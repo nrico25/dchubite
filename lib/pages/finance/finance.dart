@@ -59,7 +59,7 @@ class FinanceReportPage extends StatelessWidget {
                         0,
                     items: [],
                   ),
-                 SizedBox(height: 12),
+                SizedBox(height: 12),
                 if (controller.drinkReport.value != null)
                   CardFinance(
                     title: "Minuman",
@@ -77,7 +77,7 @@ class FinanceReportPage extends StatelessWidget {
                         0,
                     items: [],
                   ),
-                 SizedBox(height: 12),
+                SizedBox(height: 12),
                 if (controller.snackReport.value != null)
                   CardFinance(
                     title: "Snack",
@@ -104,98 +104,102 @@ class FinanceReportPage extends StatelessWidget {
   }
 
   Widget _buildWeeklyGraph() {
-  return SizedBox(
-    height: 200,
-    child: LineChart(
-      LineChartData(
-        gridData: FlGridData(show: true),
-        titlesData: FlTitlesData(
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
+    return SizedBox(
+      height: 200,
+      child: LineChart(
+        LineChartData(
+          gridData: FlGridData(show: true),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 30,
+                interval: 1,
+                getTitlesWidget: (value, meta) {
+                  final index = value.toInt();
+                  if (index < 0 || index > 6) return const SizedBox.shrink();
+                  final date = _getDateForIndex(index);
+                  return Text(
+                    DateFormat('E').format(date),
+                    style: const TextStyle(fontSize: 10),
+                  );
+                },
+              ),
+            ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
           ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 30, 
-              getTitlesWidget: (value, meta) {
-                final date = _getDateForIndex(value.toInt());
-                return Text(
-                  DateFormat('E').format(date), 
-                  style: TextStyle(fontSize: 10),
-                );
+          borderData: FlBorderData(show: false),
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                return touchedSpots.map((spot) {
+                  final formatted =
+                      NumberFormat.decimalPattern().format(spot.y);
+                  return LineTooltipItem(
+                    'Rp. $formatted', 
+                    TextStyle(
+                      color: yellow,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }).toList();
               },
             ),
           ),
-          topTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-        ),
-        borderData: FlBorderData(show: false),
-        lineTouchData: LineTouchData(
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipItems: (List<LineBarSpot> touchedSpots) {
-              return touchedSpots.map((spot) {
-                final formatted =
-                    NumberFormat.decimalPattern().format(spot.y);
-                return LineTooltipItem(
-                  formatted, // Format angka dengan koma
-                  TextStyle(
-                    color: yellow,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              }).toList();
-            },
-          ),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: _getWeeklyData(),
-            isCurved: true,
-            color: yellow,
-            barWidth: 4,
-            isStrokeCapRound: true,
-            belowBarData: BarAreaData(
-              show: true,
-              color: yellow.withOpacity(0.3),
+          lineBarsData: [
+            LineChartBarData(
+              spots: _getWeeklyData(),
+              isCurved: true,
+              color: yellow,
+              barWidth: 4,
+              isStrokeCapRound: true,
+              belowBarData: BarAreaData(
+                show: true,
+                color: yellow.withOpacity(0.3),
+              ),
+              dotData: FlDotData(show: false),
             ),
-            dotData: FlDotData(show: false),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
-List<FlSpot> _getWeeklyData() {
-  // Data total profit untuk 7 hari terakhir
-  final today = DateTime.now();
-  final last7Days = List.generate(7, (index) {
-    final date = today.subtract(Duration(days: 6 - index)); // 7 hari ke belakang
-    final report = controller.weeklyReports.firstWhereOrNull(
-      (r) => isSameDate(r.reportDate, date),
     );
-    return report?.totalProfit.toDouble() ?? 0.0; // Jika tidak ada data, gunakan 0
-  });
+  }
 
-  return List.generate(
-    last7Days.length,
-    (index) => FlSpot(index.toDouble(), last7Days[index]),
-  );
+  List<FlSpot> _getWeeklyData() {
+    // Data total profit untuk 7 hari terakhir
+    final today = DateTime.now();
+    final last7Days = List.generate(7, (index) {
+      final date =
+          today.subtract(Duration(days: 6 - index)); // 7 hari ke belakang
+      final report = controller.weeklyReports.firstWhereOrNull(
+        (r) => isSameDate(r.reportDate, date),
+      );
+      return report?.totalProfit.toDouble() ??
+          0.0; // Jika tidak ada data, gunakan 0
+    });
+
+    return List.generate(
+      last7Days.length,
+      (index) => FlSpot(index.toDouble(), last7Days[index]),
+    );
+  }
+
+  DateTime _getDateForIndex(int index) {
+    final today = DateTime.now();
+    return today.subtract(Duration(days: 6 - index));
+  }
+
+  bool isSameDate(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
 }
-
-DateTime _getDateForIndex(int index) {
-  // Mendapatkan tanggal berdasarkan indeks (7 hari terakhir)
-  final today = DateTime.now();
-  return today.subtract(Duration(days: 6 - index));
-}
-
-bool isSameDate(DateTime date1, DateTime date2) {
-  // Membandingkan apakah dua tanggal sama (tanpa waktu)
-  return date1.year == date2.year &&
-      date1.month == date2.month &&
-      date1.day == date2.day;
-}}

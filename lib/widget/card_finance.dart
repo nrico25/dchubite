@@ -10,7 +10,7 @@ class CardFinance extends StatelessWidget {
   final int produkTerjual;
 
   final currencyFormatter =
-      NumberFormat.currency(locale: 'id_ID', symbol: 'IDR ', decimalDigits: 0);
+    NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ', decimalDigits: 0);
 
   CardFinance({
     Key? key,

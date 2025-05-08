@@ -21,13 +21,13 @@ class ResetPasswordPage extends StatelessWidget {
         decoration: BoxDecoration(color:grey),
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
+            padding:  EdgeInsets.symmetric(horizontal: 30),
             child: Card(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20)),
               elevation: 8,
               child: Padding(
-                padding: const EdgeInsets.all(25),
+                padding:  EdgeInsets.all(25),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

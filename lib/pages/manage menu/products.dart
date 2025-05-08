@@ -42,6 +42,8 @@ class ProductPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: white,
       body: SafeArea(
@@ -54,7 +56,7 @@ class ProductPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomTextField(
-                    width: 250,
+                    width: screenWidth * 0.5,
                     controller: searchController,
                     hintText: 'Cari menu disini',
                     keyboardType: TextInputType.text,
