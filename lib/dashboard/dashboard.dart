@@ -19,27 +19,28 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final DashboardController dashboardController =
         Get.put(DashboardController());
-    final AuthController authController = Get.find();
+    final AuthController authController =
+        Get.put(AuthController());
 
     final List<Widget> menus = [
+      FinanceReportPage(),
       OrderQueuePage(),
       ProductPage(),
       PrinterChoice(),
-      FinanceReportPage()
     ];
 
     final List<String> titles = [
+      "Dashboard",
       "Order Queue",
       "Manage Products",
       "Settings",
-      "Report"
     ];
 
     final List<IconData> icons = [
-      Icons.access_alarm,
-      Icons.account_balance_wallet_rounded,
-      Icons.settings,
-      Icons.bookmark
+      Icons.home_filled,
+      Icons.query_builder,
+      Icons.inventory_2,
+      Icons.settings
     ];
 
     return Obx(() {
@@ -120,20 +121,20 @@ class DashboardPage extends StatelessWidget {
                           Navigator.pop(context);
                         },
                         child: Container(
-                          color: isSelected ? lightBlue : Colors.transparent,
+                          color: isSelected ? yellow : Colors.transparent,
                           padding: EdgeInsets.symmetric(
                               vertical: 20, horizontal: 20),
                           child: Row(
                             children: [
                               Icon(
                                 icons[index],
-                                color: isSelected ? white : lightBlue,
+                                color: isSelected ? darkBlue : black,
                               ),
                               const SizedBox(width: 10),
                               MyText(
                                 text: titles[index],
                                 fontSize: 14,
-                                color: isSelected ? white : darkBlue,
+                                color: isSelected ? darkBlue : black,
                                 fontFamily: "MontserratSemiBold",
                               ),
                             ],
@@ -149,13 +150,13 @@ class DashboardPage extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: MyButton(
                     text: 'Log Out',
-                    onPressed: () async {
-                      await authController.logout(); // Panggil metode logout
+                    onPressed: () {
+                      authController.logout();
                     },
-                    color: lightBlue,
+                    color: darkBlue,
                     height: 40,
                     elevation: 0,
-                    borderRadius: 12,
+                    borderRadius: 10,
                   ),
                   // ElevatedButton(
                   //   style: ElevatedButton.styleFrom(
