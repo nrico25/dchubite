@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/finance/finance_model.dart';
@@ -16,6 +17,7 @@ class ReportController extends GetxController {
 
   final reportService = ReportService();
   var categorySalesList = <CategorySalesModel>[].obs;
+   var selectedRange = Rx<DateTimeRange?>(null);
 
   final AuthController authController = Get.find<AuthController>();
 
@@ -26,7 +28,7 @@ class ReportController extends GetxController {
     loadSoldByCategory();
   }
 
-Future<void>fetchAllReports() async {
+  Future<void> fetchAllReports() async {
     isLoading.value = true;
     try {
       String token = authController.token.value;
@@ -52,7 +54,8 @@ Future<void>fetchAllReports() async {
       isLoading.value = false;
     }
   }
-  Future <void> loadSoldByCategory({String? date}) async {
+
+  Future<void> loadSoldByCategory({String? date}) async {
     try {
       String token = authController.token.value;
 
@@ -68,28 +71,57 @@ Future<void>fetchAllReports() async {
   }
 
   void getReportByDate(DateTime selectedDate) {
-  final reportsOnSelectedDate = allReports.where((report) =>
-      report.reportDate.year == selectedDate.year &&
-      report.reportDate.month == selectedDate.month &&
-      report.reportDate.day == selectedDate.day).toList();
+    final reportsOnSelectedDate = allReports
+        .where((report) =>
+            report.reportDate.year == selectedDate.year &&
+            report.reportDate.month == selectedDate.month &&
+            report.reportDate.day == selectedDate.day)
+        .toList();
 
-  if (reportsOnSelectedDate.isEmpty) {
-    Get.snackbar(
-      'Tidak Ada Penjualan',
-      'Tidak ditemukan data penjualan pada ${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
-      snackPosition: SnackPosition.BOTTOM,
-    );
-  } else {
-    Get.defaultDialog(
-      title: 'Laporan Tanggal ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: reportsOnSelectedDate.map((r) =>
-          Text('Pendapatan: ${r.totalRevenue}, Pengeluaran: ${r.totalCost}, Profit: ${r.totalProfit}')
-        ).toList(),
-      ),
-    );
+    if (reportsOnSelectedDate.isEmpty) {
+      Get.snackbar(
+        'Tidak Ada Penjualan',
+        'Tidak ditemukan data penjualan pada ${selectedDate.day}-${selectedDate.month}-${selectedDate.year}',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    } else {
+      Get.defaultDialog(
+        title:
+            'Laporan Tanggal ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',
+        content: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: reportsOnSelectedDate
+              .map((r) => Text(
+                  'Pendapatan: ${r.totalRevenue}, Pengeluaran: ${r.totalCost}, Profit: ${r.totalProfit}'))
+              .toList(),
+        ),
+      );
+    }
   }
-}
 
+  void getCategoryReportByDate(String date) async {
+    isLoading.value = true;
+
+    try {
+      final token = authController.token.value;
+      final food =
+          await ReportService.fetchCategoryReportByDate(token, 1, date);
+      final drink =
+          await ReportService.fetchCategoryReportByDate(token, 2, date);
+      final snack =
+          await ReportService.fetchCategoryReportByDate(token, 3, date);
+      foodReport.value = food;
+      drinkReport.value = drink;
+      snackReport.value = snack;
+
+      await loadSoldByCategory(date: date);
+
+      Get.snackbar(
+          "Berhasil", "Data laporan berdasarkan tanggal berhasil dimuat.");
+    } catch (e) {
+      Get.snackbar("Error", "Gagal mengambil laporan berdasarkan tanggal: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

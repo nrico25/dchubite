@@ -9,8 +9,16 @@ import 'package:tadchubite/widget/text.dart';
 
 class FinanceReportPage extends StatelessWidget {
   final controller = Get.put(ReportController());
+  final Rx<DateTimeRange?> selectedRange = Rx<DateTimeRange?>(null);
+  final RxString formattedDate = ''.obs;
 
-  FinanceReportPage({super.key});
+  FinanceReportPage({super.key}) {
+    // Set default ke hari ini
+    final now = DateTime.now();
+    formattedDate.value = DateFormat('yyyy-MM-dd').format(now);
+    controller.getCategoryReportByDate(formattedDate.value); // Fetch langsung
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -25,23 +33,65 @@ class FinanceReportPage extends StatelessWidget {
           onRefresh: () async {
             await controller.fetchAllReports();
             await controller.loadSoldByCategory();
+            selectedRange.value = null;
+            formattedDate.value = '';
           },
           child: SingleChildScrollView(
-            physics: AlwaysScrollableScrollPhysics(),
-            padding: EdgeInsets.all(16),
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 MyText(
                   text: "Statistik Penjualan",
                   fontFamily: "MontserratBold",
                   fontSize: 20,
                   color: black,
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    MyText(
+                      text: "Laporan per Tanggal",
+                      fontFamily: "MontserratBold",
+                      fontSize: 16,
+                      color: black,
+                    ),
+                    IconButton(
+                      onPressed: () async {
+                        final selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2024),
+                          lastDate: DateTime.now(),
+                        );
+
+                        if (selectedDate != null) {
+                          formattedDate.value = selectedDate.toIso8601String().split('T').first;
+                          controller.getCategoryReportByDate(formattedDate.value);
+                        }
+                      },
+                      icon: Icon(Icons.calendar_today, color: yellow),
+                      tooltip: "Pilih Tanggal",
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
                 _buildWeeklyGraph(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
+                Obx(() => formattedDate.value.isNotEmpty
+                    ? MyText(
+                        text: formattedDate.value,
+                        fontFamily: "MontserratBold",
+                        fontSize: 16,
+                        color: black,
+                      )
+                    : const SizedBox.shrink()),
+                const SizedBox(height: 12),
+
+                // Card Makanan
                 if (controller.foodReport.value != null)
                   CardFinance(
                     title: "Makanan",
@@ -52,14 +102,16 @@ class FinanceReportPage extends StatelessWidget {
                     penjualanBersih:
                         controller.foodReport.value!.totalProfit.toDouble(),
                     produkTerjual: controller.categorySalesList
-                            .firstWhereOrNull(
-                              (e) => e.categoryId == 1,
-                            )
+                            .firstWhereOrNull((e) => e.categoryId == 1)
                             ?.totalQuantitySold ??
                         0,
                     items: [],
+                    reportDate: selectedRange.value?.start,
                   ),
-                SizedBox(height: 12),
+
+                const SizedBox(height: 12),
+
+                // Card Minuman
                 if (controller.drinkReport.value != null)
                   CardFinance(
                     title: "Minuman",
@@ -70,14 +122,15 @@ class FinanceReportPage extends StatelessWidget {
                     penjualanBersih:
                         controller.drinkReport.value!.totalProfit.toDouble(),
                     produkTerjual: controller.categorySalesList
-                            .firstWhereOrNull(
-                              (e) => e.categoryId == 2,
-                            )
+                            .firstWhereOrNull((e) => e.categoryId == 2)
                             ?.totalQuantitySold ??
                         0,
                     items: [],
                   ),
-                SizedBox(height: 12),
+
+                const SizedBox(height: 12),
+
+                // Card Snack
                 if (controller.snackReport.value != null)
                   CardFinance(
                     title: "Snack",
@@ -88,9 +141,7 @@ class FinanceReportPage extends StatelessWidget {
                     penjualanBersih:
                         controller.snackReport.value!.totalProfit.toDouble(),
                     produkTerjual: controller.categorySalesList
-                            .firstWhereOrNull(
-                              (e) => e.categoryId == 3,
-                            )
+                            .firstWhereOrNull((e) => e.categoryId == 3)
                             ?.totalQuantitySold ??
                         0,
                     items: [],
@@ -144,7 +195,7 @@ class FinanceReportPage extends StatelessWidget {
                   final formatted =
                       NumberFormat.decimalPattern().format(spot.y);
                   return LineTooltipItem(
-                    'Rp. $formatted', 
+                    'Rp. $formatted',
                     TextStyle(
                       color: yellow,
                       fontWeight: FontWeight.bold,
@@ -174,16 +225,13 @@ class FinanceReportPage extends StatelessWidget {
   }
 
   List<FlSpot> _getWeeklyData() {
-    // Data total profit untuk 7 hari terakhir
     final today = DateTime.now();
     final last7Days = List.generate(7, (index) {
-      final date =
-          today.subtract(Duration(days: 6 - index)); // 7 hari ke belakang
+      final date = today.subtract(Duration(days: 6 - index));
       final report = controller.weeklyReports.firstWhereOrNull(
         (r) => isSameDate(r.reportDate, date),
       );
-      return report?.totalProfit.toDouble() ??
-          0.0; // Jika tidak ada data, gunakan 0
+      return report?.totalProfit.toDouble() ?? 0.0;
     });
 
     return List.generate(

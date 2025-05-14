@@ -76,4 +76,19 @@ class ReportService {
       throw Exception('Failed to load data');
     }
   }
+
+  static Future<CategoryReport> fetchCategoryReportByDate(
+      String token, int categoryId, String date) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/reports/category-by-date?category_id=$categoryId&date=$date'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return CategoryReport.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Gagal mengambil laporan kategori berdasarkan tanggal');
+    }
+  }
 }
