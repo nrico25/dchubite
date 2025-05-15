@@ -10,7 +10,7 @@ import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/confirmation_message.dart';
-import 'package:tadchubite/widget/text.dart'; // Pastikan sudah ada OrderController
+import 'package:tadchubite/widget/text.dart'; 
 
 class SubmitOrderPage extends StatelessWidget {
   final OrderController orderController = Get.find<OrderController>();
@@ -60,6 +60,7 @@ class SubmitOrderPage extends StatelessWidget {
         cartController.clearCart();
         orderCardController.resetQuantities();
         Get.toNamed('/dashboard');
+        orderController.fetchPendingOrders();
       } else {
         print("payment kurang");
       }

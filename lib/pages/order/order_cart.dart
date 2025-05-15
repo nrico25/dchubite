@@ -73,8 +73,8 @@ class ReviewOrderPage extends StatelessWidget {
               }),
             ),
             SizedBox(height: 20),
-            MyButton(text: "Lanjutkan Konfirmasi", onPressed: () {
-              Get.to(() => SubmitOrderPage());
+            MyButton(text: "Lanjutkan Konfirmasi", onPressed: () async {
+              await Get.to(() => SubmitOrderPage());
             }, color: yellow, height: 56, elevation: 0, borderRadius: 12),
             
           ],

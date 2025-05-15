@@ -64,7 +64,7 @@ class ProductController extends GetxController {
       checkImageLoading();
     } catch (e) {
       isProductsLoaded.value = false;
-      Get.snackbar('Error', 'Gagal mengambil produk: $e');
+      print('Gagal mengambil produk: $e');
     } finally {
       isLoading.value = false;
     }

@@ -31,7 +31,7 @@ class OrderQueuePage extends StatelessWidget {
                 hintColor: Colors.grey,
                 suffixIcon: Icons.search,
                 onChanged: (value) {
-                  controller.searchOrders(value); 
+                  controller.searchOrders(value);
                 },
               ),
             ),
@@ -47,7 +47,8 @@ class OrderQueuePage extends StatelessWidget {
                             physics: const AlwaysScrollableScrollPhysics(),
                             children: const [
                               SizedBox(height: 200),
-                              Center(child: Text('Tidak ada order yang pending')),
+                              Center(
+                                  child: Text('Tidak ada order yang pending')),
                             ],
                           )
                         : ListView.builder(
@@ -65,8 +66,12 @@ class OrderQueuePage extends StatelessWidget {
                                 margin: const EdgeInsets.only(bottom: 16),
                                 child: InkWell(
                                   borderRadius: BorderRadius.circular(16),
-                                  onTap: () {
-                                    Get.to(() => ConfirmPage(order: order));
+                                  onTap: () async {
+                                    final result = await Get.to(
+                                        () => ConfirmPage(order: order));
+                                    if (result == true) {
+                                      await controller.fetchPendingOrders();
+                                    }
                                   },
                                   child: Row(
                                     children: [
@@ -86,7 +91,8 @@ class OrderQueuePage extends StatelessWidget {
                                           padding: const EdgeInsets.symmetric(
                                               horizontal: 16, vertical: 12),
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 order.customerName,
@@ -97,7 +103,8 @@ class OrderQueuePage extends StatelessWidget {
                                                 ),
                                               ),
                                               const SizedBox(height: 8),
-                                              MyText(text: order.orderCode ?? ""),
+                                              MyText(
+                                                  text: order.orderCode ?? ""),
                                             ],
                                           ),
                                         ),
@@ -115,8 +122,11 @@ class OrderQueuePage extends StatelessWidget {
       }),
       floatingActionButton: FloatingActionButton(
         backgroundColor: yellow,
-        onPressed: () {
-          Get.toNamed('/order');
+        onPressed: () async {
+          final result = await Get.toNamed('/order'); // halaman submit
+          if (result == true) {
+            await controller.fetchPendingOrders();
+          }
         },
         child: Icon(Icons.add, color: white),
       ),

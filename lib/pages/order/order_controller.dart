@@ -5,6 +5,7 @@ import 'package:tadchubite/pages/manage%20menu/product_service.dart';
 import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_model.dart';
 import 'package:tadchubite/pages/order/order_service.dart';
+import 'package:tadchubite/widget/color.dart';
 
 class OrderController extends GetxController {
   var products = <Product>[].obs;
@@ -44,7 +45,7 @@ class OrderController extends GetxController {
     } catch (e) {
       print(e);
       if (!Get.isSnackbarOpen) {
-        Get.snackbar("Error", "Gagal mengambil produk: $e");
+        print("Gagal mengambil produk: $e");
       }
     } finally {
       isLoading.value = false; // Sembunyikan shimmer setelah selesai
@@ -105,7 +106,7 @@ class OrderController extends GetxController {
       pendingOrders.value = orders;
       allPendingOrders.assignAll(orders);
     } catch (e) {
-      Get.snackbar("Error", "Gagal mengambil order: $e");
+      print("Gagal mengambil order: $e");
     } finally {
       isLoading.value = false;
     }
@@ -137,10 +138,10 @@ class OrderController extends GetxController {
       bool success = await OrderService.markOrderAsSuccess(id, token);
       if (success) {
         pendingOrders.removeWhere((order) => order.id == id);
-        Get.snackbar('Success', 'Order marked as completed');
+        Get.snackbar('Success', 'Order marked as completed',colorText: white,backgroundColor: yellow);
         await fetchPendingOrders();
       } else {
-        Get.snackbar('Error', 'Gagal menyelesaikan order');
+        Get.snackbar('Error', 'Gagal menyelesaikan order',colorText: white,backgroundColor: yellow);
       }
     } catch (e) {
       Get.snackbar('Error', 'Terjadi kesalahan: $e');
