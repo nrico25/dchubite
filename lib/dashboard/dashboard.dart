@@ -87,12 +87,6 @@ class DashboardPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const CircleAvatar(
-                        radius: 30,
-                        backgroundImage: NetworkImage(
-                            "https://randomuser.me/api/portraits/men/1.jpg"),
-                      ),
-                      SizedBox(height: 10),
                       MyText(
                         text: "dchubite",
                         fontSize: 16,

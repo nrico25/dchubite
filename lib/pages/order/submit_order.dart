@@ -10,7 +10,7 @@ import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/confirmation_message.dart';
-import 'package:tadchubite/widget/text.dart'; 
+import 'package:tadchubite/widget/text.dart';
 
 class SubmitOrderPage extends StatelessWidget {
   final OrderController orderController = Get.find<OrderController>();
@@ -76,11 +76,10 @@ class SubmitOrderPage extends StatelessWidget {
         fontFamily: "MontserratSemiBold",
       )),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Ringkasan Pesanan
             MyText(
               text: "Ringkasan Pesanan",
               fontFamily: 'MontserratBold',
@@ -155,7 +154,6 @@ class SubmitOrderPage extends StatelessWidget {
               },
             ),
             SizedBox(height: 20),
-
             Obx(() {
               return InkWell(
                 onTap: () => _showPaymentMethodPicker(context),
@@ -173,7 +171,6 @@ class SubmitOrderPage extends StatelessWidget {
                 ),
               );
             }),
-
             SizedBox(height: 20),
             TextField(
               controller: amountPaidController,
@@ -194,12 +191,34 @@ class SubmitOrderPage extends StatelessWidget {
                 }
               },
             ),
-
             SizedBox(height: 20),
             MyButton(
               text: "Konfirmasi Pesanan",
               onPressed: () {
                 SubmitConfirmation(context);
+              },
+              color: yellow,
+              height: 56,
+              elevation: 0,
+              borderRadius: 12,
+            ),
+            SizedBox(height: 20),
+            MyButton(
+              text: "Konfirmasi tanpa Nota",
+              onPressed: () async {
+                bool success = await orderController.submitOrder();
+                if (success && orderController.paymentSucces.isTrue) {
+                  customerNameController.text = "";
+                  paymentMethodController.text = "cash";
+                  amountPaidController.text = "";
+                  orderController.resetOrderData();
+                  cartController.clearCart();
+                  orderCardController.resetQuantities();
+                  Get.toNamed('/dashboard');
+                  orderController.fetchPendingOrders();
+                } else {
+                  print("payment kurang");
+                }
               },
               color: yellow,
               height: 56,
