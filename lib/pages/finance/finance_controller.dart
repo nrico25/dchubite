@@ -4,12 +4,15 @@ import 'package:get/get.dart';
 import 'package:tadchubite/pages/finance/finance_model.dart';
 import 'package:tadchubite/pages/finance/finance_service.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
+import 'package:tadchubite/widget/color.dart';
 
 class ReportController extends GetxController {
   var weeklyReports = <FinanceGraph>[].obs;
   var monthlyReports = <FinanceGraph>[].obs;
   var allReports = <FinanceGraph>[].obs;
-
+  RxInt soldFoodCount = 0.obs;
+  RxInt soldDrinkCount = 0.obs;
+  RxInt soldSnackCount = 0.obs;
   var foodReport = Rxn<CategoryReport>();
   var drinkReport = Rxn<CategoryReport>();
   var snackReport = Rxn<CategoryReport>();
@@ -17,7 +20,7 @@ class ReportController extends GetxController {
 
   final reportService = ReportService();
   var categorySalesList = <CategorySalesModel>[].obs;
-   var selectedRange = Rx<DateTimeRange?>(null);
+  var selectedRange = Rx<DateTimeRange?>(null);
 
   final AuthController authController = Get.find<AuthController>();
 
@@ -64,7 +67,8 @@ class ReportController extends GetxController {
       final result = await reportService.fetchSoldByCategory(today, token);
       categorySalesList.assignAll(result);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memuat data: $e');
+      Get.snackbar('Error', 'Gagal memuat data: $e',
+          colorText: white, backgroundColor: lightGray);
     } finally {
       isLoading.value = false;
     }
@@ -99,29 +103,62 @@ class ReportController extends GetxController {
     }
   }
 
-  void getCategoryReportByDate(String date) async {
-    isLoading.value = true;
+  Future<void> getCategoryReportByDate(String date) async {
+  isLoading.value = true;
+  try {
+    final token = authController.token.value;
 
+    // Ambil laporan pendapatan per kategori
+    final food = await ReportService.fetchCategoryReportByDate(token, 1, date);
+    final drink = await ReportService.fetchCategoryReportByDate(token, 2, date);
+    final snack = await ReportService.fetchCategoryReportByDate(token, 3, date);
+
+    foodReport.value = food;
+    drinkReport.value = drink;
+    snackReport.value = snack;
+
+    // Ambil jumlah produk terjual berdasarkan tanggal
+    final allSales = await ReportService.fetchSoldByCategoryByDate(token, 0, date);
+    categorySalesList.assignAll(allSales); // Update list data produk terjual
+
+    Get.snackbar(
+      "Berhasil",
+      "Data laporan berdasarkan tanggal berhasil dimuat.",
+      colorText: white,
+      backgroundColor: darkBlue,
+    );
+  } catch (e) {
+    Get.snackbar("Error", "Gagal mengambil laporan berdasarkan tanggal: $e");
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+  Future<void> loadSoldCategoryByDateAndCategory(
+      int categoryId, String date) async {
     try {
       final token = authController.token.value;
-      final food =
-          await ReportService.fetchCategoryReportByDate(token, 1, date);
-      final drink =
-          await ReportService.fetchCategoryReportByDate(token, 2, date);
-      final snack =
-          await ReportService.fetchCategoryReportByDate(token, 3, date);
-      foodReport.value = food;
-      drinkReport.value = drink;
-      snackReport.value = snack;
+      final result = await ReportService.fetchSoldByCategoryByDate(
+          token, categoryId, date);
 
-      await loadSoldByCategory(date: date);
+      final model = result.firstWhere(
+        (item) => item.categoryId == categoryId,
+        orElse: () => CategorySalesModel(
+          categoryId: categoryId,
+          categoryName: '',
+          totalQuantitySold: 0,
+        ),
+      );
 
-      Get.snackbar(
-          "Berhasil", "Data laporan berdasarkan tanggal berhasil dimuat.");
+      if (categoryId == 1) {
+        soldFoodCount.value = model.totalQuantitySold;
+      } else if (categoryId == 2) {
+        soldDrinkCount.value = model.totalQuantitySold;
+      } else if (categoryId == 3) {
+        soldSnackCount.value = model.totalQuantitySold;
+      }
     } catch (e) {
-      Get.snackbar("Error", "Gagal mengambil laporan berdasarkan tanggal: $e");
-    } finally {
-      isLoading.value = false;
+      print('Error loading sold products: $e');
     }
   }
 }

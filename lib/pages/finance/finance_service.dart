@@ -91,4 +91,41 @@ class ReportService {
       throw Exception('Gagal mengambil laporan kategori berdasarkan tanggal');
     }
   }
+
+  static Future<List<CategorySalesModel>> fetchSoldByCategoryByDate(
+      String token, int categoryId, String date) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/reports/sold-category-by-date?category_id=$categoryId&date=$date'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List<dynamic> list = data['sold_by_category'];
+      return list.map((item) => CategorySalesModel.fromJson(item)).toList();
+    } else {
+      throw Exception(
+          'Gagal mengambil data penjualan kategori berdasarkan tanggal');
+    }
+  }
+
+static Future<List<CategorySalesModel>> fetchSoldCategoryReportByDate(String token, String date) async {
+  final response = await http.get(
+    Uri.parse('${ApiEndpoint.baseUrl}/reports/sold-category-by-date?date=$date'),
+    headers: {
+      'Authorization': 'Bearer $token',
+      'Accept': 'application/json',
+    },
+  );
+
+  if (response.statusCode == 200) {
+    final data = json.decode(response.body);
+    final List<dynamic> soldList = data['sold_by_category'];
+    return soldList.map((item) => CategorySalesModel.fromJson(item)).toList();
+  } else {
+    throw Exception('Gagal mengambil data laporan kategori pada tanggal $date');
+  }
+}
+
 }

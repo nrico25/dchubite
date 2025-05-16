@@ -64,7 +64,7 @@ class DashboardPage extends StatelessWidget {
                 builder: (context) => IconButton(
                   icon: const Icon(
                     Icons.menu_sharp,
-                    color: Colors.white,
+                    color: white,
                     size: 30,
                     weight: 800,
                   ),
