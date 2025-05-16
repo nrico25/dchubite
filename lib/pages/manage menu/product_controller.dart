@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
+import 'package:tadchubite/widget/color.dart';
 import '../manage%20menu/product_model.dart';
 import '../manage%20menu/product_service.dart';
 
@@ -80,7 +81,7 @@ class ProductController extends GetxController {
 
       searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menambahkan produk: $e');
+      Get.snackbar('Error', 'Gagal menambahkan produk: $e',colorText: white,backgroundColor: yellow);
       print(e);
     } finally {
       isLoading.value = false;
@@ -114,7 +115,7 @@ class ProductController extends GetxController {
       products.removeWhere((p) => p.id == id);
       searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus produk: $e');
+      Get.snackbar('Error', 'Gagal menghapus produk: $e',colorText: white,backgroundColor: yellow);
     } finally {
       isLoading.value = false;
     }
