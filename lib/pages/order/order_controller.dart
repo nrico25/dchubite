@@ -60,7 +60,7 @@ class OrderController extends GetxController {
       selectedProducts.refresh();
     } else {
       selectedProducts.add(
-          OrderItem(productId: product.id, quantity: 1, price: product.price));
+          OrderItem(productId: product.id, quantity: 1, price: product.price, product: product));
     }
   }
 

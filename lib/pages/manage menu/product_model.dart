@@ -23,12 +23,13 @@ class Product {
       categoryId: json['category_id'] ?? 0, // Jika null, ubah ke 0
       category: json['category'] ?? '', // Pastikan tidak null
       name: json['name'] ?? '', // Pastikan tidak null
-      price: double.tryParse(json['price']?.toString() ?? '0.0') ?? 0.0, // Null check
-      costPrice: double.tryParse(json['cost_price']?.toString() ?? '0.0') ?? 0.0, // Null check
+      price: double.tryParse(json['price']?.toString() ?? '0.0') ??
+          0.0, // Null check
+      costPrice: double.tryParse(json['cost_price']?.toString() ?? '0.0') ??
+          0.0, // Null check
       image: json['image'],
     );
   }
-
 
   Map<String, dynamic> toJson() {
     return {

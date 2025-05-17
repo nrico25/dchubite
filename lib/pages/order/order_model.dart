@@ -1,14 +1,21 @@
+import 'package:tadchubite/pages/manage%20menu/product_model.dart';
+
 class OrderItem {
   int productId;
   double quantity;
   double price;
+  final Product? product;
 
   OrderItem(
-      {required this.productId, required this.quantity, required this.price});
+      {required this.productId,
+      required this.quantity,
+      required this.price,
+      this.product});
 
   Map<String, dynamic> toJson() => {
         "product_id": productId,
         "quantity": quantity,
+        "product": product,
       };
 
   factory OrderItem.fromJson(Map<String, dynamic> json) {
@@ -17,6 +24,7 @@ class OrderItem {
       quantity: (json['quantity'] as num).toDouble(),
       price:
           json.containsKey('price') ? (json['price'] as num).toDouble() : 0.0,
+      product: Product.fromJson(json['product']),
     );
   }
 }

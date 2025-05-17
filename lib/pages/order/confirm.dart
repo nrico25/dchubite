@@ -87,7 +87,7 @@ class ConfirmPage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("x ${item.quantity.toStringAsFixed(0)}"),
+                              Text("${item.product?.name} x ${item.quantity.toStringAsFixed(0)}"),
                               Text("Rp ${item.price.toStringAsFixed(0)}"),
                             ],
                           ),
