@@ -13,12 +13,11 @@ class FinanceReportPage extends StatelessWidget {
   final RxString formattedDate = ''.obs;
 
   FinanceReportPage({super.key}) {
-    // Set default ke hari ini
     final now = DateTime.now();
-    formattedDate.value = DateFormat('yyyy-MM-dd').format(now);
-    controller.getCategoryReportByDate(formattedDate.value); // Fetch langsung
+    formattedDate.value = DateFormat('E, dd MMM yyyy').format(now);
+    controller.getCategoryReportByDate(
+        DateFormat('yyyy-MM-dd').format(now)); 
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -37,28 +36,33 @@ class FinanceReportPage extends StatelessWidget {
             formattedDate.value = '';
           },
           child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(16),
+            physics:  AlwaysScrollableScrollPhysics(),
+            padding:  EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 16),
+                 SizedBox(height: 16),
                 MyText(
                   text: "Statistik Penjualan",
                   fontFamily: "MontserratBold",
                   fontSize: 20,
                   color: black,
                 ),
-                const SizedBox(height: 12),
+                 SizedBox(height: 12),
+                _buildWeeklyGraph(),
+                 SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    MyText(
-                      text: "Laporan per Tanggal",
-                      fontFamily: "MontserratBold",
-                      fontSize: 16,
-                      color: black,
-                    ),
+                    Obx(() => formattedDate.value.isNotEmpty
+                        ? MyText(
+                            text: ' Profit ${formattedDate.value}',
+                            fontFamily: "MontserratBold",
+                            fontSize: 16,
+                            color: darkBlue,
+                          )
+                        : const SizedBox.shrink()),
+                    const SizedBox(height: 12),
                     IconButton(
                       onPressed: () async {
                         final selectedDate = await showDatePicker(
@@ -69,27 +73,17 @@ class FinanceReportPage extends StatelessWidget {
                         );
 
                         if (selectedDate != null) {
-                          formattedDate.value = selectedDate.toIso8601String().split('T').first;
-                          controller.getCategoryReportByDate(formattedDate.value);
+                          formattedDate.value =
+                              DateFormat('E, dd MMM yyyy').format(selectedDate);
+                          controller.getCategoryReportByDate(
+                              DateFormat('yyyy-MM-dd').format(selectedDate));
                         }
                       },
-                      icon: Icon(Icons.calendar_today, color: yellow),
+                      icon: Icon(Icons.calendar_today, color: black),
                       tooltip: "Pilih Tanggal",
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
-                _buildWeeklyGraph(),
-                const SizedBox(height: 16),
-                Obx(() => formattedDate.value.isNotEmpty
-                    ? MyText(
-                        text: formattedDate.value,
-                        fontFamily: "MontserratBold",
-                        fontSize: 16,
-                        color: black,
-                      )
-                    : const SizedBox.shrink()),
-                const SizedBox(height: 12),
 
                 // Card Makanan
                 if (controller.foodReport.value != null)
