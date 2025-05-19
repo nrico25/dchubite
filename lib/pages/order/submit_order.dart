@@ -25,10 +25,10 @@ class SubmitOrderPage extends StatelessWidget {
     final confirm = await ConfirmationMessage(
       context: context,
       title: "konfirmasi pesanan",
-      message: "Apakah anda yakin untuk konfirmasi pesanan?  ",
-      cancelText: "Tidak",
-      confirmText: "Ya",
-      cancelColor: Colors.red,
+      message: "Apakah kamu ingin mencetak nota untuk pesanan ini?  ",
+      cancelText: "Tanpa Nota",
+      confirmText: "Nota",
+      cancelColor: Colors.grey,
       confirmColor: Colors.green,
     );
 
@@ -54,7 +54,21 @@ class SubmitOrderPage extends StatelessWidget {
         );
 
         customerNameController.text = "";
-        paymentMethodController.text = "";
+        paymentMethodController.text = "cash";
+        amountPaidController.text = "";
+        orderController.resetOrderData();
+        cartController.clearCart();
+        orderCardController.resetQuantities();
+        Get.toNamed('/dashboard');
+        orderController.fetchPendingOrders();
+      } else {
+        print("payment kurang");
+      }
+    } else if (confirm == false) {
+      bool success = await orderController.submitOrder();
+      if (success && orderController.paymentSucces.isTrue) {
+        customerNameController.text = "";
+        paymentMethodController.text = "cash";
         amountPaidController.text = "";
         orderController.resetOrderData();
         cartController.clearCart();
@@ -196,29 +210,6 @@ class SubmitOrderPage extends StatelessWidget {
               text: "Konfirmasi Pesanan",
               onPressed: () {
                 SubmitConfirmation(context);
-              },
-              color: yellow,
-              height: 56,
-              elevation: 0,
-              borderRadius: 12,
-            ),
-            SizedBox(height: 20),
-            MyButton(
-              text: "Konfirmasi tanpa Nota",
-              onPressed: () async {
-                bool success = await orderController.submitOrder();
-                if (success && orderController.paymentSucces.isTrue) {
-                  customerNameController.text = "";
-                  paymentMethodController.text = "cash";
-                  amountPaidController.text = "";
-                  orderController.resetOrderData();
-                  cartController.clearCart();
-                  orderCardController.resetQuantities();
-                  Get.toNamed('/dashboard');
-                  orderController.fetchPendingOrders();
-                } else {
-                  print("payment kurang");
-                }
               },
               color: yellow,
               height: 56,

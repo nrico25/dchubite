@@ -72,7 +72,7 @@ class OrderController extends GetxController {
     if (customerName.value.isEmpty ||
         selectedProducts.isEmpty ||
         amountPaid.value <= 0) {
-      Get.snackbar("Error", "Data order belum lengkap");
+      Get.snackbar("Ups!", "Data order nya belum lengkap", colorText: yellow,backgroundColor: grey, );
       paymentSucces.value = false;
       return false;
     }
@@ -88,7 +88,7 @@ class OrderController extends GetxController {
 
       var response = await OrderService.createOrder(token, newOrder);
       Get.snackbar("Success",
-          "Order berhasil dibuat: ${response['order']['order_code']}");
+          "Order berhasil dibuat: ${response['order']['order_code']}",  colorText: yellow,backgroundColor: grey,);
       paymentSucces.value = true;
       return true;
     } catch (e) {
@@ -138,10 +138,10 @@ class OrderController extends GetxController {
       bool success = await OrderService.markOrderAsSuccess(id, token);
       if (success) {
         pendingOrders.removeWhere((order) => order.id == id);
-        Get.snackbar('Success', 'Order marked as completed',colorText: white,backgroundColor: yellow);
+        Get.snackbar('Success', 'Order marked as completed', colorText: yellow,backgroundColor: grey,);
         await fetchPendingOrders();
       } else {
-        Get.snackbar('Error', 'Gagal menyelesaikan order',colorText: white,backgroundColor: yellow);
+        Get.snackbar('Error', 'Gagal menyelesaikan order', colorText: yellow,backgroundColor: grey,);
       }
     } catch (e) {
       Get.snackbar('Error', 'Terjadi kesalahan: $e');

@@ -68,7 +68,7 @@ class ReportController extends GetxController {
       categorySalesList.assignAll(result);
     } catch (e) {
       Get.snackbar('Error', 'Gagal memuat data: $e',
-          colorText: white, backgroundColor: lightGray);
+          colorText: yellow,backgroundColor: grey,);
     } finally {
       isLoading.value = false;
     }
@@ -123,12 +123,11 @@ class ReportController extends GetxController {
 
     Get.snackbar(
       "Berhasil",
-      "Data laporan berdasarkan tanggal berhasil dimuat.",
-      colorText: white,
-      backgroundColor: darkBlue,
+      "Data laporan berdasarkan tanggal berhasil dimuat." ,
+      colorText: yellow,backgroundColor: grey,
     );
   } catch (e) {
-    Get.snackbar("Error", "Gagal mengambil laporan berdasarkan tanggal: $e");
+    Get.snackbar("Ups!", "Gagal mengambil laporan berdasarkan tanggal: $e",  colorText: yellow,backgroundColor: grey,);
   } finally {
     isLoading.value = false;
   }

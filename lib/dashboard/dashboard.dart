@@ -19,8 +19,7 @@ class DashboardPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final DashboardController dashboardController =
         Get.put(DashboardController());
-    final AuthController authController =
-        Get.put(AuthController());
+    final AuthController authController = Get.put(AuthController());
 
     final List<Widget> menus = [
       FinanceReportPage(),
@@ -82,25 +81,23 @@ class DashboardPage extends StatelessWidget {
             color: white,
             child: Column(
               children: [
-                // Profile Section
-                DrawerHeader(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      MyText(
-                        text: "dchubite",
-                        fontSize: 16,
-                        color: darkBlue,
-                        fontFamily: "MontserratBold",
-                      ),
-                      SizedBox(height: 10),
-                      MyText(
-                        text: "dchubite@gmail.com",
-                        fontSize: 12,
-                        color: darkBlue,
-                      ),
-                    ],
-                  ),
+                SizedBox(height: 60),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    MyText(
+                      text: "dchubite",
+                      fontSize: 16,
+                      color: darkBlue,
+                      fontFamily: "MontserratBold",
+                    ),
+                    SizedBox(height: 10),
+                    MyText(
+                      text: "dchubite@gmail.com",
+                      fontSize: 12,
+                      color: darkBlue,
+                    ),
+                  ],
                 ),
 
                 // Navigation Items
@@ -147,7 +144,7 @@ class DashboardPage extends StatelessWidget {
                     onPressed: () {
                       authController.logout();
                     },
-                    color: darkBlue,
+                    color: red,
                     height: 40,
                     elevation: 0,
                     borderRadius: 10,

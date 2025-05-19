@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/pages/order/order_model.dart';
+import 'package:tadchubite/utils/format_helper.dart';
+import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/confirmation_message.dart';
 import 'package:tadchubite/widget/text.dart';
@@ -40,8 +42,10 @@ class ConfirmPage extends StatelessWidget {
       backgroundColor: backgorund,
       appBar: AppBar(
         leading: BackButton(),
-        title: Text("Detail Pesanan",
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        title: MyText(
+          text: "Detail Pesanan",
+          fontFamily: "MontserratBold",
+        ),
         centerTitle: true,
         backgroundColor: white,
         foregroundColor: black,
@@ -52,15 +56,9 @@ class ConfirmPage extends StatelessWidget {
         child: Column(
           children: [
             SizedBox(height: 20),
-            Icon(Icons.check, size: 120),
+            Icon(Icons.restaurant_menu, size: 120, color: darkBlue,),
             SizedBox(height: 20),
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Rincian Nota",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-            ),
-            SizedBox(height: 10),
-            Container(
+                        Container(
               width: double.infinity,
               padding: EdgeInsets.all(16),
               decoration: BoxDecoration(
@@ -71,11 +69,9 @@ class ConfirmPage extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _rowInfo("Nama", order.customerName),
+                  _rowInfo("Nama:", order.customerName),
+                  Divider(height: 24),
                   SizedBox(height: 8),
-                  Text("Items (${order.id})",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  SizedBox(height: 4),
                   ...order.items.asMap().entries.map((entry) {
                     int index = entry.key + 1;
                     OrderItem item = entry.value;
@@ -87,8 +83,9 @@ class ConfirmPage extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("${item.product?.name} x ${item.quantity.toStringAsFixed(0)}"),
-                              Text("Rp ${item.price.toStringAsFixed(0)}"),
+                              Text(
+                                  "${item.product?.name} x ${item.quantity.toStringAsFixed(0)}"),
+                              Text(formatRupiah(item.price)),
                             ],
                           ),
                         ],
@@ -97,47 +94,36 @@ class ConfirmPage extends StatelessWidget {
                   }),
                   SizedBox(height: 8),
                   Divider(height: 24),
-                  _rowInfo("Subtotal", "Rp $subtotal", isBold: true),
+                  _rowInfo("Subtotal", "Rp ${formatRupiah(subtotal)}",
+                      isBold: true),
                 ],
               ),
             ),
             Spacer(),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: yellow,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
-                  ),
-                  onPressed: () {
-                    SubmitConfirmation(context);
-                    controller.fetchPendingOrders();
-                  },
-                  child: MyText(
-                    text: "Konfirmasi pesanan",
-                    fontFamily: 'MontserratBold',
-                    color: white,
-                  )),
-            ),
+            MyButton(
+                text: "Selesaikan Pesanan",
+                color: yellow,
+                onPressed: () {
+                  SubmitConfirmation(context);
+                  controller.fetchPendingOrders();
+                }),
           ],
         ),
       ),
     );
   }
 
-  // Widget reusable info row
   Widget _rowInfo(String label, String value, {bool isBold = false}) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
+      padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(label, style: TextStyle(color: Colors.grey[700])),
-          Text(value,
-              style: TextStyle(
-                  fontWeight: isBold ? FontWeight.bold : FontWeight.normal)),
+          MyText(text: label, fontFamily: "MontserratBold"),
+          MyText(
+            text: value,
+            fontFamily: "MontserratBold",
+          ),
         ],
       ),
     );
