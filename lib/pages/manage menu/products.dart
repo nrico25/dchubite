@@ -6,6 +6,7 @@ import 'package:tadchubite/pages/manage%20menu/edit_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/empty_product.dart';
 import 'package:tadchubite/pages/manage%20menu/network_error.dart';
 import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
+import 'package:tadchubite/utils/format_helper.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_menu.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -123,7 +124,7 @@ class ProductPage extends StatelessWidget {
                                   products: product.name,
                                   categories: product.category,
                                   prices:
-                                      'Rp ${product.price.toStringAsFixed(0)}',
+                                      'Rp ${formatRupiah(product.price)}',
                                   onEdit: () {
                                     Get.to(() => EditMenu(product: product));
                                   },

@@ -48,13 +48,17 @@ class OrderQueuePage extends StatelessWidget {
                             children: const [
                               SizedBox(height: 200),
                               Center(
-                                  child: MyText(text: "Belum ada antrian Order", fontFamily: "MontserratBold", fontSize: 20, color: black)),
+                                  child: MyText(
+                                      text: "Belum ada antrian Order",
+                                      fontFamily: "MontserratBold",
+                                      fontSize: 20,
+                                      color: black)),
                             ],
                           )
                         : ListView.builder(
                             physics: const AlwaysScrollableScrollPhysics(),
                             itemCount: controller.allPendingOrders.length,
-                            padding: const EdgeInsets.all(16),
+                            padding:  EdgeInsets.all(16),
                             itemBuilder: (context, index) {
                               final order = controller.allPendingOrders[index];
 
@@ -78,37 +82,36 @@ class OrderQueuePage extends StatelessWidget {
                                       Container(
                                         width: 40,
                                         height: 80,
-                                        decoration: const BoxDecoration(
-                                          color: lightBlue,
+                                        decoration:  BoxDecoration(
+                                          color: yellow,
                                           borderRadius: BorderRadius.only(
                                             topLeft: Radius.circular(16),
                                             bottomLeft: Radius.circular(16),
                                           ),
                                         ),
                                       ),
-                                      Expanded(
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16, vertical: 12),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                order.customerName,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xFF1F2C4B),
-                                                ),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 16, vertical: 12),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              order.customerName,
+                                              style:  TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                                color: darkBlue,
                                               ),
-                                              const SizedBox(height: 8),
-                                              MyText(
-                                                  text: order.orderCode ?? ""),
-                                            ],
-                                          ),
+                                            ),
+                                            SizedBox(height: 8),
+                                            MyText(text: order.orderCode ?? ""),
+                                            
+                                          ],
                                         ),
                                       ),
+                                      
                                     ],
                                   ),
                                 ),
@@ -123,7 +126,7 @@ class OrderQueuePage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         backgroundColor: yellow,
         onPressed: () async {
-          final result = await Get.toNamed('/order'); // halaman submit
+          final result = await Get.toNamed('/order'); 
           if (result == true) {
             await controller.fetchPendingOrders();
           }
