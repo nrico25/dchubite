@@ -30,9 +30,9 @@ class DashboardPage extends StatelessWidget {
 
     final List<String> titles = [
       "Dashboard",
-      "Order Queue",
-      "Manage Products",
-      "Settings",
+      "Antrian Pelanggan",
+      "Produk",
+      "Pengaturan",
     ];
 
     final List<IconData> icons = [
@@ -138,9 +138,8 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
 
-                // Logout Button
                 Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding:  EdgeInsets.all(16.0),
                   child: MyButton(
                     text: 'Log Out',
                     onPressed: () {
@@ -151,23 +150,7 @@ class DashboardPage extends StatelessWidget {
                     elevation: 0,
                     borderRadius: 10,
                   ),
-                  // ElevatedButton(
-                  //   style: ElevatedButton.styleFrom(
-                  //     backgroundColor: yellow,
-                  //     shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(8),
-                  //     ),
-                  //     minimumSize: const Size(double.infinity, 45),
-                  //   ),
-                  //   onPressed: () {
-                  //   },
-                  //   child: MyText(
-                  //     text: "Logout",
-                  //     fontSize: 16,
-                  //     color: white,
-                  //     fontFamily: "MontserratBold",
-                  //   ),
-                  // ),
+                 
                 ),
               ],
             ),

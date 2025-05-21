@@ -48,7 +48,7 @@ class OrderQueuePage extends StatelessWidget {
                             children: const [
                               SizedBox(height: 200),
                               Center(
-                                  child: Text('Tidak ada order yang pending')),
+                                  child: MyText(text: "Belum ada antrian Order", fontFamily: "MontserratBold", fontSize: 20, color: black)),
                             ],
                           )
                         : ListView.builder(

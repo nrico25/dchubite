@@ -94,12 +94,13 @@ class OrderPage extends StatelessWidget {
                             category: order_product.category,
                             price: 'Rp ${formatRupiah(order_product.price)}',
                             onAdd: () {
-                              cartController.addToCart(order_product); //UI
+                              cartController.addToCart(order_product); 
                               orderController
-                                  .addProductToOrder(order_product); //API
+                                  .addProductToOrder(order_product); 
                             },
                             onRemove: () {
                               cartController.decreaseQuantity(order_product);
+                              orderController.decreaseProductQuantity(order_product);
                             },
                           );
                         },
