@@ -10,7 +10,7 @@ import '../manage%20menu/product_service.dart';
 class ProductController extends GetxController {
   final TextEditingController searchController = TextEditingController();
   final Rxn<int> selectedCategory =
-      Rxn<int>(); // Ubah ke integer untuk ID kategori
+      Rxn<int>(); 
   final Rx<File?> selectedImage = Rx<File?>(null);
   final RxBool isProductsLoaded = false.obs;
   var products = <Product>[].obs;
@@ -65,7 +65,7 @@ class ProductController extends GetxController {
       checkImageLoading();
     } catch (e) {
       isProductsLoaded.value = false;
-      print('Gagal mengambil produk: $e');
+      print('Gagal mengambil produk: ');
     } finally {
       isLoading.value = false;
     }
@@ -81,7 +81,7 @@ class ProductController extends GetxController {
 
       searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menambahkan produk: $e',colorText: white,backgroundColor: yellow);
+      Get.snackbar('Error', 'Gagal menambahkan produk: ',colorText: white,backgroundColor: yellow);
       print(e);
     } finally {
       isLoading.value = false;
@@ -102,7 +102,7 @@ class ProductController extends GetxController {
       }
       Get.back();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memperbarui produk: $e');
+      Get.snackbar('Error', 'Gagal memperbarui produk: ');
     } finally {
       isLoading.value = false;
     }
@@ -115,7 +115,7 @@ class ProductController extends GetxController {
       products.removeWhere((p) => p.id == id);
       searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus produk: $e',colorText: white,backgroundColor: yellow);
+      Get.snackbar('Error', 'Gagal menghapus produk: ',colorText: white,backgroundColor: yellow);
     } finally {
       isLoading.value = false;
     }

@@ -60,12 +60,12 @@ import 'package:tadchubite/pages/order/order_model.dart';
 
 
 class CartController extends GetxController {
-  var cartItems = <Product, int>{}.obs; // Simpan jumlah item per produk
+  var cartItems = <Product, int>{}.obs; 
   var totalPrice = 0.0.obs;
   
   var totalItems = 0.obs;
 
-  // Tambahkan produk ke keranjang
+
   void addToCart(Product product) {
     if (cartItems.containsKey(product)) {
       cartItems[product] = cartItems[product]! + 1;
@@ -77,7 +77,7 @@ class CartController extends GetxController {
     updateTotalItems();
   }
 
-  // Kurangi kuantitas produk di keranjang
+
   void decreaseQuantity(Product product) {
     if (cartItems.containsKey(product) && cartItems[product]! > 1) {
       cartItems[product] = cartItems[product]! - 1;
@@ -90,7 +90,7 @@ class CartController extends GetxController {
     updateTotalItems();
   }
 
-  // Hapus produk dari keranjang
+  
   void removeFromCart(Product product) {
     if (cartItems.containsKey(product)) {
       totalPrice.value -= product.price * cartItems[product]!;
@@ -100,19 +100,19 @@ class CartController extends GetxController {
     updateTotalItems();
   }
 
-  // Kosongkan keranjang
+  
   void clearCart() {
-    cartItems.clear();  // hapus semua produk
+    cartItems.clear();  
     totalPrice.value = 0.0;
     totalItems.value = 0;
   }
 
-  // Update total item di keranjang
+  
   void updateTotalItems() {
     totalItems.value = cartItems.values.fold(0, (sum, qty) => sum + qty);
   }
 
-  // Mengonversi cartItems menjadi OrderItem
+  
   List<OrderItem> getOrderItems() {
     return cartItems.entries.map((entry) {
       return OrderItem(

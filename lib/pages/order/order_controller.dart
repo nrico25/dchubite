@@ -45,10 +45,10 @@ class OrderController extends GetxController {
     } catch (e) {
       print(e);
       if (!Get.isSnackbarOpen) {
-        print("Gagal mengambil produk: $e");
+        print("Gagal mengambil produk: ");
       }
     } finally {
-      isLoading.value = false; // Sembunyikan shimmer setelah selesai
+      isLoading.value = false; 
     }
   }
 
@@ -92,7 +92,7 @@ class OrderController extends GetxController {
       paymentSucces.value = true;
       return true;
     } catch (e) {
-      Get.snackbar("Error", "$e");
+      Get.snackbar("Error", "");
       paymentSucces.value = false;
       return false;
     }
@@ -106,7 +106,7 @@ class OrderController extends GetxController {
       pendingOrders.value = orders;
       allPendingOrders.assignAll(orders);
     } catch (e) {
-      print("Gagal mengambil order: $e");
+      print("Gagal mengambil order: ");
     } finally {
       isLoading.value = false;
     }
@@ -144,7 +144,7 @@ class OrderController extends GetxController {
         Get.snackbar('Error', 'Gagal menyelesaikan order', colorText: yellow,backgroundColor: grey,);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Terjadi kesalahan: $e');
+      Get.snackbar('Error', 'Terjadi kesalahan: ');
     }
   }
 
@@ -168,7 +168,7 @@ class OrderController extends GetxController {
   void searchOrders(String query) {
     if (query.isEmpty) {
       allPendingOrders
-          .assignAll(pendingOrders); // <- kamu taruh hasil pencarian di sini
+          .assignAll(pendingOrders); 
     } else {
       allPendingOrders.assignAll(
         pendingOrders.where((order) {

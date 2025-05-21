@@ -99,7 +99,9 @@ class DashboardPage extends StatelessWidget {
                     ),
                   ],
                 ),
-
+                SizedBox(
+                  height: 40,
+                ),
                 // Navigation Items
                 Expanded(
                   child: Column(

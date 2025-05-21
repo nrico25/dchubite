@@ -52,7 +52,7 @@ class ReportController extends GetxController {
       drinkReport.value = drink;
       snackReport.value = snack;
     } catch (e) {
-      Get.snackbar("Error", "$e");
+      Get.snackbar("Error", "");
     } finally {
       isLoading.value = false;
     }
@@ -67,7 +67,7 @@ class ReportController extends GetxController {
       final result = await reportService.fetchSoldByCategory(today, token);
       categorySalesList.assignAll(result);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memuat data: $e',
+      Get.snackbar('Error', 'Gagal memuat data: ',
           colorText: yellow,backgroundColor: grey,);
     } finally {
       isLoading.value = false;
@@ -121,13 +121,9 @@ class ReportController extends GetxController {
     final allSales = await ReportService.fetchSoldByCategoryByDate(token, 0, date);
     categorySalesList.assignAll(allSales); // Update list data produk terjual
 
-    Get.snackbar(
-      "Berhasil",
-      "Data laporan berdasarkan tanggal berhasil dimuat." ,
-      colorText: yellow,backgroundColor: grey,
-    );
+    print("Data laporan berdasarkan tanggal berhasil dimuat.");
   } catch (e) {
-    Get.snackbar("Ups!", "Gagal mengambil laporan berdasarkan tanggal: $e",  colorText: yellow,backgroundColor: grey,);
+    Get.snackbar("Ups!", "Gagal mengambil laporan berdasarkan tanggal: ",  colorText: yellow,backgroundColor: grey,);
   } finally {
     isLoading.value = false;
   }
@@ -157,7 +153,7 @@ class ReportController extends GetxController {
         soldSnackCount.value = model.totalQuantitySold;
       }
     } catch (e) {
-      print('Error loading sold products: $e');
+      print('Error loading sold products: ');
     }
   }
 }
