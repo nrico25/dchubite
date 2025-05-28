@@ -45,7 +45,8 @@ dependencies:
   image:
   intl:
   fl_chart:
-
+  path_provider:
+  open_file:  
 dev_dependencies:
   flutter_test:
     sdk: flutter
