@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
@@ -24,8 +25,8 @@ class ProductPage extends StatelessWidget {
   void DeleteConfirmation(BuildContext context, int productId) async {
     final confirm = await ConfirmationMessage(
       context: context,
-      title: "Konfirmasi Hapus",
-      message: "Apakah Anda yakin ingin menghapus produk ini?",
+      title: "Nonaktifkan Produk",
+      message: "Apakah Anda yakin ingin Nonaktifkan produk ini?",
       cancelText: "Tidak",
       confirmText: "Ya",
       cancelColor: Colors.red,
@@ -123,14 +124,21 @@ class ProductPage extends StatelessWidget {
                                       : 'assets/default_image.png',
                                   products: product.name,
                                   categories: product.category,
-                                  prices:
-                                      'Rp ${formatRupiah(product.price)}',
-                                  onEdit: () {
-                                    Get.to(() => EditMenu(product: product));
-                                  },
-                                  onDelete: () {
-                                    DeleteConfirmation(context, product.id);
-                                  },
+                                  prices: 'Rp ${formatRupiah(product.price)}',
+                                  editButton: IconButton(
+                                    icon: const Icon(Icons.edit,
+                                        color: Colors.grey),
+                                    onPressed: () {
+                                      Get.to(() => EditMenu(product: product));
+                                    },
+                                  ),
+                                  deleteButton: IconButton(
+                                    icon: const Icon(CupertinoIcons.eye_slash,
+                                        color: Colors.red),
+                                    onPressed: () {
+                                      DeleteConfirmation(context, product.id);
+                                    },
+                                  ),
                                 );
                               },
                             );

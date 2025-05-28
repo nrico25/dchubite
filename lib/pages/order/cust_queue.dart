@@ -106,7 +106,14 @@ class OrderQueuePage extends StatelessWidget {
                                               ),
                                             ),
                                             SizedBox(height: 8),
-                                            MyText(text: order.orderCode ?? ""),
+                                            Row(
+                                              children: [
+                                                MyText(text: order.orderCode ?? ""),
+                                                MyText(text: order.totalPrice != null
+                                                    ? " - Rp ${order.totalPrice}"
+                                                    : ""),
+                                              ],
+                                            ),
                                             
                                           ],
                                         ),
