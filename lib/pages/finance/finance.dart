@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:tadchubite/pages/finance/download_controller.dart';
 import 'package:tadchubite/pages/finance/finance_controller.dart';
 import 'package:tadchubite/widget/card_finance.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -9,14 +10,14 @@ import 'package:tadchubite/widget/text.dart';
 
 class FinanceReportPage extends StatelessWidget {
   final controller = Get.put(ReportController());
+  final DownloadController downloadController = Get.put(DownloadController());
   final Rx<DateTimeRange?> selectedRange = Rx<DateTimeRange?>(null);
   final RxString formattedDate = ''.obs;
 
   FinanceReportPage({super.key}) {
     final now = DateTime.now();
     formattedDate.value = DateFormat('E, dd MMM yyyy').format(now);
-    controller.getCategoryReportByDate(
-        DateFormat('yyyy-MM-dd').format(now)); 
+    controller.getCategoryReportByDate(DateFormat('yyyy-MM-dd').format(now));
   }
 
   @override
@@ -36,21 +37,20 @@ class FinanceReportPage extends StatelessWidget {
             formattedDate.value = '';
           },
           child: SingleChildScrollView(
-            physics:  AlwaysScrollableScrollPhysics(),
-            padding:  EdgeInsets.all(16),
+            physics: AlwaysScrollableScrollPhysics(),
+            padding: EdgeInsets.all(16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                 SizedBox(height: 16),
+                SizedBox(height: 16),
                 MyText(
                   text: "Statistik Penjualan",
                   fontFamily: "MontserratBold",
                   fontSize: 20,
                   color: black,
                 ),
-                 SizedBox(height: 12),
-                _buildWeeklyGraph(),
-                 SizedBox(height: 16),
+                SizedBox(height: 12),
+                const SizedBox(height: 16),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

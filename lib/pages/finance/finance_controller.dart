@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tadchubite/pages/finance/finance_model.dart';
 import 'package:tadchubite/pages/finance/finance_service.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
@@ -17,7 +18,7 @@ class ReportController extends GetxController {
   var drinkReport = Rxn<CategoryReport>();
   var snackReport = Rxn<CategoryReport>();
   var isLoading = false.obs;
-
+  var isDownloading = false.obs;
   final reportService = ReportService();
   var categorySalesList = <CategorySalesModel>[].obs;
   var selectedRange = Rx<DateTimeRange?>(null);
@@ -67,8 +68,12 @@ class ReportController extends GetxController {
       final result = await reportService.fetchSoldByCategory(today, token);
       categorySalesList.assignAll(result);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memuat data: ',
-          colorText: yellow,backgroundColor: grey,);
+      Get.snackbar(
+        'Error',
+        'Gagal memuat data: ',
+        colorText: yellow,
+        backgroundColor: grey,
+      );
     } finally {
       isLoading.value = false;
     }
@@ -104,30 +109,39 @@ class ReportController extends GetxController {
   }
 
   Future<void> getCategoryReportByDate(String date) async {
-  isLoading.value = true;
-  try {
-    final token = authController.token.value;
+    isLoading.value = true;
+    try {
+      final token = authController.token.value;
 
-    // Ambil laporan pendapatan per kategori
-    final food = await ReportService.fetchCategoryReportByDate(token, 1, date);
-    final drink = await ReportService.fetchCategoryReportByDate(token, 2, date);
-    final snack = await ReportService.fetchCategoryReportByDate(token, 3, date);
+      // Ambil laporan pendapatan per kategori
+      final food =
+          await ReportService.fetchCategoryReportByDate(token, 1, date);
+      final drink =
+          await ReportService.fetchCategoryReportByDate(token, 2, date);
+      final snack =
+          await ReportService.fetchCategoryReportByDate(token, 3, date);
 
-    foodReport.value = food;
-    drinkReport.value = drink;
-    snackReport.value = snack;
+      foodReport.value = food;
+      drinkReport.value = drink;
+      snackReport.value = snack;
 
-    // Ambil jumlah produk terjual berdasarkan tanggal
-    final allSales = await ReportService.fetchSoldByCategoryByDate(token, 0, date);
-    categorySalesList.assignAll(allSales); // Update list data produk terjual
+      // Ambil jumlah produk terjual berdasarkan tanggal
+      final allSales =
+          await ReportService.fetchSoldByCategoryByDate(token, 0, date);
+      categorySalesList.assignAll(allSales); // Update list data produk terjual
 
-    print("Data laporan berdasarkan tanggal berhasil dimuat.");
-  } catch (e) {
-    Get.snackbar("Ups!", "Gagal mengambil laporan berdasarkan tanggal: ",  colorText: yellow,backgroundColor: grey,);
-  } finally {
-    isLoading.value = false;
+      print("Data laporan berdasarkan tanggal berhasil dimuat.");
+    } catch (e) {
+      Get.snackbar(
+        "Ups!",
+        "Gagal mengambil laporan berdasarkan tanggal: ",
+        colorText: yellow,
+        backgroundColor: grey,
+      );
+    } finally {
+      isLoading.value = false;
+    }
   }
-}
 
   Future<void> loadSoldCategoryByDateAndCategory(
       int categoryId, String date) async {
@@ -156,4 +170,44 @@ class ReportController extends GetxController {
       print('Error loading sold products: ');
     }
   }
+
+// Future<bool> requestStoragePermission() async {
+//   if (await Permission.manageExternalStorage.isGranted) {
+//     return true;
+//   } else {
+//     var result = await Permission.manageExternalStorage.request();
+//     if (result.isGranted) {
+//       return true;
+//     } else if (result.isPermanentlyDenied) {
+//       openAppSettings();
+//       return false;
+//     } else {
+//       return false;
+//     }
+//   }
+// }
+// Future<void> downloadMonthlyReport() async {
+//   bool granted = await requestStoragePermission();
+//   if (!granted) {
+//     Get.snackbar(
+//       "Izin Ditolak",
+//       "Anda harus memberikan izin penyimpanan untuk mengunduh laporan.",
+//       snackPosition: SnackPosition.BOTTOM,
+//       backgroundColor: Colors.redAccent,
+//       colorText: Colors.white,
+//     );
+//     return;
+//   }
+
+//   try {
+//     isDownloading.value = true;
+//     String token = authController.token.value;
+//     await ReportService.downloadMonthlyReportFile(token);
+//     Get.snackbar("Berhasil", "Laporan berhasil didownload");
+//   } catch (e) {
+//     Get.snackbar("Gagal", e.toString());
+//   } finally {
+//     isDownloading.value = false;
+//   }
+// }
 }
