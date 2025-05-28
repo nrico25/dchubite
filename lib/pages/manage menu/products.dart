@@ -6,9 +6,11 @@ import 'package:tadchubite/pages/manage%20menu/edit_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/empty_product.dart';
 import 'package:tadchubite/pages/manage%20menu/network_error.dart';
 import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
+import 'package:tadchubite/utils/format_helper.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_menu.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/confirmation_message.dart';
 import 'package:tadchubite/widget/shimer_placeholder.dart';
 import 'package:tadchubite/widget/textfield.dart';
 
@@ -19,40 +21,30 @@ class ProductPage extends StatelessWidget {
   final TextEditingController searchController = TextEditingController();
   final AuthController authController = Get.find();
 
-  void DeleteConfirmation(BuildContext context, int productId) {
-      Get.defaultDialog(
-      title: "Konfirmasi Hapus",titleStyle: TextStyle(fontFamily: "MontserratSemiBold",color: darkBlue),
-      middleText: "Apakah Anda yakin ingin menghapus produk ini?",middleTextStyle: TextStyle(fontFamily: "MontserratRegular",color: black),
-      radius: 10,
-      actions: [
-        TextButton(
-          onPressed: () => Get.back(),
-          style: TextButton.styleFrom(
-            backgroundColor: green,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          ),
-          child: Text("Batal", style: TextStyle(color: white)),
-        ),
-        ElevatedButton(
-          onPressed: () {
-            productController.deleteProduct(productId);
-            Get.back();
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor:red,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-          ),
-          child: Text("Hapus", style: TextStyle(color: white)),
-        ),
-      ],
+  void DeleteConfirmation(BuildContext context, int productId) async {
+    final confirm = await ConfirmationMessage(
+      context: context,
+      title: "Konfirmasi Hapus",
+      message: "Apakah Anda yakin ingin menghapus produk ini?",
+      cancelText: "Tidak",
+      confirmText: "Ya",
+      cancelColor: Colors.red,
+      confirmColor: Colors.green,
     );
+
+    if (confirm == true) {
+      productController.deleteProduct(productId);
+    }
   }
+
   Future<void> _refreshData() async {
     await productController.fetchProducts();
   }
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: white,
       body: SafeArea(
@@ -65,7 +57,7 @@ class ProductPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   CustomTextField(
-                    width: 200,
+                    width: screenWidth * 0.5,
                     controller: searchController,
                     hintText: 'Cari menu disini',
                     keyboardType: TextInputType.text,
@@ -74,7 +66,9 @@ class ProductPage extends StatelessWidget {
                     fillColor: Colors.white,
                     textColor: Colors.black,
                     hintColor: Colors.grey,
-                    suffixIcon: Icons.search,
+                    onChanged: (value) {
+                      productController.searchProducts(value);
+                    },
                   ),
                   MyButton(
                     text: 'Tambah Menu',
@@ -118,10 +112,11 @@ class ProductPage extends StatelessWidget {
                                   child: EmptyProductPage()),
                             )
                           : ListView.builder(
-                              itemCount: productController.products.length,
+                              itemCount:
+                                  productController.filteredProducts.length,
                               itemBuilder: (context, index) {
                                 final product =
-                                    productController.products[index];
+                                    productController.filteredProducts[index];
                                 return CardMenu(
                                   image: product.image.isNotEmpty
                                       ? product.image
@@ -129,7 +124,7 @@ class ProductPage extends StatelessWidget {
                                   products: product.name,
                                   categories: product.category,
                                   prices:
-                                      'Rp ${product.price.toStringAsFixed(0)}',
+                                      'Rp ${formatRupiah(product.price)}',
                                   onEdit: () {
                                     Get.to(() => EditMenu(product: product));
                                   },

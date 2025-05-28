@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:tadchubite/pages/finance/download_controller.dart';
 import 'package:tadchubite/pages/finance/finance_controller.dart';
 import 'package:tadchubite/widget/card_finance.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -9,8 +10,15 @@ import 'package:tadchubite/widget/text.dart';
 
 class FinanceReportPage extends StatelessWidget {
   final controller = Get.put(ReportController());
+  final DownloadController downloadController = Get.put(DownloadController());
+  final Rx<DateTimeRange?> selectedRange = Rx<DateTimeRange?>(null);
+  final RxString formattedDate = ''.obs;
 
-  FinanceReportPage({super.key});
+  FinanceReportPage({super.key}) {
+    final now = DateTime.now();
+    formattedDate.value = DateFormat('E, dd MMM yyyy').format(now);
+    controller.getCategoryReportByDate(DateFormat('yyyy-MM-dd').format(now));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +33,8 @@ class FinanceReportPage extends StatelessWidget {
           onRefresh: () async {
             await controller.fetchAllReports();
             await controller.loadSoldByCategory();
+            selectedRange.value = null;
+            formattedDate.value = '';
           },
           child: SingleChildScrollView(
             physics: AlwaysScrollableScrollPhysics(),
@@ -40,8 +50,42 @@ class FinanceReportPage extends StatelessWidget {
                   color: black,
                 ),
                 SizedBox(height: 12),
-                _buildWeeklyGraph(),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Obx(() => formattedDate.value.isNotEmpty
+                        ? MyText(
+                            text: ' Profit ${formattedDate.value}',
+                            fontFamily: "MontserratBold",
+                            fontSize: 16,
+                            color: darkBlue,
+                          )
+                        : const SizedBox.shrink()),
+                    const SizedBox(height: 12),
+                    IconButton(
+                      onPressed: () async {
+                        final selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2024),
+                          lastDate: DateTime.now(),
+                        );
+
+                        if (selectedDate != null) {
+                          formattedDate.value =
+                              DateFormat('E, dd MMM yyyy').format(selectedDate);
+                          controller.getCategoryReportByDate(
+                              DateFormat('yyyy-MM-dd').format(selectedDate));
+                        }
+                      },
+                      icon: Icon(Icons.calendar_today, color: black),
+                      tooltip: "Pilih Tanggal",
+                    ),
+                  ],
+                ),
+
+                // Card Makanan
                 if (controller.foodReport.value != null)
                   CardFinance(
                     title: "Makanan",
@@ -52,14 +96,16 @@ class FinanceReportPage extends StatelessWidget {
                     penjualanBersih:
                         controller.foodReport.value!.totalProfit.toDouble(),
                     produkTerjual: controller.categorySalesList
-                            .firstWhereOrNull(
-                              (e) => e.categoryId == 1,
-                            )
+                            .firstWhereOrNull((e) => e.categoryId == 1)
                             ?.totalQuantitySold ??
                         0,
                     items: [],
+                    reportDate: selectedRange.value?.start,
                   ),
-                 SizedBox(height: 12),
+
+                const SizedBox(height: 12),
+
+                // Card Minuman
                 if (controller.drinkReport.value != null)
                   CardFinance(
                     title: "Minuman",
@@ -70,14 +116,15 @@ class FinanceReportPage extends StatelessWidget {
                     penjualanBersih:
                         controller.drinkReport.value!.totalProfit.toDouble(),
                     produkTerjual: controller.categorySalesList
-                            .firstWhereOrNull(
-                              (e) => e.categoryId == 2,
-                            )
+                            .firstWhereOrNull((e) => e.categoryId == 2)
                             ?.totalQuantitySold ??
                         0,
                     items: [],
                   ),
-                 SizedBox(height: 12),
+
+                const SizedBox(height: 12),
+
+                // Card Snack
                 if (controller.snackReport.value != null)
                   CardFinance(
                     title: "Snack",
@@ -88,13 +135,39 @@ class FinanceReportPage extends StatelessWidget {
                     penjualanBersih:
                         controller.snackReport.value!.totalProfit.toDouble(),
                     produkTerjual: controller.categorySalesList
-                            .firstWhereOrNull(
-                              (e) => e.categoryId == 3,
-                            )
+                            .firstWhereOrNull((e) => e.categoryId == 3)
                             ?.totalQuantitySold ??
                         0,
                     items: [],
                   ),
+                  SizedBox(height: 20,),
+                     Obx(() {
+                  if (controller.isDownloading.value) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ElevatedButton.icon(
+                    onPressed: () {
+                      downloadController.downloadMonthlyReport();
+                    },
+                    icon: Icon(
+                      Icons.download,
+                      color: white,
+                    ),
+                    label: MyText(
+                      text: "Download Laporan Bulanan",
+                      fontFamily: "MontserratBold",
+                      fontSize: 16,
+                      color: white,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: yellow,
+                      foregroundColor: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      textStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }),
               ],
             ),
           ),
@@ -104,98 +177,99 @@ class FinanceReportPage extends StatelessWidget {
   }
 
   Widget _buildWeeklyGraph() {
-  return SizedBox(
-    height: 200,
-    child: LineChart(
-      LineChartData(
-        gridData: FlGridData(show: true),
-        titlesData: FlTitlesData(
-          leftTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
+    return SizedBox(
+      height: 200,
+      child: LineChart(
+        LineChartData(
+          gridData: FlGridData(show: true),
+          titlesData: FlTitlesData(
+            leftTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            bottomTitles: AxisTitles(
+              sideTitles: SideTitles(
+                showTitles: true,
+                reservedSize: 30,
+                interval: 1,
+                getTitlesWidget: (value, meta) {
+                  final index = value.toInt();
+                  if (index < 0 || index > 6) return const SizedBox.shrink();
+                  final date = _getDateForIndex(index);
+                  return Text(
+                    DateFormat('E').format(date),
+                    style: const TextStyle(fontSize: 10),
+                  );
+                },
+              ),
+            ),
+            topTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
+            rightTitles: AxisTitles(
+              sideTitles: SideTitles(showTitles: false),
+            ),
           ),
-          bottomTitles: AxisTitles(
-            sideTitles: SideTitles(
-              showTitles: true,
-              reservedSize: 30, 
-              getTitlesWidget: (value, meta) {
-                final date = _getDateForIndex(value.toInt());
-                return Text(
-                  DateFormat('E').format(date), 
-                  style: TextStyle(fontSize: 10),
-                );
+          borderData: FlBorderData(show: false),
+          lineTouchData: LineTouchData(
+            touchTooltipData: LineTouchTooltipData(
+              getTooltipItems: (List<LineBarSpot> touchedSpots) {
+                return touchedSpots.map((spot) {
+                  final formatted =
+                      NumberFormat.decimalPattern().format(spot.y);
+                  return LineTooltipItem(
+                    'Rp. $formatted',
+                    TextStyle(
+                      color: yellow,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  );
+                }).toList();
               },
             ),
           ),
-          topTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-          rightTitles: AxisTitles(
-            sideTitles: SideTitles(showTitles: false),
-          ),
-        ),
-        borderData: FlBorderData(show: false),
-        lineTouchData: LineTouchData(
-          touchTooltipData: LineTouchTooltipData(
-            getTooltipItems: (List<LineBarSpot> touchedSpots) {
-              return touchedSpots.map((spot) {
-                final formatted =
-                    NumberFormat.decimalPattern().format(spot.y);
-                return LineTooltipItem(
-                  formatted, // Format angka dengan koma
-                  TextStyle(
-                    color: yellow,
-                    fontWeight: FontWeight.bold,
-                  ),
-                );
-              }).toList();
-            },
-          ),
-        ),
-        lineBarsData: [
-          LineChartBarData(
-            spots: _getWeeklyData(),
-            isCurved: true,
-            color: yellow,
-            barWidth: 4,
-            isStrokeCapRound: true,
-            belowBarData: BarAreaData(
-              show: true,
-              color: yellow.withOpacity(0.3),
+          lineBarsData: [
+            LineChartBarData(
+              spots: _getWeeklyData(),
+              isCurved: true,
+              color: yellow,
+              barWidth: 4,
+              isStrokeCapRound: true,
+              belowBarData: BarAreaData(
+                show: true,
+                color: yellow.withOpacity(0.3),
+              ),
+              dotData: FlDotData(show: false),
             ),
-            dotData: FlDotData(show: false),
-          ),
-        ],
+          ],
+        ),
       ),
-    ),
-  );
-}
-
-List<FlSpot> _getWeeklyData() {
-  // Data total profit untuk 7 hari terakhir
-  final today = DateTime.now();
-  final last7Days = List.generate(7, (index) {
-    final date = today.subtract(Duration(days: 6 - index)); // 7 hari ke belakang
-    final report = controller.weeklyReports.firstWhereOrNull(
-      (r) => isSameDate(r.reportDate, date),
     );
-    return report?.totalProfit.toDouble() ?? 0.0; // Jika tidak ada data, gunakan 0
-  });
+  }
 
-  return List.generate(
-    last7Days.length,
-    (index) => FlSpot(index.toDouble(), last7Days[index]),
-  );
+  List<FlSpot> _getWeeklyData() {
+    final today = DateTime.now();
+    final last7Days = List.generate(7, (index) {
+      final date = today.subtract(Duration(days: 6 - index));
+      final report = controller.weeklyReports.firstWhereOrNull(
+        (r) => isSameDate(r.reportDate, date),
+      );
+      return report?.totalProfit.toDouble() ?? 0.0;
+    });
+
+    return List.generate(
+      last7Days.length,
+      (index) => FlSpot(index.toDouble(), last7Days[index]),
+    );
+  }
+
+  DateTime _getDateForIndex(int index) {
+    final today = DateTime.now();
+    return today.subtract(Duration(days: 6 - index));
+  }
+
+  bool isSameDate(DateTime date1, DateTime date2) {
+    return date1.year == date2.year &&
+        date1.month == date2.month &&
+        date1.day == date2.day;
+  }
 }
-
-DateTime _getDateForIndex(int index) {
-  // Mendapatkan tanggal berdasarkan indeks (7 hari terakhir)
-  final today = DateTime.now();
-  return today.subtract(Duration(days: 6 - index));
-}
-
-bool isSameDate(DateTime date1, DateTime date2) {
-  // Membandingkan apakah dua tanggal sama (tanpa waktu)
-  return date1.year == date2.year &&
-      date1.month == date2.month &&
-      date1.day == date2.day;
-}}

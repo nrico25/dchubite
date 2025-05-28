@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:tadchubite/pages/finance/finance_controller.dart';
 import 'package:tadchubite/widget/color.dart';
 
 class CardFinance extends StatelessWidget {
@@ -8,9 +10,10 @@ class CardFinance extends StatelessWidget {
   final double modalAwal;
   final double penjualanBersih;
   final int produkTerjual;
+  final DateTime? reportDate;
 
   final currencyFormatter =
-      NumberFormat.currency(locale: 'id_ID', symbol: 'IDR ', decimalDigits: 0);
+      NumberFormat.currency(locale: 'id_ID', symbol: 'Rp. ', decimalDigits: 0);
 
   CardFinance({
     Key? key,
@@ -20,12 +23,14 @@ class CardFinance extends StatelessWidget {
     required this.penjualanBersih,
     required this.produkTerjual,
     required List items,
+    this.reportDate,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final ReportController controller = Get.find<ReportController>();
+
     return Container(
-      
       margin: const EdgeInsets.symmetric(vertical: 8),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -36,13 +41,14 @@ class CardFinance extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Omset $title",
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF1E293B),
+              "Omset $title ${reportDate != null ? DateFormat('dd MMMM yyyy').format(reportDate!) : ''}",
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Color(0xFF1E293B),
+              ),
             ),
-          ),
+          
           SizedBox(height: 12),
           Divider(height: 1, color: Color(0xFFE2E8F0)),
           SizedBox(height: 12),

@@ -8,6 +8,7 @@ import 'package:tadchubite/routes/app_page.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Pastikan binding terinisialisasi
   runApp(MyApp());
+  
 }
 
 class MyApp extends StatelessWidget {

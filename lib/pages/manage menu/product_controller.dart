@@ -3,18 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
+import 'package:tadchubite/widget/color.dart';
 import '../manage%20menu/product_model.dart';
 import '../manage%20menu/product_service.dart';
 
 class ProductController extends GetxController {
+  final TextEditingController searchController = TextEditingController();
   final Rxn<int> selectedCategory =
-      Rxn<int>(); // Ubah ke integer untuk ID kategori
+      Rxn<int>(); 
   final Rx<File?> selectedImage = Rx<File?>(null);
   final RxBool isProductsLoaded = false.obs;
   var products = <Product>[].obs;
   var isLoading = false.obs;
   final RxBool isImageLoading = false.obs;
   final AuthController authController = Get.find<AuthController>();
+  var filteredProducts = <Product>[].obs;
 
   final List<Map<String, dynamic>> categories = [
     {"id": 1, "name": "Makanan"},
@@ -57,11 +60,12 @@ class ProductController extends GetxController {
       var fetchedProducts =
           await ProductService.fetchProducts(authController.token.value);
       products.assignAll(fetchedProducts);
+      filteredProducts.assignAll(fetchedProducts);
       isProductsLoaded.value = true;
-       checkImageLoading();
+      checkImageLoading();
     } catch (e) {
       isProductsLoaded.value = false;
-      Get.snackbar('Error', 'Gagal mengambil produk: $e');
+      print('Gagal mengambil produk: ');
     } finally {
       isLoading.value = false;
     }
@@ -74,8 +78,10 @@ class ProductController extends GetxController {
       Product newProduct = await ProductService.createProduct(
           authController.token.value, product, imageFile);
       products.add(newProduct);
+
+      searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menambahkan produk: $e');
+      Get.snackbar('Error', 'Gagal menambahkan produk: ',colorText: white,backgroundColor: yellow);
       print(e);
     } finally {
       isLoading.value = false;
@@ -90,10 +96,13 @@ class ProductController extends GetxController {
       int index = products.indexWhere((p) => p.id == id);
       if (index != -1) {
         products[index] = updatedProduct;
+        products.refresh();
+
+        searchProducts(searchController.text);
       }
       Get.back();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memperbarui produk: $e');
+      Get.snackbar('Error', 'Gagal memperbarui produk: ');
     } finally {
       isLoading.value = false;
     }
@@ -104,10 +113,21 @@ class ProductController extends GetxController {
     try {
       await ProductService.deleteProduct(authController.token.value, id);
       products.removeWhere((p) => p.id == id);
+      searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus produk: $e');
+      Get.snackbar('Error', 'Gagal menghapus produk: ',colorText: white,backgroundColor: yellow);
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  void searchProducts(String query) {
+    if (query.isEmpty) {
+      filteredProducts.assignAll(products);
+    } else {
+      filteredProducts.assignAll(products.where((product) {
+        return product.name.toLowerCase().contains(query.toLowerCase());
+      }).toList());
     }
   }
 }

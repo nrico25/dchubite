@@ -64,6 +64,9 @@ class OrderPage extends StatelessWidget {
                         textColor: Colors.black,
                         hintColor: Colors.grey,
                         suffixIcon: Icons.search,
+                             onChanged: (value) {
+                      orderController.searchProducts(value);
+                    },
                       ),
                     ],
                   ),
@@ -80,9 +83,9 @@ class OrderPage extends StatelessWidget {
                       );
                     } else {
                       return ListView.builder(
-                        itemCount: orderController.products.length,
+                        itemCount: orderController.filteredProducts.length,
                         itemBuilder: (context, index) {
-                          final order_product = orderController.products[index];
+                          final order_product = orderController.filteredProducts[index];
                           return CardOrder(
                             imageUrl: order_product.image.isNotEmpty
                                 ? order_product.image
@@ -91,12 +94,13 @@ class OrderPage extends StatelessWidget {
                             category: order_product.category,
                             price: 'Rp ${formatRupiah(order_product.price)}',
                             onAdd: () {
-                              cartController.addToCart(order_product); //UI
+                              cartController.addToCart(order_product); 
                               orderController
-                                  .addProductToOrder(order_product); //API
+                                  .addProductToOrder(order_product); 
                             },
                             onRemove: () {
                               cartController.decreaseQuantity(order_product);
+                              orderController.decreaseProductQuantity(order_product);
                             },
                           );
                         },
@@ -118,6 +122,8 @@ class OrderPage extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {
                 Get.toNamed('/cart');
+                orderController.resetSearch();
+                searchController.clear();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: yellow,

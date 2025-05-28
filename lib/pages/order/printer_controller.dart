@@ -108,10 +108,8 @@ class PrinterController extends GetxController {
       bytes += generator.image(resizedImage, align: PosAlign.center);
     }
 
-    bytes += generator.text('Dchubite',
-        styles: PosStyles(
-            align: PosAlign.center, bold: true, height: PosTextSize.size2));
-    bytes += generator.text('Gg. 10 Kaliputu, Kabupaten Kudus,',
+
+    bytes += generator.text('Gg. 10 Kaliputu, Kabupaten Kudus',
         styles: PosStyles(align: PosAlign.center));
     bytes += generator.text('No.Telp: 0895-4261-99199',
         styles: PosStyles(align: PosAlign.center));
@@ -126,28 +124,22 @@ class PrinterController extends GetxController {
       bytes += generator.text(
           '${'${product.name} x$qty'.padRight(20)}Rp ${formatCurrency(subtotal)}');
     });
-
     bytes += generator.text('--------------------------------');
-    bytes += generator.text('Total       : Rp ${formatCurrency(total)}');
     bytes += generator.text('Nominal     : Rp ${formatCurrency(amountPaid)}');
+        bytes += generator.text('Total       : Rp ${formatCurrency(total)}');
     bytes += generator.text('------------------------------ -');
     bytes += generator.text('Kembalian   : Rp ${formatCurrency(change)}');
     bytes += generator.feed(2);
     bytes += generator.text('Terima kasih!',
         styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
 
-    // Tambahkan waktu cetak
     final String now = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
-    bytes += generator.feed(1);
     bytes += generator.text('$now',
         styles: PosStyles(align: PosAlign.center, height: PosTextSize.size1));
-
-    bytes += generator.cut();
 
     await PrintBluetoothThermal.writeBytes(bytes);
   }
 
-  // Fungsi format angka dengan koma sebagai pemisah ribuan
   String formatCurrency(num number) {
     return number.toStringAsFixed(0).replaceAllMapped(
       RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),

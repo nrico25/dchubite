@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tadchubite/api_endpoint.dart';
 import 'package:tadchubite/pages/finance/finance_model.dart';
 
@@ -74,6 +78,109 @@ class ReportService {
       return list.map((item) => CategorySalesModel.fromJson(item)).toList();
     } else {
       throw Exception('Failed to load data');
+    }
+  }
+
+  static Future<CategoryReport> fetchCategoryReportByDate(
+      String token, int categoryId, String date) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/reports/category-by-date?category_id=$categoryId&date=$date'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      return CategoryReport.fromJson(json.decode(response.body));
+    } else {
+      throw Exception('Gagal mengambil laporan kategori berdasarkan tanggal');
+    }
+  }
+
+  static Future<List<CategorySalesModel>> fetchSoldByCategoryByDate(
+      String token, int categoryId, String date) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/reports/sold-category-by-date?category_id=$categoryId&date=$date'),
+      headers: {'Authorization': 'Bearer $token'},
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      final List<dynamic> list = data['sold_by_category'];
+      return list.map((item) => CategorySalesModel.fromJson(item)).toList();
+    } else {
+      throw Exception(
+          'Gagal mengambil data penjualan kategori berdasarkan tanggal');
+    }
+  }
+
+  static Future<List<CategorySalesModel>> fetchSoldCategoryReportByDate(
+      String token, String date) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/reports/sold-category-by-date?date=$date'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/json',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      final List<dynamic> soldList = data['sold_by_category'];
+      return soldList.map((item) => CategorySalesModel.fromJson(item)).toList();
+    } else {
+      throw Exception(
+          'Gagal mengambil data laporan kategori pada tanggal $date');
+    }
+  }
+
+  static Future<Directory> getAppDirectory() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.manageExternalStorage.request();
+      if (!status.isGranted) {
+        throw Exception("Izin penyimpanan ditolak");
+      }
+      final directory = await getExternalStorageDirectory();
+      if (directory == null) {
+        throw Exception("Gagal mendapatkan direktori penyimpanan");
+      }
+      return directory;
+    } else if (Platform.isIOS) {
+      return await getApplicationDocumentsDirectory();
+    } else {
+      return await getTemporaryDirectory();
+    }
+  }
+
+  static Future<File> downloadMonthlyReportFile(String token) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/reports/monthly/download'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/pdf',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      final directory = await getAppDirectory();
+
+      final fileName =
+          "Laporan-Bulanan-${DateTime.now().toIso8601String()}.pdf";
+      final file = File('${directory.path}/$fileName');
+
+      await file.writeAsBytes(bytes);
+
+      final fileBytes = await file.readAsBytes();
+      debugPrint("10 byte pertama file: ${fileBytes.take(10).toList()}");
+      debugPrint("File berhasil disimpan di: ${file.path}");
+      debugPrint("Ukuran file: ${fileBytes.length} bytes");
+
+      return file;
+    } else {
+      throw Exception('Gagal mendownload laporan bulanan');
     }
   }
 }

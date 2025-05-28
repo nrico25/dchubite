@@ -63,3 +63,9 @@ class CategorySalesModel {
     );
   }
 }
+
+class MonthlyReportResponse {
+  final List<int> fileBytes;
+
+  MonthlyReportResponse({required this.fileBytes});
+}

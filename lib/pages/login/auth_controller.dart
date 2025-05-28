@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tadchubite/pages/login/login_service.dart';
+import 'package:tadchubite/widget/color.dart';
 
 class AuthController extends GetxController {
   var token = "".obs;
@@ -23,7 +24,7 @@ class AuthController extends GetxController {
       await _saveToken(newToken);
       Get.offAllNamed('/dashboard');
     } catch (e) {
-      Get.snackbar('Error', e.toString());
+      Get.snackbar('Error', 'Username atau password salah', colorText: yellow, backgroundColor: grey);
     }
   }
 
