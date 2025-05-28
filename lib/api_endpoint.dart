@@ -1,3 +1,3 @@
 class ApiEndpoint {
-  static String baseUrl = "https://dchubite.rplrus.com/api";
+  static String baseUrl = "https://dchubite-api-wpx85.kinsta.app/api";
 }

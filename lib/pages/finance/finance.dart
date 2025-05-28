@@ -140,6 +140,34 @@ class FinanceReportPage extends StatelessWidget {
                         0,
                     items: [],
                   ),
+                  SizedBox(height: 20,),
+                     Obx(() {
+                  if (controller.isDownloading.value) {
+                    return Center(child: CircularProgressIndicator());
+                  }
+                  return ElevatedButton.icon(
+                    onPressed: () {
+                      downloadController.downloadMonthlyReport();
+                    },
+                    icon: Icon(
+                      Icons.download,
+                      color: white,
+                    ),
+                    label: MyText(
+                      text: "Download Laporan Bulanan",
+                      fontFamily: "MontserratBold",
+                      fontSize: 16,
+                      color: white,
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: yellow,
+                      foregroundColor: Colors.black,
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      textStyle: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  );
+                }),
               ],
             ),
           ),
