@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:tadchubite/dashboard/controller.dart';
 import 'package:tadchubite/pages/finance/finance.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
-import 'package:tadchubite/pages/manage%20menu/manage_product.dart';
+import 'package:tadchubite/pages/manage%20menu/tab_product.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/cust_queue.dart';
 import 'package:tadchubite/pages/order/order.dart';
 import 'package:tadchubite/pages/order/printer_page.dart';
+import 'package:tadchubite/pages/order/tab_order.dart';
 import 'package:tadchubite/pages/setting/printer_choice.dart';
 import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/color.dart';
@@ -24,8 +25,8 @@ class DashboardPage extends StatelessWidget {
 
     final List<Widget> menus = [
       FinanceReportPage(),
-      OrderQueuePage(),
-      ManageProductPage(),
+      TabOrder(),
+      TabProductPage(),
       PrinterChoice(),
     ];
 

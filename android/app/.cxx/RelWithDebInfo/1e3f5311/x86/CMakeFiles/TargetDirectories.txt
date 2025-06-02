@@ -1,0 +1,2 @@
+D:/RICO_RUS/Tugas Akhir/tadchubite/android/app/.cxx/RelWithDebInfo/1e3f5311/x86/CMakeFiles/edit_cache.dir
+D:/RICO_RUS/Tugas Akhir/tadchubite/android/app/.cxx/RelWithDebInfo/1e3f5311/x86/CMakeFiles/rebuild_cache.dir
