@@ -78,4 +78,21 @@ class OrderService {
     print("BODY: ${response.body}");
     return response.statusCode == 200;
   }
+
+  static Future<List<Order>> fetchOrderHistory(
+      String token, String range) async {
+    final response = await http.get(
+      Uri.parse('${ApiEndpoint.baseUrl}/orders/completed-history?range=$range'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      List data = jsonDecode(response.body)['data'];
+      return data.map((e) => Order.fromJson(e)).toList();
+    } else {
+      throw Exception('Gagal memuat riwayat order');
+    }
+  }
 }

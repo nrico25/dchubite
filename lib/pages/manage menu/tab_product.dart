@@ -5,7 +5,7 @@ import 'package:tadchubite/pages/manage%20menu/product_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/widget/color.dart';
 
-class ManageProductPage extends StatelessWidget {
+class TabProductPage extends StatelessWidget {
   final ProductController productController = Get.find();
 
   @override
