@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/shimer.dart';
@@ -8,8 +9,8 @@ class CardMenu extends StatelessWidget {
   final String products;
   final String categories;
   final String prices;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final Widget? editButton;
+  final Widget? deleteButton;
 
   const CardMenu({
     super.key,
@@ -17,8 +18,8 @@ class CardMenu extends StatelessWidget {
     required this.products,
     required this.categories,
     required this.prices,
-    required this.onEdit,
-    required this.onDelete,
+    this.editButton,
+    this.deleteButton,
   });
 
   @override
@@ -34,14 +35,11 @@ class CardMenu extends StatelessWidget {
         padding: const EdgeInsets.all(12.0),
         child: Row(
           children: [
-           ClipRRect(
+            ClipRRect(
               borderRadius: BorderRadius.circular(8),
               child: Stack(
                 children: [
-                  // Shimmer yang akan tampil saat gambar belum selesai loading
                   const ShimmerWidget.rectangular(width: 80, height: 80),
-
-                  // Gambar produk dengan loadingBuilder
                   Image.network(
                     image,
                     width: 80,
@@ -49,13 +47,14 @@ class CardMenu extends StatelessWidget {
                     fit: BoxFit.cover,
                     loadingBuilder: (context, child, loadingProgress) {
                       if (loadingProgress == null) {
-                        return child; // Gambar selesai loading, tampilkan
+                        return child;
                       } else {
-                        return const SizedBox(); // Sembunyikan sampai gambar selesai loading
+                        return const SizedBox();
                       }
                     },
                     errorBuilder: (context, error, stackTrace) {
-                      return Icon(Icons.broken_image, size: 80, color: Colors.grey);
+                      return const Icon(Icons.broken_image,
+                          size: 80, color: Colors.grey);
                     },
                   ),
                 ],
@@ -89,14 +88,8 @@ class CardMenu extends StatelessWidget {
             ),
             Row(
               children: [
-                IconButton(
-                  icon: Icon(Icons.edit, color: Colors.grey),
-                  onPressed: onEdit, 
-                ),
-                IconButton(
-                  icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: onDelete,
-                ),
+                if (editButton != null) editButton!,
+                if (deleteButton != null) deleteButton!,
               ],
             ),
           ],

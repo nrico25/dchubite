@@ -9,12 +9,14 @@ import '../manage%20menu/product_service.dart';
 
 class ProductController extends GetxController {
   final TextEditingController searchController = TextEditingController();
-  final Rxn<int> selectedCategory =
-      Rxn<int>(); 
+  final Rxn<int> selectedCategory = Rxn<int>();
   final Rx<File?> selectedImage = Rx<File?>(null);
   final RxBool isProductsLoaded = false.obs;
   var products = <Product>[].obs;
   var isLoading = false.obs;
+
+  var inactiveProducts = <Product>[].obs;
+  var isInactiveLoading = false.obs;
   final RxBool isImageLoading = false.obs;
   final AuthController authController = Get.find<AuthController>();
   var filteredProducts = <Product>[].obs;
@@ -49,6 +51,8 @@ class ProductController extends GetxController {
   void onInit() {
     super.onInit();
     fetchProducts();
+    fetchInactiveProducts();
+    
     ever(selectedCategory, (value) {
       print("Kategori berubah: $value");
     });
@@ -81,7 +85,8 @@ class ProductController extends GetxController {
 
       searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menambahkan produk: ',colorText: white,backgroundColor: yellow);
+      Get.snackbar('Error', 'Gagal menambahkan produk: ',
+          colorText: white, backgroundColor: yellow);
       print(e);
     } finally {
       isLoading.value = false;
@@ -115,7 +120,8 @@ class ProductController extends GetxController {
       products.removeWhere((p) => p.id == id);
       searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus produk: ',colorText: white,backgroundColor: yellow);
+      Get.snackbar('Error', 'Gagal menghapus produk: ',
+          colorText: white, backgroundColor: yellow);
     } finally {
       isLoading.value = false;
     }
@@ -130,4 +136,37 @@ class ProductController extends GetxController {
       }).toList());
     }
   }
+
+  Future<void> fetchInactiveProducts() async {
+    isInactiveLoading.value = true;
+    try {
+      var fetchedInactive =
+          await ProductService.fetchInactiveProducts(authController.token.value);
+      inactiveProducts.assignAll(fetchedInactive);
+    } catch (e) {
+      print('Error');
+    } finally {
+      isInactiveLoading.value = false;
+    }
+  }
+
+  Future<void> activateProduct(int id) async {
+    try {
+      await ProductService.activateProduct(authController.token.value, id);
+      var activatedProduct =
+          inactiveProducts.firstWhere((product) => product.id == id);
+      inactiveProducts.removeWhere((product) => product.id == id);
+      products.add(activatedProduct);
+
+    
+      inactiveProducts.refresh();
+      products.refresh();
+
+      Get.snackbar('Success', 'Produk berhasil diaktifkan',
+          backgroundColor: Colors.green, colorText: Colors.white);
+    } catch (e) {
+      Get.snackbar('Error', 'Gagal mengaktifkan produk: $e',
+          backgroundColor: Colors.red, colorText: Colors.white);
+}
+}
 }

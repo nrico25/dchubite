@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:tadchubite/dashboard/controller.dart';
 import 'package:tadchubite/pages/finance/finance.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
+import 'package:tadchubite/pages/manage%20menu/manage_product.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
 import 'package:tadchubite/pages/order/cust_queue.dart';
 import 'package:tadchubite/pages/order/order.dart';
@@ -24,7 +25,7 @@ class DashboardPage extends StatelessWidget {
     final List<Widget> menus = [
       FinanceReportPage(),
       OrderQueuePage(),
-      ProductPage(),
+      ManageProductPage(),
       PrinterChoice(),
     ];
 
@@ -139,7 +140,7 @@ class DashboardPage extends StatelessWidget {
                 ),
 
                 Padding(
-                  padding:  EdgeInsets.all(16.0),
+                  padding: EdgeInsets.all(16.0),
                   child: MyButton(
                     text: 'Log Out',
                     onPressed: () {
@@ -150,7 +151,6 @@ class DashboardPage extends StatelessWidget {
                     elevation: 0,
                     borderRadius: 10,
                   ),
-                 
                 ),
               ],
             ),
