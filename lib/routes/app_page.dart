@@ -5,10 +5,13 @@ import 'package:tadchubite/pages/login/login.dart';
 import 'package:tadchubite/pages/login/otp.dart' show ResetPasswordPage;
 import 'package:tadchubite/pages/manage%20menu/add_menu.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
+import 'package:tadchubite/pages/manage%20menu/tab_product.dart';
 import 'package:tadchubite/pages/order/confirm.dart';
 import 'package:tadchubite/pages/order/cust_queue.dart';
+import 'package:tadchubite/pages/order/history_order.dart';
 import 'package:tadchubite/pages/order/order.dart';
 import 'package:tadchubite/pages/order/order_cart.dart';
+import 'package:tadchubite/pages/order/tab_order.dart';
 import 'package:tadchubite/pages/setting/printer_choice.dart';
 
 class AppPages {
@@ -22,7 +25,10 @@ class AppPages {
     GetPage(name: '/setting', page: () => PrinterChoice(), binding: MyBindigs()),
     GetPage(name: '/nota', page: () => ConfirmPage(order: Get.arguments, ),),
     GetPage(name: '/queue', page: () => OrderQueuePage(), binding: MyBindigs()),
-    GetPage(name: '/otp', page: () => ResetPasswordPage(), binding: MyBindigs())
+    GetPage(name: '/otp', page: () => ResetPasswordPage(), binding: MyBindigs()),
+    GetPage(name: '/history', page: () => HistoryOrder(), binding: MyBindigs()),
+    GetPage(name: '/tabproduct', page: () => TabProductPage(), binding: MyBindigs()),
+    GetPage(name: '/taborder', page: () => TabOrder(), binding: MyBindigs()),
     
   ];
 }

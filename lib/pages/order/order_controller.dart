@@ -11,6 +11,8 @@ class OrderController extends GetxController {
   var products = <Product>[].obs;
   var filteredProducts = <Product>[].obs;
   var allPendingOrders = <Order>[].obs;
+  var orderHistories = <Order>[].obs;
+  var filteredOrderHistories = <Order>[].obs;
   var selectedProducts = <OrderItem>[].obs;
   var pendingOrders = <Order>[].obs;
   var customerName = "".obs;
@@ -177,6 +179,34 @@ class OrderController extends GetxController {
           final orderCodeMatch =
               order.orderCode?.toLowerCase().contains(query.toLowerCase()) ??
                   false;
+          return customerNameMatch || orderCodeMatch;
+        }).toList(),
+      );
+    }
+  }
+
+  Future<void> fetchOrderHistories(String range) async {
+    isLoading.value = true;
+    try {
+      final token = authController.token.value;
+      final fetched = await OrderService.fetchOrderHistory(token, range);
+      orderHistories.assignAll(fetched);
+    } catch (e) {
+      Get.snackbar('Error', 'Gagal memuat riwayat order');
+    } finally {
+      isLoading.value = false;
+}
+}
+ void searchOrderHistories(String query) {
+    if (query.isEmpty) {
+      filteredOrderHistories.assignAll(orderHistories);
+    } else {
+      filteredOrderHistories.assignAll(
+        orderHistories.where((order) {
+          final customerNameMatch =
+              order.customerName.toLowerCase().contains(query.toLowerCase());
+          final orderCodeMatch =
+              order.orderCode?.toLowerCase().contains(query.toLowerCase()) ?? false;
           return customerNameMatch || orderCodeMatch;
         }).toList(),
       );
