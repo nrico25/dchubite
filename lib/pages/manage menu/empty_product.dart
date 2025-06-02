@@ -14,7 +14,7 @@ class EmptyProductPage extends StatelessWidget {
             SizedBox(height: 150,),
             Image.asset("assets/empty_product.png"),
             SizedBox(height: 15,),
-            MyText(text: "Belum ada Product saat ini",fontFamily: "MontserratBold",fontSize: 20,),
+            MyText(text: "Belum ada Produk saat ini",fontFamily: "MontserratBold",fontSize: 20,),
           ],
         ),
       );
