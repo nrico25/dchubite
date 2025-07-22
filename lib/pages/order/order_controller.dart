@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/product_model.dart';
@@ -6,6 +7,7 @@ import 'package:tadchubite/pages/order/cart_controller.dart';
 import 'package:tadchubite/pages/order/order_model.dart';
 import 'package:tadchubite/pages/order/order_service.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/snackbar.dart';
 
 class OrderController extends GetxController {
   var products = <Product>[].obs;
@@ -50,7 +52,7 @@ class OrderController extends GetxController {
         print("Gagal mengambil produk: ");
       }
     } finally {
-      isLoading.value = false; 
+      isLoading.value = false;
     }
   }
 
@@ -61,8 +63,11 @@ class OrderController extends GetxController {
       existing.quantity++;
       selectedProducts.refresh();
     } else {
-      selectedProducts.add(
-          OrderItem(productId: product.id, quantity: 1, price: product.price, product: product));
+      selectedProducts.add(OrderItem(
+          productId: product.id,
+          quantity: 1,
+          price: product.price,
+          product: product));
     }
   }
 
@@ -74,7 +79,22 @@ class OrderController extends GetxController {
     if (customerName.value.isEmpty ||
         selectedProducts.isEmpty ||
         amountPaid.value <= 0) {
-      Get.snackbar("Ups!", "Data order nya belum lengkap", colorText: yellow,backgroundColor: grey, );
+CustomSnackbar(
+          title: "Ups!",
+          message: "Data order tidak lengkap",
+          backgroundColor: red,
+          icon: Icons.error,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratBold',
+            fontWeight: FontWeight.bold,
+            color: white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratRegular',
+            fontSize: 14,
+            color: white,
+          ),).show();
       paymentSucces.value = false;
       return false;
     }
@@ -89,8 +109,25 @@ class OrderController extends GetxController {
       );
 
       var response = await OrderService.createOrder(token, newOrder);
-      Get.snackbar("Success",
-          "Order berhasil dibuat: ${response['order']['order_code']}",  colorText: yellow,backgroundColor: grey,);
+
+      CustomSnackbar(
+        title: "Success",
+        message:
+            "Order berhasil dibuat: ${response['order']['order_code']} Menghapus produk",
+        backgroundColor: green,
+        icon: Icons.check,
+        titleStyle: TextStyle(
+          fontFamily: 'MontserratBold',
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: Colors.white70,
+        ),
+      ).show();
       paymentSucces.value = true;
       return true;
     } catch (e) {
@@ -140,10 +177,42 @@ class OrderController extends GetxController {
       bool success = await OrderService.markOrderAsSuccess(id, token);
       if (success) {
         pendingOrders.removeWhere((order) => order.id == id);
-        Get.snackbar('Success', 'Order marked as completed', colorText: yellow,backgroundColor: grey,);
+        CustomSnackbar(
+          title: "Success",
+          message: "Berhasil menyelesaikan order",
+          backgroundColor: green,
+          icon: Icons.check,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratRegular',
+            fontWeight: FontWeight.bold,
+            color: white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratBold',
+            fontSize: 14,
+            color: white,
+          ),
+        ).show();
         await fetchPendingOrders();
       } else {
-        Get.snackbar('Error', 'Gagal menyelesaikan order', colorText: yellow,backgroundColor: grey,);
+        CustomSnackbar(
+          title: "Error",
+          message: "Gagal menyelesaikan order",
+          backgroundColor: green,
+          icon: Icons.error,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratRegular',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratBold',
+            fontSize: 14,
+            color: Colors.white70,
+          ),
+        ).show();
       }
     } catch (e) {
       Get.snackbar('Error', 'Terjadi kesalahan: ');
@@ -169,8 +238,7 @@ class OrderController extends GetxController {
 
   void searchOrders(String query) {
     if (query.isEmpty) {
-      allPendingOrders
-          .assignAll(pendingOrders); 
+      allPendingOrders.assignAll(pendingOrders);
     } else {
       allPendingOrders.assignAll(
         pendingOrders.where((order) {
@@ -186,7 +254,7 @@ class OrderController extends GetxController {
   }
 
   Future<void> fetchOrderHistories(String range) async {
-    isLoading.value = true;
+    // isLoading.value = true;
     try {
       final token = authController.token.value;
       final fetched = await OrderService.fetchOrderHistory(token, range);
@@ -195,9 +263,10 @@ class OrderController extends GetxController {
       Get.snackbar('Error', 'Gagal memuat riwayat order');
     } finally {
       isLoading.value = false;
-}
-}
- void searchOrderHistories(String query) {
+    }
+  }
+
+  void searchOrderHistories(String query) {
     if (query.isEmpty) {
       filteredOrderHistories.assignAll(orderHistories);
     } else {
@@ -206,7 +275,8 @@ class OrderController extends GetxController {
           final customerNameMatch =
               order.customerName.toLowerCase().contains(query.toLowerCase());
           final orderCodeMatch =
-              order.orderCode?.toLowerCase().contains(query.toLowerCase()) ?? false;
+              order.orderCode?.toLowerCase().contains(query.toLowerCase()) ??
+                  false;
           return customerNameMatch || orderCodeMatch;
         }).toList(),
       );
