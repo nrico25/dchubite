@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/snackbar.dart';
 import '../manage%20menu/product_model.dart';
 import '../manage%20menu/product_service.dart';
 
@@ -52,7 +53,7 @@ class ProductController extends GetxController {
     super.onInit();
     fetchProducts();
     fetchInactiveProducts();
-    
+
     ever(selectedCategory, (value) {
       print("Kategori berubah: $value");
     });
@@ -85,8 +86,23 @@ class ProductController extends GetxController {
 
       searchProducts(searchController.text);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menambahkan produk: ',
-          colorText: white, backgroundColor: yellow);
+      CustomSnackbar(
+        title: "Error",
+        message: "Gagal menambahkan produk",
+        backgroundColor: red,
+        icon: Icons.delete,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show;
       print(e);
     } finally {
       isLoading.value = false;
@@ -107,7 +123,23 @@ class ProductController extends GetxController {
       }
       Get.back();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memperbarui produk: ');
+      CustomSnackbar(
+        title: "Error",
+        message: "Gagal memperbarui produk",
+        backgroundColor: red,
+        icon: Icons.delete,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show();
     } finally {
       isLoading.value = false;
     }
@@ -119,9 +151,25 @@ class ProductController extends GetxController {
       await ProductService.deleteProduct(authController.token.value, id);
       products.removeWhere((p) => p.id == id);
       searchProducts(searchController.text);
+      await fetchInactiveProducts();
     } catch (e) {
-      Get.snackbar('Error', 'Gagal menghapus produk: ',
-          colorText: white, backgroundColor: yellow);
+      CustomSnackbar(
+        title: "Error",
+        message: "Menghapus produk",
+        backgroundColor: red,
+        icon: Icons.delete,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show();
     } finally {
       isLoading.value = false;
     }
@@ -140,8 +188,8 @@ class ProductController extends GetxController {
   Future<void> fetchInactiveProducts() async {
     isInactiveLoading.value = true;
     try {
-      var fetchedInactive =
-          await ProductService.fetchInactiveProducts(authController.token.value);
+      var fetchedInactive = await ProductService.fetchInactiveProducts(
+          authController.token.value);
       inactiveProducts.assignAll(fetchedInactive);
     } catch (e) {
       print('Error');
@@ -157,16 +205,45 @@ class ProductController extends GetxController {
           inactiveProducts.firstWhere((product) => product.id == id);
       inactiveProducts.removeWhere((product) => product.id == id);
       products.add(activatedProduct);
-
-    
+      await fetchProducts();
       inactiveProducts.refresh();
       products.refresh();
 
-      Get.snackbar('Success', 'Produk berhasil diaktifkan',
-          backgroundColor: Colors.green, colorText: Colors.white);
+      CustomSnackbar(
+        title: "Error",
+        message: "Berhasil mengaktifkan produk",
+        backgroundColor: green,
+        icon: Icons.check,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      );
     } catch (e) {
-      Get.snackbar('Error', 'Gagal mengaktifkan produk: $e',
-          backgroundColor: Colors.red, colorText: Colors.white);
-}
-}
+      CustomSnackbar(
+        title: "Error",
+        message: "mengaktifkan produk",
+        backgroundColor: red,
+        icon: Icons.check,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show();
+    }
+  }
 }

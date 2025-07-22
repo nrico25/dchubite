@@ -6,6 +6,7 @@ import 'package:tadchubite/pages/finance/finance_model.dart';
 import 'package:tadchubite/pages/finance/finance_service.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/snackbar.dart';
 
 class ReportController extends GetxController {
   var weeklyReports = <FinanceGraph>[].obs;
@@ -31,20 +32,27 @@ class ReportController extends GetxController {
     fetchAllReports();
     loadSoldByCategory();
   }
+    @override
+  void onReady() {
+    super.onReady();
+
+    fetchAllReports();
+    loadSoldByCategory();
+  }
 
   Future<void> fetchAllReports() async {
     isLoading.value = true;
     try {
       String token = authController.token.value;
 
-      var weekly = await ReportService.fetchWeeklyReport(token);
-      weeklyReports.assignAll(weekly);
+  var weekly = await ReportService.fetchWeeklyReport(token);
+weeklyReports.assignAll(weekly);
 
-      var monthly = await ReportService.fetchMonthlyReport(token);
-      weeklyReports.assignAll(monthly);
+var monthly = await ReportService.fetchMonthlyReport(token);
+monthlyReports.assignAll(monthly);  // ✅ benar
 
-      var all = await ReportService.fetchAllReport(token);
-      weeklyReports.assignAll(all);
+var all = await ReportService.fetchAllReport(token);
+allReports.assignAll(all); 
 
       var food = await ReportService.fetchCategoryReport(token, 1);
       var drink = await ReportService.fetchCategoryReport(token, 2);
@@ -68,12 +76,22 @@ class ReportController extends GetxController {
       final result = await reportService.fetchSoldByCategory(today, token);
       categorySalesList.assignAll(result);
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Gagal memuat data: ',
-        colorText: yellow,
-        backgroundColor: grey,
-      );
+CustomSnackbar(
+          title: "Error",
+          message: "Gagal menyelesaikan order",
+          backgroundColor: red,
+          icon: Icons.error,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratBold',
+            fontWeight: FontWeight.bold,
+            color: white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratRegular',
+            fontSize: 14,
+            color: white,
+          ),).show();
     } finally {
       isLoading.value = false;
     }
@@ -132,12 +150,22 @@ class ReportController extends GetxController {
 
       print("Data laporan berdasarkan tanggal berhasil dimuat.");
     } catch (e) {
-      Get.snackbar(
-        "Ups!",
-        "Gagal mengambil laporan berdasarkan tanggal: ",
-        colorText: yellow,
-        backgroundColor: grey,
-      );
+CustomSnackbar(
+          title: "Error",
+          message: "Gagal Mengambil produk berdasarkan tanggal",
+          backgroundColor: red,
+          icon: Icons.delete,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratBold',
+            fontWeight: FontWeight.bold,
+            color: white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratRegular',
+            fontSize: 14,
+            color: white,
+          ),).show();
     } finally {
       isLoading.value = false;
     }
@@ -211,3 +239,4 @@ class ReportController extends GetxController {
 //   }
 // }
 }
+
