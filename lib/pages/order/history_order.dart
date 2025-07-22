@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tadchubite/pages/order/confirm.dart';
+import 'package:tadchubite/pages/order/detail_history.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart';
@@ -136,6 +138,13 @@ class HistoryOrder extends StatelessWidget {
                           ),
                           margin: const EdgeInsets.only(bottom: 16),
                           child: InkWell(
+                                                              onTap: () async {
+                                    final result = await Get.to(
+                                        () => DetailHistory(order: order));
+                                    if (result == true) {
+                                      await controller.fetchPendingOrders();
+                                    }
+                                  },
                             borderRadius: BorderRadius.circular(16),
                             child: Row(
                               children: [
