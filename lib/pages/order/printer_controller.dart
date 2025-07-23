@@ -107,7 +107,9 @@ class PrinterController extends GetxController {
       final resizedImage = img.copyResize(image, width: 250);
       bytes += generator.image(resizedImage, align: PosAlign.center);
     }
-
+    final String now = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
+    bytes += generator.text('$now',
+        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size1));
 
     bytes += generator.text('Gg. 10 Kaliputu, Kabupaten Kudus',
         styles: PosStyles(align: PosAlign.center));
@@ -122,28 +124,42 @@ class PrinterController extends GetxController {
     cartItems.forEach((product, qty) {
       final subtotal = product.price * qty;
       bytes += generator.text(
-          '${'${product.name} x$qty'.padRight(20)}Rp ${formatCurrency(subtotal)}');
+        '${product.name}',
+        styles: PosStyles(bold: true),
+      );
+      final left = '${qty} x Rp ${formatCurrency(product.price)}';
+      final right = 'Rp ${formatCurrency(subtotal)}';
+      bytes += generator.row([
+        PosColumn(
+          text: left,
+          width: 6,
+          styles: PosStyles(align: PosAlign.left, fontType: PosFontType.fontA),
+        ),
+        PosColumn(
+          text: right,
+          width: 6,
+          styles: PosStyles(align: PosAlign.right, fontType: PosFontType.fontA),
+        ),
+      ]);
     });
     bytes += generator.text('--------------------------------');
     bytes += generator.text('Nominal     : Rp ${formatCurrency(amountPaid)}');
-        bytes += generator.text('Total       : Rp ${formatCurrency(total)}');
+    bytes += generator.text('Total       : Rp ${formatCurrency(total)}');
     bytes += generator.text('------------------------------ -');
     bytes += generator.text('Kembalian   : Rp ${formatCurrency(change)}');
     bytes += generator.feed(2);
     bytes += generator.text('Terima kasih!',
         styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
 
-    final String now = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
-    bytes += generator.text('$now',
-        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size1));
+    bytes += generator.feed(2);
 
     await PrintBluetoothThermal.writeBytes(bytes);
   }
 
   String formatCurrency(num number) {
     return number.toStringAsFixed(0).replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match match) => '${match[1]},',
-    );
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match match) => '${match[1]},',
+        );
   }
 }

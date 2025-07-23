@@ -40,52 +40,58 @@ class PrinterChoice extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final device = controller.devices[index];
                     return ListTile(
-                      title: MyText(
-                        text: device.name ?? "Tidak diketahui",
-                        fontFamily: "MontserratBold",
-                      ),
-                      subtitle: MyText(
-                        text: device.macAdress ?? "Tidak ada alamat",
-                        fontFamily: "MontserratRegular",
-                      ),
-                      trailing: controller.isConnected.value
-                          ? IconButton(
-                              onPressed: () =>
-                                  controller.connectToPrinter(device.macAdress!),
-                              icon: Icon(
-                                Icons.bluetooth_connected,
-                                color: grey,
-                                size: 30,
-                              ),
-                            )
-                          : IconButton(
-                              onPressed: () =>
-                                  controller.connectToPrinter(device.macAdress!),
-                              icon: Icon(
-                                Icons.bluetooth,
-                                color: grey,
-                                size: 30,
-                              ),
-                            )
-                      
-                      
+                        title: MyText(
+                          text: device.name ?? "Tidak diketahui",
+                          fontFamily: "MontserratBold",
+                        ),
+                        subtitle: MyText(
+                          text: device.macAdress ?? "Tidak ada alamat",
+                          fontFamily: "MontserratRegular",
+                        ),
+                        trailing: controller.isConnected.value
+                            ? IconButton(
+                                onPressed: () => controller
+                                    .disconnectPrinter(),
+                                icon: Icon(
+                                  Icons.bluetooth_connected,
+                                  color: grey,
+                                  size: 30,
+                                ),
+                              )
+                            : IconButton(
+                                onPressed: () => controller
+                                    .connectToPrinter(device.macAdress!),
+                                icon: Icon(
+                                  Icons.bluetooth,
+                                  color: grey,
+                                  size: 30,
+                                ),
+                              )
 
-                      // MyButton(
-                      //   onPressed: () => controller.connectToPrinter(device.macAdress!),
-                      //   icon: Icons.bluetooth_connected,
-                      //   text: "",
-                      //   color: grey,
-                      //   height: 40,
-                      //   width: 75,
-                      // ),
-                    );
+                        // MyButton(
+                        //   onPressed: () => controller.connectToPrinter(device.macAdress!),
+                        //   icon: Icons.bluetooth_connected,
+                        //   text: "",
+                        //   color: grey,
+                        //   height: 40,
+                        //   width: 75,
+                        // ),
+                        );
                   },
                 ),
               ),
               if (controller.isConnected.value)
-                TextButton(
-                  onPressed: controller.disconnectPrinter,
-                  child: const Text("Disconnect"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: MyButton(
+                    text: "Disconnect",
+                    onPressed: controller.disconnectPrinter,
+                    color:
+                        Colors.red, // atau gunakan warna lain sesuai kebutuhan
+                    height: 56,
+                    elevation: 0,
+                    borderRadius: 12,
+                  ),
                 ),
             ],
           )),
