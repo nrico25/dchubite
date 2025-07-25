@@ -12,6 +12,8 @@ class CustomSnackbar {
   final IconData? icon;
   final TextStyle? titleStyle;
   final TextStyle? messageStyle;
+  final VoidCallback? onPressed;     // <-- Tambahkan ini
+  final String? buttonText;          // <-- Tambahkan ini juga
 
   CustomSnackbar({
     required this.title,
@@ -24,6 +26,8 @@ class CustomSnackbar {
     this.icon,
     this.titleStyle,
     this.messageStyle,
+    this.onPressed,       // <-- Opsional tombol
+    this.buttonText,      // <-- Opsional teks tombol
   });
 
   void show() {
@@ -53,6 +57,15 @@ class CustomSnackbar {
       icon: icon != null ? Icon(icon, color: messageColor) : null,
       borderRadius: 10,
       margin: const EdgeInsets.all(12),
+      mainButton: onPressed != null
+          ? TextButton(
+              onPressed: onPressed,
+              child: Text(
+                buttonText ?? "OK",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          : null,
     );
   }
 }

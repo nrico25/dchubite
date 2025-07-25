@@ -22,7 +22,7 @@ class HistoryOrder extends StatelessWidget {
         child: Wrap(
           children: [
             ListTile(
-              title: const Text("7 Hari Terakhir"),
+              title:  MyText( text: "7 Hari Terakhir", fontFamily: 'MontserratRegular',),
               onTap: () {
                 controller.fetchOrderHistories("7");
                 Navigator.pop(context);

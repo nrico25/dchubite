@@ -1,7 +1,9 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tadchubite/pages/login/login_service.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/snackbar.dart';
 
 class AuthController extends GetxController {
   var token = "".obs;
@@ -24,7 +26,22 @@ class AuthController extends GetxController {
       await _saveToken(newToken);
       Get.offAllNamed('/dashboard');
     } catch (e) {
-      Get.snackbar('Error', 'Username atau password salah', colorText: yellow, backgroundColor: grey);
+      CustomSnackbar(
+        title: "Login Gagal",
+        message: "Username atau password salah.",
+        backgroundColor: red,
+        icon: Icons.error,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          color: Colors.white,
+        ),
+        messageStyle: TextStyle(
+          fontSize: 14,
+          fontFamily: 'MontserratRegular',
+          color: Colors.white,
+        ),
+      ).show();
     }
   }
 

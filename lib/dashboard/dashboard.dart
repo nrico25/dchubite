@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:tadchubite/dashboard/controller.dart';
 import 'package:tadchubite/pages/finance/finance.dart';
+import 'package:tadchubite/pages/finance/finance_controller.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/pages/manage%20menu/tab_product.dart';
 import 'package:tadchubite/pages/manage%20menu/products.dart';
@@ -22,6 +23,7 @@ class DashboardPage extends StatelessWidget {
     final DashboardController dashboardController =
         Get.put(DashboardController());
     final AuthController authController = Get.put(AuthController());
+    final ReportController financeController = Get.put(ReportController());
 
     final List<Widget> menus = [
       FinanceReportPage(),
@@ -113,6 +115,15 @@ class DashboardPage extends StatelessWidget {
                       return GestureDetector(
                         onTap: () {
                           dashboardController.changeMenu(index);
+
+                          // Cek kalau index == 0 (halaman Finance), maka panggil fetch
+                          if (index == 0) {
+                            final financeController =
+                                Get.find<ReportController>();
+                            financeController
+                                .fetchAllReports(); // Ganti sesuai nama fungsi kamu
+                          }
+
                           Navigator.pop(context);
                         },
                         child: Container(
