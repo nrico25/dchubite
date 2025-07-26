@@ -137,7 +137,7 @@ class CardOrder extends StatelessWidget {
                     )
                   : Container(
                       decoration: BoxDecoration(
-                        color: Colors.transparent,
+                        color: white,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
@@ -147,7 +147,7 @@ class CardOrder extends StatelessWidget {
                               controller.decrement(imageUrl);
                               onRemove(); // ✅ panggil decrease di cartController
                             },
-                            icon: Icon(Icons.remove, color: black),
+                            icon: Icon(Icons.remove, color: white),
                             style: IconButton.styleFrom(
                               backgroundColor: yellow,
                               shape: RoundedRectangleBorder(
@@ -169,7 +169,7 @@ class CardOrder extends StatelessWidget {
                               controller.increment(imageUrl);
                               onAdd();
                             },
-                            icon: Icon(Icons.add, color: black),
+                            icon: Icon(Icons.add, color: white),
                             style: IconButton.styleFrom(
                               backgroundColor: yellow,
                               shape: RoundedRectangleBorder(

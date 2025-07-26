@@ -22,9 +22,23 @@ class TabProductPage extends StatelessWidget {
             dividerColor: Colors.transparent,
             tabs: [
               Tab(
-                text: 'Active',
-              ),
-              Tab(text: 'Inactive'),
+                  child: Text(
+                'Active',
+                style: TextStyle(
+                  fontFamily: 'MontserratRegular', // Sama di sini
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              )),
+              Tab(
+                  child: Text(
+                'Inactive',
+                style: TextStyle(
+                  fontFamily: 'MontserratRegular', // Sama di sini
+                  fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                ),
+              )),
             ],
           ),
         ),

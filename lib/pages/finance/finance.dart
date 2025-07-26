@@ -6,6 +6,7 @@ import 'package:tadchubite/pages/finance/download_controller.dart';
 import 'package:tadchubite/pages/finance/finance_controller.dart';
 import 'package:tadchubite/widget/card_finance.dart';
 import 'package:tadchubite/widget/color.dart';
+import 'package:tadchubite/widget/confirmation_message.dart';
 import 'package:tadchubite/widget/text.dart';
 
 class FinanceReportPage extends StatelessWidget {
@@ -140,14 +141,27 @@ class FinanceReportPage extends StatelessWidget {
                         0,
                     items: [],
                   ),
-                  SizedBox(height: 20,),
-                     Obx(() {
+                SizedBox(
+                  height: 20,
+                ),
+                Obx(() {
                   if (controller.isDownloading.value) {
                     return Center(child: CircularProgressIndicator());
                   }
                   return ElevatedButton.icon(
-                    onPressed: () {
-                      downloadController.downloadMonthlyReport();
+                    onPressed: () async {
+                      final confirm = await ConfirmationMessage(
+                        context: context,
+                        title: "Konfirmasi",
+                        message:
+                            "Apakah anda yakin ingin mendownload laporan?",
+                        cancelColor: Colors.grey,
+                        confirmColor: Colors.green,
+                      );
+
+                      if (confirm == true) {
+                        downloadController.downloadMonthlyReport();
+                      }
                     },
                     icon: Icon(
                       Icons.download,

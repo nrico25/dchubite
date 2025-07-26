@@ -32,7 +32,8 @@ class ReportController extends GetxController {
     fetchAllReports();
     loadSoldByCategory();
   }
-    @override
+
+  @override
   void onReady() {
     super.onReady();
 
@@ -45,14 +46,14 @@ class ReportController extends GetxController {
     try {
       String token = authController.token.value;
 
-  var weekly = await ReportService.fetchWeeklyReport(token);
-weeklyReports.assignAll(weekly);
+      var weekly = await ReportService.fetchWeeklyReport(token);
+      weeklyReports.assignAll(weekly);
 
-var monthly = await ReportService.fetchMonthlyReport(token);
-monthlyReports.assignAll(monthly);  // ✅ benar
+      var monthly = await ReportService.fetchMonthlyReport(token);
+      monthlyReports.assignAll(monthly); // ✅ benar
 
-var all = await ReportService.fetchAllReport(token);
-allReports.assignAll(all); 
+      var all = await ReportService.fetchAllReport(token);
+      allReports.assignAll(all);
 
       var food = await ReportService.fetchCategoryReport(token, 1);
       var drink = await ReportService.fetchCategoryReport(token, 2);
@@ -76,22 +77,23 @@ allReports.assignAll(all);
       final result = await reportService.fetchSoldByCategory(today, token);
       categorySalesList.assignAll(result);
     } catch (e) {
-CustomSnackbar(
-          title: "Error",
-          message: "Gagal menyelesaikan order",
-          backgroundColor: red,
-          icon: Icons.error,
-          titleStyle: TextStyle(
-            fontSize: 16,
-            fontFamily: 'MontserratBold',
-            fontWeight: FontWeight.bold,
-            color: white,
-          ),
-          messageStyle: TextStyle(
-            fontFamily: 'MontserratRegular',
-            fontSize: 14,
-            color: white,
-          ),).show();
+      CustomSnackbar(
+        title: "Error",
+        message: "Gagal menyelesaikan order",
+        backgroundColor: red,
+        icon: Icons.error,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show();
     } finally {
       isLoading.value = false;
     }
@@ -150,22 +152,23 @@ CustomSnackbar(
 
       print("Data laporan berdasarkan tanggal berhasil dimuat.");
     } catch (e) {
-CustomSnackbar(
-          title: "Error",
-          message: "Gagal Mengambil produk berdasarkan tanggal",
-          backgroundColor: red,
-          icon: Icons.delete,
-          titleStyle: TextStyle(
-            fontSize: 16,
-            fontFamily: 'MontserratBold',
-            fontWeight: FontWeight.bold,
-            color: white,
-          ),
-          messageStyle: TextStyle(
-            fontFamily: 'MontserratRegular',
-            fontSize: 14,
-            color: white,
-          ),).show();
+      CustomSnackbar(
+        title: "Error",
+        message: "Gagal Mengambil produk berdasarkan tanggal",
+        backgroundColor: red,
+        icon: Icons.delete,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show();
     } finally {
       isLoading.value = false;
     }
@@ -239,4 +242,3 @@ CustomSnackbar(
 //   }
 // }
 }
-

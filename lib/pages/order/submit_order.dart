@@ -10,6 +10,7 @@ import 'package:tadchubite/widget/button.dart';
 import 'package:tadchubite/widget/card_order.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/confirmation_message.dart';
+import 'package:tadchubite/widget/snackbar.dart';
 import 'package:tadchubite/widget/text.dart';
 
 class SubmitOrderPage extends StatelessWidget {
@@ -36,8 +37,23 @@ class SubmitOrderPage extends StatelessWidget {
       final printer = Get.find<PrinterController>();
 
       if (!printer.isConnected.value) {
-        Get.snackbar("Printer belum terhubung",
-            "Silakan hubungkan printer terlebih dahulu.");
+       CustomSnackbar(
+          title: "Printer belum terhubung",
+          message: "Silakan hubungkan printer terlebih dahulu.",
+          backgroundColor: red,
+          icon: Icons.error,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratRegular',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratBold',
+            fontSize: 14,
+            color: Colors.white70,
+          ),
+        ).show();
 
         Get.toNamed('/setting');
         return;

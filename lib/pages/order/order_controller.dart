@@ -113,7 +113,7 @@ CustomSnackbar(
       CustomSnackbar(
         title: "Success",
         message:
-            "Order berhasil dibuat: ${response['order']['order_code']} Menghapus produk",
+            "Order berhasil dibuat: ${response['order']['order_code']} ",
         backgroundColor: green,
         icon: Icons.check,
         titleStyle: TextStyle(
@@ -199,7 +199,7 @@ CustomSnackbar(
         CustomSnackbar(
           title: "Error",
           message: "Gagal menyelesaikan order",
-          backgroundColor: green,
+          backgroundColor: red,
           icon: Icons.error,
           titleStyle: TextStyle(
             fontSize: 16,
@@ -260,7 +260,23 @@ CustomSnackbar(
       final fetched = await OrderService.fetchOrderHistory(token, range);
       orderHistories.assignAll(fetched);
     } catch (e) {
-      Get.snackbar('Error', 'Gagal memuat riwayat order');
+      CustomSnackbar(
+          title: "Error",
+          message: "Gagal mengambil riwayat order",
+          backgroundColor: red,
+          icon: Icons.error,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratRegular',
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratBold',
+            fontSize: 14,
+            color: Colors.white70,
+          ),
+        ).show();
     } finally {
       isLoading.value = false;
     }
