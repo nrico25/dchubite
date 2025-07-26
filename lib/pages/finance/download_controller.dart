@@ -163,6 +163,7 @@ class DownloadController extends GetxController with WidgetsBindingObserver {
           OpenFile.open(file.path);
           Get.back(); // close snackbar jika diinginkan
         },
+        buttonText: 'Open', // teks tombol untuk membuka laporan
       ).show();
     } catch (e) {
            CustomSnackbar(
