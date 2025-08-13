@@ -131,7 +131,23 @@ CustomSnackbar(
       paymentSucces.value = true;
       return true;
     } catch (e) {
-      Get.snackbar("Error", "");
+       CustomSnackbar(
+          title: "Ups!",
+          message: "Nominal pembayaran kurang",
+          backgroundColor: red,
+          icon: Icons.error,
+          titleStyle: TextStyle(
+            fontSize: 16,
+            fontFamily: 'MontserratRegular',
+            fontWeight: FontWeight.bold,
+            color: white,
+          ),
+          messageStyle: TextStyle(
+            fontFamily: 'MontserratBold',
+            fontSize: 14,
+            color: white,
+          ),
+        ).show();
       paymentSucces.value = false;
       return false;
     }

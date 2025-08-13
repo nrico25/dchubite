@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart'; // <- Tambahkan ini
 import 'package:tadchubite/pages/order/confirm.dart';
 import 'package:tadchubite/pages/order/detail_history.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
@@ -22,7 +23,10 @@ class HistoryOrder extends StatelessWidget {
         child: Wrap(
           children: [
             ListTile(
-              title:  MyText( text: "7 Hari Terakhir", fontFamily: 'MontserratRegular',),
+              title: MyText(
+                text: "7 Hari Terakhir",
+                fontFamily: 'MontserratRegular',
+              ),
               onTap: () {
                 controller.fetchOrderHistories("7");
                 Navigator.pop(context);
@@ -48,7 +52,17 @@ class HistoryOrder extends StatelessWidget {
     );
   }
 
- @override
+  // Fungsi untuk memformat tanggal menjadi: Jumat, 01-08-2025
+  String _formatTanggal(String tanggal) {
+    try {
+      DateTime parsedDate = DateTime.parse(tanggal);
+      return DateFormat('E, dd MMM yyyy').format(parsedDate);
+    } catch (e) {
+      return tanggal;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     controller.fetchOrderHistories("");
 
@@ -125,7 +139,7 @@ class HistoryOrder extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8),
                         child: MyText(
-                          text: date,
+                          text: _formatTanggal(date), // <- Di sini perubahan terjadi
                           fontFamily: "MontserratBold",
                           fontSize: 16,
                           color: darkBlue,
@@ -138,13 +152,13 @@ class HistoryOrder extends StatelessWidget {
                           ),
                           margin: const EdgeInsets.only(bottom: 16),
                           child: InkWell(
-                                                              onTap: () async {
-                                    final result = await Get.to(
-                                        () => DetailHistory(order: order));
-                                    if (result == true) {
-                                      await controller.fetchPendingOrders();
-                                    }
-                                  },
+                            onTap: () async {
+                              final result = await Get.to(
+                                  () => DetailHistory(order: order));
+                              if (result == true) {
+                                await controller.fetchPendingOrders();
+                              }
+                            },
                             borderRadius: BorderRadius.circular(16),
                             child: Row(
                               children: [
@@ -195,7 +209,6 @@ class HistoryOrder extends StatelessWidget {
           ],
         );
       }),
-);
-}
-
+    );
+  }
 }
