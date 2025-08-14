@@ -269,34 +269,41 @@ CustomSnackbar(
     }
   }
 
-  Future<void> fetchOrderHistories(String range) async {
-    // isLoading.value = true;
-    try {
-      final token = authController.token.value;
-      final fetched = await OrderService.fetchOrderHistory(token, range);
-      orderHistories.assignAll(fetched);
-    } catch (e) {
-      CustomSnackbar(
-          title: "Error",
-          message: "Gagal mengambil riwayat order",
-          backgroundColor: red,
-          icon: Icons.error,
-          titleStyle: TextStyle(
-            fontSize: 16,
-            fontFamily: 'MontserratRegular',
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          messageStyle: TextStyle(
-            fontFamily: 'MontserratBold',
-            fontSize: 14,
-            color: Colors.white70,
-          ),
-        ).show();
-    } finally {
-      isLoading.value = false;
-    }
+Future<void> fetchOrderHistories(String range) async {
+  isLoading.value = true; 
+
+  try {
+    final token = authController.token.value;
+
+   
+    final fetched = await OrderService.fetchOrderHistory(token, range);
+
+
+    orderHistories.assignAll(fetched);
+  } catch (e) {
+
+    CustomSnackbar(
+      title: "Error",
+      message: "Gagal mengambil riwayat order",
+      backgroundColor: red,
+      icon: Icons.error,
+      titleStyle: const TextStyle(
+        fontSize: 16,
+        fontFamily: 'MontserratRegular',
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      messageStyle: const TextStyle(
+        fontFamily: 'MontserratBold',
+        fontSize: 14,
+        color: Colors.white70,
+      ),
+    ).show();
+  } finally {
+    isLoading.value = false; // matikan loading
   }
+}
+
 
   void searchOrderHistories(String query) {
     if (query.isEmpty) {
