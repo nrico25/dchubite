@@ -22,7 +22,7 @@ class OrderQueuePage extends StatelessWidget {
               child: CustomTextField(
                 width: double.infinity,
                 controller: searchController,
-                hintText: 'Cari antrian order disini',
+                hintText: 'Cari nama pelanggan disini',
                 keyboardType: TextInputType.text,
                 borderColor: Colors.grey.shade300,
                 borderWidth: 1.0,
@@ -49,7 +49,7 @@ class OrderQueuePage extends StatelessWidget {
                               SizedBox(height: 200),
                               Center(
                                   child: MyText(
-                                      text: "Belum ada antrian Order",
+                                      text: "Belum ada Pesnanan",
                                       fontFamily: "MontserratBold",
                                       fontSize: 20,
                                       color: black)),

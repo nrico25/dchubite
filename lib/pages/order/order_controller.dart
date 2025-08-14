@@ -79,22 +79,23 @@ class OrderController extends GetxController {
     if (customerName.value.isEmpty ||
         selectedProducts.isEmpty ||
         amountPaid.value <= 0) {
-CustomSnackbar(
-          title: "Ups!",
-          message: "Data order tidak lengkap",
-          backgroundColor: red,
-          icon: Icons.error,
-          titleStyle: TextStyle(
-            fontSize: 16,
-            fontFamily: 'MontserratBold',
-            fontWeight: FontWeight.bold,
-            color: white,
-          ),
-          messageStyle: TextStyle(
-            fontFamily: 'MontserratRegular',
-            fontSize: 14,
-            color: white,
-          ),).show();
+      CustomSnackbar(
+        title: "Ups!",
+        message: "Data order tidak lengkap",
+        backgroundColor: red,
+        icon: Icons.error,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratBold',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratRegular',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show();
       paymentSucces.value = false;
       return false;
     }
@@ -112,8 +113,7 @@ CustomSnackbar(
 
       CustomSnackbar(
         title: "Success",
-        message:
-            "Order berhasil dibuat: ${response['order']['order_code']} ",
+        message: "Order berhasil dibuat: ${response['order']['order_code']} ",
         backgroundColor: green,
         icon: Icons.check,
         titleStyle: TextStyle(
@@ -131,23 +131,23 @@ CustomSnackbar(
       paymentSucces.value = true;
       return true;
     } catch (e) {
-       CustomSnackbar(
-          title: "Ups!",
-          message: "Nominal pembayaran kurang",
-          backgroundColor: red,
-          icon: Icons.error,
-          titleStyle: TextStyle(
-            fontSize: 16,
-            fontFamily: 'MontserratRegular',
-            fontWeight: FontWeight.bold,
-            color: white,
-          ),
-          messageStyle: TextStyle(
-            fontFamily: 'MontserratBold',
-            fontSize: 14,
-            color: white,
-          ),
-        ).show();
+      CustomSnackbar(
+        title: "Ups!",
+        message: "Nominal pembayaran kurang",
+        backgroundColor: red,
+        icon: Icons.error,
+        titleStyle: TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratRegular',
+          fontWeight: FontWeight.bold,
+          color: white,
+        ),
+        messageStyle: TextStyle(
+          fontFamily: 'MontserratBold',
+          fontSize: 14,
+          color: white,
+        ),
+      ).show();
       paymentSucces.value = false;
       return false;
     }
@@ -269,41 +269,35 @@ CustomSnackbar(
     }
   }
 
-Future<void> fetchOrderHistories(String range) async {
-  isLoading.value = true; 
+  Future<void> fetchOrderHistories(String range) async {
+    try {
+      final token = authController.token.value;
 
-  try {
-    final token = authController.token.value;
+      final fetched = await OrderService.fetchOrderHistory(token, range);
 
-   
-    final fetched = await OrderService.fetchOrderHistory(token, range);
-
-
-    orderHistories.assignAll(fetched);
-  } catch (e) {
-
-    CustomSnackbar(
-      title: "Error",
-      message: "Gagal mengambil riwayat order",
-      backgroundColor: red,
-      icon: Icons.error,
-      titleStyle: const TextStyle(
-        fontSize: 16,
-        fontFamily: 'MontserratRegular',
-        fontWeight: FontWeight.bold,
-        color: Colors.white,
-      ),
-      messageStyle: const TextStyle(
-        fontFamily: 'MontserratBold',
-        fontSize: 14,
-        color: Colors.white70,
-      ),
-    ).show();
-  } finally {
-    isLoading.value = false; // matikan loading
+      orderHistories.assignAll(fetched);
+    } catch (e) {
+      CustomSnackbar(
+        title: "Error",
+        message: "Gagal mengambil riwayat order",
+        backgroundColor: red,
+        icon: Icons.error,
+        titleStyle: const TextStyle(
+          fontSize: 16,
+          fontFamily: 'MontserratRegular',
+          fontWeight: FontWeight.bold,
+          color: Colors.white,
+        ),
+        messageStyle: const TextStyle(
+          fontFamily: 'MontserratBold',
+          fontSize: 14,
+          color: Colors.white70,
+        ),
+      ).show();
+    } finally {
+      isLoading.value = false; // matikan loading
+    }
   }
-}
-
 
   void searchOrderHistories(String query) {
     if (query.isEmpty) {

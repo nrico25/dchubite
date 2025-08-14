@@ -3,12 +3,13 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tadchubite/pages/login/auth_controller.dart';
 import 'package:tadchubite/routes/app_page.dart';
-
+import 'package:intl/date_symbol_data_local.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); // Pastikan binding terinisialisasi
+  await initializeDateFormatting('id_ID', null);
+
   runApp(MyApp());
-  
 }
 
 class MyApp extends StatelessWidget {
@@ -25,17 +26,17 @@ class MyApp extends StatelessWidget {
       future: _getToken(),
       builder: (context, snapshot) {
         if (!snapshot.hasData) {
-          return CircularProgressIndicator(); 
+          return CircularProgressIndicator();
         }
 
-        final initialRoute = snapshot.data!.isNotEmpty ? '/dashboard' : '/login';
+        final initialRoute =
+            snapshot.data!.isNotEmpty ? '/dashboard' : '/login';
 
         return GetMaterialApp(
-          
           debugShowCheckedModeBanner: false,
           title: 'POS DCHubite',
           initialRoute: initialRoute,
-          getPages:AppPages.routes,
+          getPages: AppPages.routes,
         );
       },
     );

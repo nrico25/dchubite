@@ -34,7 +34,7 @@ class DashboardPage extends StatelessWidget {
 
     final List<String> titles = [
       "Dashboard",
-      "Antrian Pelanggan",
+      "Antrian Pesanan",
       "Produk",
       "Pengaturan",
     ];

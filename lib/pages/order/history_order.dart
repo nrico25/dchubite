@@ -56,7 +56,7 @@ class HistoryOrder extends StatelessWidget {
   String _formatTanggal(String tanggal) {
     try {
       DateTime parsedDate = DateTime.parse(tanggal);
-      return DateFormat('E, dd MMM yyyy').format(parsedDate);
+    return DateFormat('EEEE, dd MMM yyyy', 'id_ID').format(parsedDate);
     } catch (e) {
       return tanggal;
     }
