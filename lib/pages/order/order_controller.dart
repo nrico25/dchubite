@@ -33,6 +33,7 @@ class OrderController extends GetxController {
     fetchProducts();
     fetchPendingOrders();
     print("onInit() selesai");
+    fetchOrderHistories("7");
   }
 
   Future<void> fetchProducts() async {
@@ -270,32 +271,38 @@ class OrderController extends GetxController {
   }
 
   Future<void> fetchOrderHistories(String range) async {
+    isLoading.value = true;
+
     try {
       final token = authController.token.value;
-
       final fetched = await OrderService.fetchOrderHistory(token, range);
 
       orderHistories.assignAll(fetched);
     } catch (e) {
-      CustomSnackbar(
-        title: "Error",
-        message: "Gagal mengambil riwayat order",
-        backgroundColor: red,
-        icon: Icons.error,
-        titleStyle: const TextStyle(
-          fontSize: 16,
-          fontFamily: 'MontserratRegular',
-          fontWeight: FontWeight.bold,
-          color: Colors.white,
-        ),
-        messageStyle: const TextStyle(
-          fontFamily: 'MontserratBold',
-          fontSize: 14,
-          color: Colors.white70,
-        ),
-      ).show();
+      // Kosongkan list supaya UI tidak menampilkan data lama
+      orderHistories.clear();
+
+      // Snackbar error
+      // CustomSnackbar(
+      //   title: "Error",
+      //   message: "Gagal mengambil riwayat order",
+      //   backgroundColor: red,
+      //   icon: Icons.error,
+      //   titleStyle: const TextStyle(
+      //     fontSize: 16,
+      //     fontFamily: 'MontserratRegular',
+      //     fontWeight: FontWeight.bold,
+      //     color: Colors.white,
+      //   ),
+      //   messageStyle: const TextStyle(
+      //     fontFamily: 'MontserratBold',
+      //     fontSize: 14,
+      //     color: Colors.white70,
+      //   ),
+      // ).show();
+      print("Gagal mengambil riwayat order: $e");
     } finally {
-      isLoading.value = false; // matikan loading
+      isLoading.value = false;
     }
   }
 

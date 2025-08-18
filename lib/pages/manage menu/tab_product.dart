@@ -23,7 +23,7 @@ class TabProductPage extends StatelessWidget {
             tabs: [
               Tab(
                   child: Text(
-                'Active',
+                'Produk Tersedia',
                 style: TextStyle(
                   fontFamily: 'MontserratRegular', // Sama di sini
                   fontWeight: FontWeight.bold,
@@ -32,7 +32,7 @@ class TabProductPage extends StatelessWidget {
               )),
               Tab(
                   child: Text(
-                'Inactive',
+                'Produk Tidak Aktif',
                 style: TextStyle(
                   fontFamily: 'MontserratRegular', // Sama di sini
                   fontWeight: FontWeight.bold,

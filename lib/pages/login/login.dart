@@ -32,7 +32,7 @@ class Login extends StatelessWidget {
                 ),
                 SizedBox(height: 40),
                 MyText(
-                  text: "Username",
+                  text: "Email",
                   fontFamily: "MontserratBold",
                   fontSize: 16,
                 ),

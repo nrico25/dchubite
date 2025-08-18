@@ -75,7 +75,7 @@ class FinanceReportPage extends StatelessWidget {
 
                         if (selectedDate != null) {
                           formattedDate.value =
-                              DateFormat('E, dd MMM yyyy').format(selectedDate);
+                              DateFormat('EEEE, dd MMMM yyyy', 'id_ID').format(selectedDate);
                           controller.getCategoryReportByDate(
                               DateFormat('yyyy-MM-dd').format(selectedDate));
                         }

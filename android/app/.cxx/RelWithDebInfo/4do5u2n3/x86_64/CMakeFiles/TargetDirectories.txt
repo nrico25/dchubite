@@ -1,0 +1,2 @@
+D:/decubit/dchubite/android/app/.cxx/RelWithDebInfo/4do5u2n3/x86_64/CMakeFiles/edit_cache.dir
+D:/decubit/dchubite/android/app/.cxx/RelWithDebInfo/4do5u2n3/x86_64/CMakeFiles/rebuild_cache.dir

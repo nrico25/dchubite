@@ -154,7 +154,7 @@ class DashboardPage extends StatelessWidget {
                 Padding(
                   padding: EdgeInsets.all(16.0),
                   child: MyButton(
-                    text: 'Log Out',
+                    text: 'Keluar',
                     onPressed: () {
                       authController.logout();
                     },
