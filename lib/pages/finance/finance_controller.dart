@@ -31,6 +31,7 @@ class ReportController extends GetxController {
     super.onInit();
     fetchAllReports();
     loadSoldByCategory();
+    
   }
 
   @override
@@ -39,6 +40,10 @@ class ReportController extends GetxController {
 
     fetchAllReports();
     loadSoldByCategory();
+    
+    final today = DateTime.now();
+    final todayStr = today.toIso8601String().split('T').first;
+    getCategoryReportByDate(todayStr);
   }
 
   Future<void> fetchAllReports() async {

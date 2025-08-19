@@ -23,6 +23,10 @@ class FinanceReportPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+      final today = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      controller.getCategoryReportByDate(today);
+    });
     return Scaffold(
       backgroundColor: backgorund,
       body: Obx(() {
@@ -34,6 +38,7 @@ class FinanceReportPage extends StatelessWidget {
           onRefresh: () async {
             await controller.fetchAllReports();
             await controller.loadSoldByCategory();
+           
             selectedRange.value = null;
             formattedDate.value = '';
           },
