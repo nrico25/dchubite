@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:tadchubite/pages/order/detail_history.dart';
+import 'package:tadchubite/pages/order/download_history_controller.dart';
 import 'package:tadchubite/pages/order/order_controller.dart';
 import 'package:tadchubite/widget/color.dart';
 import 'package:tadchubite/widget/text.dart';
@@ -10,6 +11,8 @@ class HistoryOrder extends StatelessWidget {
   HistoryOrder({super.key});
 
   final OrderController controller = Get.find<OrderController>();
+  final DownloadHistoryController downloadHistoryController =
+      Get.find<DownloadHistoryController>();
   final TextEditingController searchController = TextEditingController();
 
   void _showFilterBottomSheet(BuildContext context) {
@@ -31,6 +34,27 @@ class HistoryOrder extends StatelessWidget {
                 controller.fetchOrderHistories("7");
                 Navigator.pop(context);
               },
+              trailing: ElevatedButton.icon(
+                onPressed: () {
+                  downloadHistoryController.downloadWeeklyHistory();
+                },
+                icon: const Icon(Icons.download, color: white, size: 18),
+                label: const MyText(
+                  text: "Download",
+                  fontSize: 12,
+                  fontFamily: "MontserratBold",
+                  color: white,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  elevation: 2,
+                ),
+              ),
             ),
             ListTile(
               title: const Text("30 Hari Terakhir"),
@@ -38,6 +62,27 @@ class HistoryOrder extends StatelessWidget {
                 controller.fetchOrderHistories("30");
                 Navigator.pop(context);
               },
+              trailing: ElevatedButton.icon(
+                onPressed: () {
+                  downloadHistoryController.downloadMonthlyHistory();
+                },
+                icon: const Icon(Icons.download, color: white, size: 18),
+                label: const MyText(
+                  text: "Download",
+                  fontSize: 12,
+                  fontFamily: "MontserratBold",
+                  color: white,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  elevation: 2,
+                ),
+              ),
             ),
             ListTile(
               title: const Text("Semua"),
@@ -45,6 +90,27 @@ class HistoryOrder extends StatelessWidget {
                 controller.fetchOrderHistories("");
                 Navigator.pop(context);
               },
+              trailing: ElevatedButton.icon(
+                onPressed: () {
+                  downloadHistoryController.downloadAllHistory();
+                },
+                icon: const Icon(Icons.download, color: white, size: 18),
+                label: const MyText(
+                  text: "Download",
+                  fontSize: 12,
+                  fontFamily: "MontserratBold",
+                  color: white,
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: darkBlue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  elevation: 2,
+                ),
+              ),
             ),
           ],
         ),
@@ -82,7 +148,7 @@ class HistoryOrder extends StatelessWidget {
           child: CustomScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             slivers: [
-              // HEADER + FILTER (kembali lagi)
+              // HEADER + FILTER
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
@@ -245,5 +311,5 @@ class HistoryOrder extends StatelessWidget {
     });
 
     return slivers;
-    }
+  }
 }

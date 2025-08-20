@@ -1,5 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tadchubite/api_endpoint.dart';
 import 'package:http/http.dart' as http;
 import 'package:tadchubite/pages/order/order_model.dart';
@@ -93,6 +97,114 @@ class OrderService {
       return data.map((e) => Order.fromJson(e)).toList();
     } else {
       throw Exception('Gagal memuat riwayat order');
+    }
+  }
+      static Future<Directory> getAppDirectory() async {
+    if (Platform.isAndroid) {
+      final status = await Permission.manageExternalStorage.request();
+      if (!status.isGranted) {
+        throw Exception("Izin penyimpanan ditolak");
+      }
+      final directory = await getExternalStorageDirectory();
+      if (directory == null) {
+        throw Exception("Gagal mendapatkan direktori penyimpanan");
+      }
+      return directory;
+    } else if (Platform.isIOS) {
+      return await getApplicationDocumentsDirectory();
+    } else {
+      return await getTemporaryDirectory();
+    }
+  }
+
+  static Future<File> downloadAllHistory(String token) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/orders/download?'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/pdf',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      final directory = await getAppDirectory();
+
+      final fileName =
+          "Laporan-Bulanan-${DateTime.now().toIso8601String()}.pdf";
+      final file = File('${directory.path}/$fileName');
+
+      await file.writeAsBytes(bytes);
+
+      final fileBytes = await file.readAsBytes();
+      debugPrint("10 byte pertama file: ${fileBytes.take(10).toList()}");
+      debugPrint("File berhasil disimpan di: ${file.path}");
+      debugPrint("Ukuran file: ${fileBytes.length} bytes");
+
+      return file;
+    } else {
+      throw Exception('Gagal mendownload laporan bulanan');
+    }
+  }
+  static Future<File> downloadWeeklyHistory(String token) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/orders/download?range=7'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/pdf',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      final directory = await getAppDirectory();
+
+      final fileName =
+          "Laporan-Bulanan-${DateTime.now().toIso8601String()}.pdf";
+      final file = File('${directory.path}/$fileName');
+
+      await file.writeAsBytes(bytes);
+
+      final fileBytes = await file.readAsBytes();
+      debugPrint("10 byte pertama file: ${fileBytes.take(10).toList()}");
+      debugPrint("File berhasil disimpan di: ${file.path}");
+      debugPrint("Ukuran file: ${fileBytes.length} bytes");
+
+      return file;
+    } else {
+      throw Exception('Gagal mendownload laporan bulanan');
+    }
+  }
+  static Future<File> downloadMonthlyHistory(String token) async {
+    final response = await http.get(
+      Uri.parse(
+          '${ApiEndpoint.baseUrl}/orders/download?range=30'),
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Accept': 'application/pdf',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final bytes = response.bodyBytes;
+      final directory = await getAppDirectory();
+
+      final fileName =
+          "Laporan-Bulanan-${DateTime.now().toIso8601String()}.pdf";
+      final file = File('${directory.path}/$fileName');
+
+      await file.writeAsBytes(bytes);
+
+      final fileBytes = await file.readAsBytes();
+      debugPrint("10 byte pertama file: ${fileBytes.take(10).toList()}");
+      debugPrint("File berhasil disimpan di: ${file.path}");
+      debugPrint("Ukuran file: ${fileBytes.length} bytes");
+
+      return file;
+    } else {
+      throw Exception('Gagal mendownload laporan bulanan');
     }
   }
 }

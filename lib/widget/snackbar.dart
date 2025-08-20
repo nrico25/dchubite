@@ -14,6 +14,7 @@ class CustomSnackbar {
   final TextStyle? messageStyle;
   final VoidCallback? onPressed;     // <-- Tambahkan ini
   final String? buttonText;          // <-- Tambahkan ini juga
+  final bool showProgress;           // <-- Tambahan baru
 
   CustomSnackbar({
     required this.title,
@@ -26,8 +27,9 @@ class CustomSnackbar {
     this.icon,
     this.titleStyle,
     this.messageStyle,
-    this.onPressed,       // <-- Opsional tombol
-    this.buttonText,      // <-- Opsional teks tombol
+    this.onPressed,
+    this.buttonText,
+    this.showProgress = false,       // <-- default false
   });
 
   void show() {
@@ -43,17 +45,35 @@ class CustomSnackbar {
               color: titleColor,
             ),
       ),
-      messageText: Text(
-        message,
-        style: messageStyle ??
-            TextStyle(
-              fontSize: 14,
-              color: messageColor,
+      messageText: Row(
+        children: [
+          Expanded(
+            child: Text(
+              message,
+              style: messageStyle ??
+                  TextStyle(
+                    fontSize: 14,
+                    color: messageColor,
+                  ),
             ),
+          ),
+          if (showProgress) ...[
+            const SizedBox(width: 10),
+            const SizedBox(
+              width: 18,
+              height: 18,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                strokeWidth: 2,
+              ),
+            ),
+          ]
+        ],
       ),
       backgroundColor: backgroundColor,
       snackPosition: position,
-      duration: duration,
+      duration: showProgress ? const Duration(hours: 1) : duration,
+      isDismissible: !showProgress,
       icon: icon != null ? Icon(icon, color: messageColor) : null,
       borderRadius: 10,
       margin: const EdgeInsets.all(12),
@@ -62,7 +82,7 @@ class CustomSnackbar {
               onPressed: onPressed,
               child: Text(
                 buttonText ?? "OK",
-                style: TextStyle(color: Colors.white),
+                style: const TextStyle(color: Colors.white),
               ),
             )
           : null,
