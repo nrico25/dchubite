@@ -107,13 +107,12 @@ class PrinterController extends GetxController {
       final resizedImage = img.copyResize(image, width: 250);
       bytes += generator.image(resizedImage, align: PosAlign.center);
     }
-    final String now = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
-    bytes += generator.text('$now',
-        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size1));
 
     bytes += generator.text('Gg. 10 Kaliputu, Kabupaten Kudus',
         styles: PosStyles(align: PosAlign.center));
     bytes += generator.text('No.Telp: 0895-4261-99199',
+        styles: PosStyles(align: PosAlign.center));
+    bytes += generator.text('Buka: 11.30 - 21.00 WIB',
         styles: PosStyles(align: PosAlign.center));
     bytes += generator.text('--------------------------------',
         styles: PosStyles(align: PosAlign.center));
@@ -121,37 +120,107 @@ class PrinterController extends GetxController {
     bytes += generator.text('Pembayaran: $paymentMethod');
     bytes += generator.text('--------------------------------');
 
+    // ...existing code...
     cartItems.forEach((product, qty) {
       final subtotal = product.price * qty;
       bytes += generator.text(
         '${product.name}',
-        styles: PosStyles(bold: true),
+        styles: PosStyles(
+            bold: true, fontType: PosFontType.fontA, height: PosTextSize.size1),
       );
       final left = '${qty} x Rp ${formatCurrency(product.price)}';
       final right = 'Rp ${formatCurrency(subtotal)}';
       bytes += generator.row([
         PosColumn(
-          text: left,
+          text: left.length > 18 ? left.substring(0, 18) : left,
           width: 6,
-          styles: PosStyles(align: PosAlign.left, fontType: PosFontType.fontA),
+          styles: PosStyles(
+              align: PosAlign.left,
+              fontType: PosFontType.fontA,
+              height: PosTextSize.size1),
         ),
         PosColumn(
           text: right,
           width: 6,
-          styles: PosStyles(align: PosAlign.right, fontType: PosFontType.fontA),
+          styles: PosStyles(
+              align: PosAlign.right,
+              fontType: PosFontType.fontA,
+              height: PosTextSize.size1),
         ),
       ]);
     });
     bytes += generator.text('--------------------------------');
-    bytes += generator.text('Nominal     : Rp ${formatCurrency(amountPaid)}');
-    bytes += generator.text('Total       : Rp ${formatCurrency(total)}');
-    bytes += generator.text('------------------------------ -');
-    bytes += generator.text('Kembalian   : Rp ${formatCurrency(change)}');
+
+// Sub Total
+    bytes += generator.row([
+      PosColumn(
+        text: 'Total',
+        width: 6,
+        styles: PosStyles(
+            align: PosAlign.left,
+            fontType: PosFontType.fontA,
+            height: PosTextSize.size1,
+            bold: true),
+      ),
+      PosColumn(
+        text: 'Rp ${formatCurrency(total)}',
+        width: 6,
+        styles: PosStyles(
+            align: PosAlign.right,
+            fontType: PosFontType.fontA,
+            height: PosTextSize.size1,
+            bold: true),
+      ),
+    ]);
+    bytes += generator.text('--------------------------------');
+
+// Tunai
+    bytes += generator.row([
+      PosColumn(
+        text: 'Tunai',
+        width: 6,
+        styles: PosStyles(
+            align: PosAlign.left,
+            fontType: PosFontType.fontA,
+            height: PosTextSize.size1),
+      ),
+      PosColumn(
+        text: 'Rp ${formatCurrency(amountPaid)}',
+        width: 6,
+        styles: PosStyles(
+            align: PosAlign.right,
+            fontType: PosFontType.fontA,
+            height: PosTextSize.size1),
+      ),
+    ]);
+
+// Kembalian
+    bytes += generator.row([
+      PosColumn(
+        text: 'Kembalian',
+        width: 6,
+        styles: PosStyles(
+            align: PosAlign.left,
+            fontType: PosFontType.fontA,
+            height: PosTextSize.size1),
+      ),
+      PosColumn(
+        text: 'Rp ${formatCurrency(change)}',
+        width: 6,
+        styles: PosStyles(
+            align: PosAlign.right,
+            fontType: PosFontType.fontA,
+            height: PosTextSize.size1),
+      ),
+    ]);
     bytes += generator.feed(2);
     bytes += generator.text('Terima kasih!',
-        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size7));
-
+        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size2));
+    final String now = DateFormat('dd-MM-yyyy HH:mm:ss').format(DateTime.now());
+    bytes += generator.text('$now',
+        styles: PosStyles(align: PosAlign.center, height: PosTextSize.size1));
     bytes += generator.feed(2);
+// ...existing code...
 
     await PrintBluetoothThermal.writeBytes(bytes);
   }
